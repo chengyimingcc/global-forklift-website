@@ -4,6 +4,7 @@ import Layout from "@layouts/Layout.astro";
 import ProductCard from "@components/ProductCard.astro";
 import { languages, type Lang } from "@data/languages";
 import { categories, products } from "@data/products";
+import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
 
 export function getStaticPaths() {
@@ -13,7 +14,7 @@ export function getStaticPaths() {
 const lang = Astro.params.lang as Lang;
 ---
 
-<Layout lang={lang} title={`${t(lang, "allProducts")} | Forklift Global`} description="Browse forklift product templates by category, capacity, lift height, and power type." path="/products/">
+<Layout lang={lang} title={`${t(lang, "allProducts")} | ${siteConfig.brand}`} description="Browse forklift product templates by category, capacity, lift height, and power type." path="/products/">
   <main>
     <header class="page-header">
       <div class="container">
