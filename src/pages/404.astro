@@ -1,8 +1,9 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { siteConfig } from "@data/site";
 ---
 
-<Layout lang="en" title="Page not found | Forklift Global" description="The requested page was not found." path="/404/" noindex={true}>
+<Layout lang="en" title={`Page not found | ${siteConfig.brand}`} description="The requested page was not found." path="/404/" noindex={true}>
   <main>
     <section class="page-header">
       <div class="container">
