@@ -1,11 +1,11 @@
 ---
-import { Search } from "lucide-astro";
+import { PackageCheck, Search } from "lucide-astro";
 import Layout from "@layouts/Layout.astro";
 import ProductCard from "@components/ProductCard.astro";
 import { languages, type Lang } from "@data/languages";
 import { categories, products } from "@data/products";
-import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
 
 export function getStaticPaths() {
   return languages.map((language) => ({ params: { lang: language.code } }));
@@ -14,16 +14,21 @@ export function getStaticPaths() {
 const lang = Astro.params.lang as Lang;
 ---
 
-<Layout lang={lang} title={`${t(lang, "allProducts")} | ${siteConfig.brand}`} description="Browse forklift product templates by category, capacity, lift height, and power type." path="/products/">
+<Layout
+  lang={lang}
+  title="WEGO Forklift Products | Electric, Diesel, LPG and Rough Terrain Forklifts"
+  description="Browse WEGO forklift product lines, compare catalog models, and request a quote for electric forklifts, diesel forklifts, heavy duty forklifts, LPG forklifts, rough terrain forklifts, and electric pallet stackers."
+  path="/products/"
+>
   <main>
-    <header class="page-header">
+    <header class="page-header catalog-header">
       <div class="container">
-        <span class="eyebrow">{t(lang, "navProducts")}</span>
-        <h1 class="section-title">{t(lang, "allProducts")}</h1>
-        <p class="lead">{t(lang, "heroBody")}</p>
-        <div class="field" style="max-width: 520px; margin-top: 22px;">
-          <label for="product-search"><Search size={16} aria-hidden="true" /> Search</label>
-          <input id="product-search" type="search" placeholder="Model, capacity, power type" />
+        <span class="section-label"><PackageCheck size={17} aria-hidden="true" /> Product Center</span>
+        <h1 class="section-title">WEGO forklift product center</h1>
+        <p class="lead">Start from a product category, compare catalog models, and send an export inquiry with capacity, destination country, and quantity.</p>
+        <div class="field product-search">
+          <label for="product-search"><Search size={16} aria-hidden="true" /> Search catalog models</label>
+          <input id="product-search" type="search" placeholder="Search model, capacity, power type or application" />
         </div>
         <div class="filters" aria-label="Product filters">
           <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">{t(lang, "allProducts")}</button>
@@ -31,8 +36,37 @@ const lang = Astro.params.lang as Lang;
         </div>
       </div>
     </header>
+
     <section class="section">
       <div class="container">
+        <span class="section-label">Product Categories</span>
+        <div class="grid three">
+          {
+            categories.map((category) => (
+              <article class="card category-card">
+                <a class="card-media" href={languagePath(lang, `/products/${category.slug}/`)}>
+                  <img src={category.image} alt={category.label[lang]} loading="lazy" width="1280" height="720" />
+                </a>
+                <div class="card-body">
+                  <div class="meta-row">
+                    <span class="pill">{category.capacityRange}</span>
+                    <span class="pill">{category.powerTypes.join(" / ")}</span>
+                  </div>
+                  <h2><a href={languagePath(lang, `/products/${category.slug}/`)}>{category.label[lang]}</a></h2>
+                  <p>{category.summary[lang]}</p>
+                  <a class="btn secondary" href={languagePath(lang, `/products/${category.slug}/`)}>{t(lang, "viewDetails")}</a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft">
+      <div class="container">
+        <span class="section-label">Catalog Models</span>
+        <h2 class="section-title">Compare WEGO model pages</h2>
         <div class="grid three product-grid">
           {products.map((product) => <ProductCard product={product} lang={lang} />)}
         </div>

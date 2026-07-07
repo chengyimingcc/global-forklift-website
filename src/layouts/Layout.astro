@@ -4,6 +4,7 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import { languageMeta, type Lang } from "@data/languages";
 import "@styles/global.css";
+import "@styles/wego.css";
 
 interface Props {
   lang: Lang;
@@ -22,7 +23,7 @@ const currentPath = Astro.props.path ?? (Astro.url.pathname.replace(new RegExp(`
 ---
 
 <!doctype html>
-<html lang={meta.locale} dir="ltr" data-content-dir={meta.dir}>
+<html lang={meta.locale} dir="ltr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -1,9 +1,24 @@
 import type { Lang } from "./languages";
 
+const localized = (value: string): Record<Lang, string> => ({
+  en: value,
+  es: value,
+  fr: value,
+  ja: value,
+  de: value,
+  pt: value,
+  ko: value,
+  ar: value
+});
+
 export type ProductCategory = {
   slug: string;
   label: Record<Lang, string>;
   summary: Record<Lang, string>;
+  image: string;
+  capacityRange: string;
+  powerTypes: string[];
+  status?: "catalog" | "planned";
 };
 
 export type Product = {
@@ -37,356 +52,358 @@ export type Product = {
   };
 };
 
-const sharedProductText = {
-  en: {
-    highlights: ["Replace with exact model advantages", "Add certificate and warranty details", "Prepare downloadable spec sheet"],
-    applications: ["Warehouse handling", "Container loading", "Factory logistics"]
-  },
-  es: {
-    highlights: ["Reemplace con ventajas reales del modelo", "Agregue certificaciones y garantia", "Prepare ficha tecnica descargable"],
-    applications: ["Almacen", "Carga de contenedores", "Logistica de fabrica"]
-  },
-  fr: {
-    highlights: ["Remplacer par les avantages reels", "Ajouter certificats et garantie", "Preparer une fiche technique"],
-    applications: ["Entrepot", "Chargement conteneur", "Logistique usine"]
-  },
-  ja: {
-    highlights: ["実際のモデル特長に差し替え", "認証と保証情報を追加", "仕様書ダウンロードを準備"],
-    applications: ["倉庫荷役", "コンテナ積込", "工場物流"]
-  },
-  de: {
-    highlights: ["Durch echte Modellvorteile ersetzen", "Zertifikate und Garantie erganzen", "Datenblatt vorbereiten"],
-    applications: ["Lagerumschlag", "Containerbeladung", "Werkslogistik"]
-  },
-  pt: {
-    highlights: ["Substitua por vantagens reais do modelo", "Adicione certificacoes e garantia", "Prepare ficha tecnica"],
-    applications: ["Armazenagem", "Carga de conteineres", "Logistica fabril"]
-  },
-  ko: {
-    highlights: ["실제 모델 장점으로 교체", "인증 및 보증 정보 추가", "다운로드 사양서 준비"],
-    applications: ["창고 운반", "컨테이너 적재", "공장 물류"]
-  },
-  ar: {
-    highlights: ["استبدلها بمزايا الموديل الفعلية", "اضف الشهادات والضمان", "جهز ملف مواصفات للتحميل"],
-    applications: ["مناولة المستودعات", "تحميل الحاويات", "لوجستيات المصنع"]
-  }
-};
+function productTranslations(name: string, category: string, capacity: string) {
+  const shortDescription = `${name} from the WEGO catalog, prepared for global forklift buyers comparing ${category}, capacity, lift height, power type, and export support.`;
+  const seoDescription = `Request a quote for ${name}. WEGO supports global forklift sourcing with catalog specifications, spare parts, warranty, and export documentation.`;
+  const highlights = [
+    "Catalog image and specifications are sourced from the WEGO forklift brochure",
+    `Capacity range: ${capacity}`,
+    "Prepared for export inquiry, spare parts support, and model comparison"
+  ];
+  const applications = ["Warehouse logistics", "Factory handling", "Container loading", "Outdoor material handling"];
 
-export const categories: ProductCategory[] = [
-  {
-    slug: "electric-forklifts",
-    label: {
-      en: "Electric forklifts",
-      es: "Montacargas electricos",
-      fr: "Chariots electriques",
-      ja: "電動フォークリフト",
-      de: "Elektrostapler",
-      pt: "Empilhadeiras eletricas",
-      ko: "전동 지게차",
-      ar: "رافعات كهربائية"
-    },
-    summary: {
-      en: "Low-emission handling for warehouses and indoor logistics.",
-      es: "Operacion de bajas emisiones para almacenes e interiores.",
-      fr: "Manutention basse emission pour entrepots.",
-      ja: "倉庫・屋内物流向けの低排出モデル。",
-      de: "Emissionsarme Losung fur Lager und Innenbereiche.",
-      pt: "Operacao de baixa emissao para armazens.",
-      ko: "창고와 실내 물류용 저배출 장비.",
-      ar: "مناولة منخفضة الانبعاثات للمستودعات."
-    }
-  },
-  {
-    slug: "diesel-forklifts",
-    label: {
-      en: "Diesel forklifts",
-      es: "Montacargas diesel",
-      fr: "Chariots diesel",
-      ja: "ディーゼルフォークリフト",
-      de: "Dieselstapler",
-      pt: "Empilhadeiras diesel",
-      ko: "디젤 지게차",
-      ar: "رافعات ديزل"
-    },
-    summary: {
-      en: "Outdoor heavy-duty lifting for construction, yards, and ports.",
-      es: "Elevacion pesada exterior para obras, patios y puertos.",
-      fr: "Levage intensif exterieur pour chantiers et ports.",
-      ja: "屋外・建設・港湾向け重量物モデル。",
-      de: "Robuste Aussenanwendung fur Bau, Hofe und Hafen.",
-      pt: "Elevacao pesada externa para obras, patios e portos.",
-      ko: "건설, 야드, 항만용 실외 중량 작업.",
-      ar: "رفع ثقيل خارجي للمواقع والساحات والموانئ."
-    }
-  },
-  {
-    slug: "lpg-forklifts",
-    label: {
-      en: "LPG forklifts",
-      es: "Montacargas GLP",
-      fr: "Chariots GPL",
-      ja: "LPGフォークリフト",
-      de: "LPG-Stapler",
-      pt: "Empilhadeiras GLP",
-      ko: "LPG 지게차",
-      ar: "رافعات LPG"
-    },
-    summary: {
-      en: "Flexible indoor-outdoor power with fast refueling.",
-      es: "Potencia flexible interior-exterior con repostaje rapido.",
-      fr: "Usage interieur-exterieur avec ravitaillement rapide.",
-      ja: "屋内外兼用、短時間燃料補給。",
-      de: "Flexible Innen-/Aussenleistung mit schnellem Tanken.",
-      pt: "Uso interno e externo com reabastecimento rapido.",
-      ko: "실내외 겸용, 빠른 연료 보급.",
-      ar: "تشغيل مرن داخلي وخارجي مع تزويد سريع."
-    }
-  },
-  {
-    slug: "reach-trucks",
-    label: {
-      en: "Reach trucks",
-      es: "Reach trucks",
-      fr: "Reach trucks",
-      ja: "リーチトラック",
-      de: "Schubmaststapler",
-      pt: "Reach trucks",
-      ko: "리치 트럭",
-      ar: "رافعات الممرات"
-    },
-    summary: {
-      en: "Narrow aisle warehouse storage and high rack handling.",
-      es: "Almacenaje en pasillos estrechos y racks altos.",
-      fr: "Allees etroites et rayonnages hauts.",
-      ja: "狭小通路・高ラック倉庫向け。",
-      de: "Schmalganglager und Hochregalbetrieb.",
-      pt: "Corredores estreitos e porta-paletes altos.",
-      ko: "좁은 통로 및 고층 랙 작업.",
-      ar: "ممرات ضيقة ورفوف عالية."
-    }
-  },
-  {
-    slug: "pallet-trucks",
-    label: {
-      en: "Pallet trucks",
-      es: "Transpaletas",
-      fr: "Transpalettes",
-      ja: "パレットトラック",
-      de: "Hubwagen",
-      pt: "Paleteiras",
-      ko: "팔레트 트럭",
-      ar: "عربات طبالي"
-    },
-    summary: {
-      en: "Entry handling equipment for daily pallet movement.",
-      es: "Equipo basico para movimiento diario de pallets.",
-      fr: "Equipement simple pour palettes quotidiennes.",
-      ja: "日常のパレット搬送向け。",
-      de: "Basisgerate fur tagliche Palettenbewegung.",
-      pt: "Equipamento basico para movimentacao diaria.",
-      ko: "일상 팔레트 이동용 기본 장비.",
-      ar: "معدات اساسية لحركة الطبالي اليومية."
-    }
-  },
-  {
-    slug: "rough-terrain-forklifts",
-    label: {
-      en: "Rough terrain forklifts",
-      es: "Montacargas todo terreno",
-      fr: "Chariots tout-terrain",
-      ja: "悪路用フォークリフト",
-      de: "Gelandestapler",
-      pt: "Empilhadeiras todo terreno",
-      ko: "험지용 지게차",
-      ar: "رافعات للطرق الوعرة"
-    },
-    summary: {
-      en: "High-clearance equipment for uneven outdoor surfaces.",
-      es: "Equipos de gran despeje para terrenos irregulares.",
-      fr: "Equipement pour surfaces exterieures irregulieres.",
-      ja: "不整地向け高クリアランスモデル。",
-      de: "Hohe Bodenfreiheit fur unebene Aussenflachen.",
-      pt: "Equipamento para superficies externas irregulares.",
-      ko: "울퉁불퉁한 실외 지면용 장비.",
-      ar: "معدات خلوص عال للاسطح الخارجية غير المستوية."
-    }
-  }
-];
-
-function productTranslations(baseName: string, seoType: string) {
   return {
-    en: {
-      name: baseName,
-      shortDescription: `Template product page for ${seoType}. Replace this copy with exact model details before indexing.`,
-      seoTitle: `${baseName} | Global Forklift Supply`,
-      seoDescription: `Request a quote for ${baseName}. Add exact capacity, lift height, battery or engine details, certifications, and delivery terms before launch.`,
-      ...sharedProductText.en
-    },
-    es: {
-      name: baseName,
-      shortDescription: `Pagina plantilla para ${seoType}. Reemplace el texto con detalles reales antes de indexar.`,
-      seoTitle: `${baseName} | Suministro global de montacargas`,
-      seoDescription: `Solicite cotizacion para ${baseName}. Agregue capacidad, altura, energia, certificaciones y entrega antes del lanzamiento.`,
-      ...sharedProductText.es
-    },
-    fr: {
-      name: baseName,
-      shortDescription: `Page modele pour ${seoType}. Remplacez par les details reels avant indexation.`,
-      seoTitle: `${baseName} | Fourniture mondiale de chariots`,
-      seoDescription: `Demandez un devis pour ${baseName}. Ajoutez capacite, hauteur, energie, certificats et livraison avant lancement.`,
-      ...sharedProductText.fr
-    },
-    ja: {
-      name: baseName,
-      shortDescription: `${seoType} 用のテンプレート製品ページです。公開前に実データへ差し替えてください。`,
-      seoTitle: `${baseName} | グローバルフォークリフト供給`,
-      seoDescription: `${baseName} の見積依頼ページです。積載能力、揚高、動力、認証、納期を追加してください。`,
-      ...sharedProductText.ja
-    },
-    de: {
-      name: baseName,
-      shortDescription: `Produktvorlage fur ${seoType}. Vor Indexierung durch echte Modelldaten ersetzen.`,
-      seoTitle: `${baseName} | Globaler Staplervertrieb`,
-      seoDescription: `Anfrage fur ${baseName}. Tragfahigkeit, Hubhohe, Energie, Zertifikate und Lieferung erganzen.`,
-      ...sharedProductText.de
-    },
-    pt: {
-      name: baseName,
-      shortDescription: `Pagina modelo para ${seoType}. Substitua por detalhes reais antes da indexacao.`,
-      seoTitle: `${baseName} | Fornecimento global de empilhadeiras`,
-      seoDescription: `Solicite cotacao para ${baseName}. Adicione capacidade, altura, energia, certificacoes e entrega.`,
-      ...sharedProductText.pt
-    },
-    ko: {
-      name: baseName,
-      shortDescription: `${seoType} 제품 페이지 템플릿입니다. 색인 전 실제 모델 정보로 교체하세요.`,
-      seoTitle: `${baseName} | 글로벌 지게차 공급`,
-      seoDescription: `${baseName} 견적 요청. 적재 능력, 인상 높이, 동력, 인증, 납기를 추가하세요.`,
-      ...sharedProductText.ko
-    },
-    ar: {
-      name: baseName,
-      shortDescription: `صفحة منتج قالب لـ ${seoType}. استبدل النص بتفاصيل فعلية قبل الفهرسة.`,
-      seoTitle: `${baseName} | توريد رافعات شوكية عالمي`,
-      seoDescription: `اطلب عرض سعر لـ ${baseName}. اضف الحمولة وارتفاع الرفع والطاقة والشهادات والتسليم.`,
-      ...sharedProductText.ar
-    }
+    en: { name, shortDescription, seoTitle: `${name} | WEGO Forklift`, seoDescription, highlights, applications },
+    es: { name, shortDescription, seoTitle: `${name} | WEGO Forklift`, seoDescription, highlights, applications },
+    fr: { name, shortDescription, seoTitle: `${name} | WEGO Forklift`, seoDescription, highlights, applications },
+    ja: { name, shortDescription, seoTitle: `${name} | WEGO Forklift`, seoDescription, highlights, applications },
+    de: { name, shortDescription, seoTitle: `${name} | WEGO Forklift`, seoDescription, highlights, applications },
+    pt: { name, shortDescription, seoTitle: `${name} | WEGO Forklift`, seoDescription, highlights, applications },
+    ko: { name, shortDescription, seoTitle: `${name} | WEGO Forklift`, seoDescription, highlights, applications },
+    ar: { name, shortDescription, seoTitle: `${name} | WEGO Forklift`, seoDescription, highlights, applications }
   } satisfies Product["translations"];
 }
 
+export const categories: ProductCategory[] = [
+  {
+    slug: "lithium-electric-forklifts",
+    label: localized("Lithium Electric Forklifts"),
+    summary: localized("1.5T-3.5T lithium battery forklifts for clean indoor handling, warehouse logistics, and efficient daily operation."),
+    image: "/images/catalog/electric-15-35t.jpg",
+    capacityRange: "1.5T-3.5T",
+    powerTypes: ["Lithium battery"],
+    status: "catalog"
+  },
+  {
+    slug: "diesel-forklifts",
+    label: localized("Diesel Forklifts"),
+    summary: localized("2.5T-5.0T diesel forklifts for outdoor yards, factories, loading docks, and general heavy handling."),
+    image: "/images/catalog/diesel-35t.jpg",
+    capacityRange: "2.5T-5.0T",
+    powerTypes: ["Diesel"],
+    status: "catalog"
+  },
+  {
+    slug: "heavy-duty-forklifts",
+    label: localized("Heavy Duty Forklifts"),
+    summary: localized("7.0T-10.0T diesel forklifts for heavy loads, containers, ports, steel yards, and industrial logistics."),
+    image: "/images/catalog/diesel-100t.jpg",
+    capacityRange: "7.0T-10.0T",
+    powerTypes: ["Diesel"],
+    status: "catalog"
+  },
+  {
+    slug: "lpg-forklifts",
+    label: localized("LPG Forklifts"),
+    summary: localized("2.5T LPG forklift series for buyers needing flexible indoor-outdoor operation and fast refueling."),
+    image: "/images/catalog/lpg-25t.jpg",
+    capacityRange: "2.5T",
+    powerTypes: ["LPG", "Gasoline"],
+    status: "catalog"
+  },
+  {
+    slug: "rough-terrain-forklifts",
+    label: localized("Rough Terrain Forklifts"),
+    summary: localized("3.0T-5.0T rough terrain forklifts for construction sites, uneven yards, farms, and outdoor cargo handling."),
+    image: "/images/catalog/rough-terrain-30-50t.jpg",
+    capacityRange: "3.0T-5.0T",
+    powerTypes: ["Diesel"],
+    status: "catalog"
+  },
+  {
+    slug: "electric-pallet-stackers",
+    label: localized("Electric Pallet Stackers"),
+    summary: localized("1.5T-2.0T electric pallet stackers for pallet movement, short-distance transport, and warehouse stacking."),
+    image: "/images/catalog/electric-pallet-stacker-20t.jpg",
+    capacityRange: "1.5T-2.0T",
+    powerTypes: ["Battery"],
+    status: "catalog"
+  },
+  {
+    slug: "pallet-trucks",
+    label: localized("Pallet Trucks"),
+    summary: localized("Entry-level pallet handling equipment reserved for future WEGO catalog expansion."),
+    image: "/images/catalog/electric-pallet-stacker-15t.jpg",
+    capacityRange: "Future range",
+    powerTypes: ["Manual", "Electric"],
+    status: "planned"
+  },
+  {
+    slug: "reach-trucks",
+    label: localized("Reach Trucks"),
+    summary: localized("Narrow aisle and high-rack warehouse equipment reserved for future WEGO catalog expansion."),
+    image: "/images/catalog/electric-15-35t.jpg",
+    capacityRange: "Future range",
+    powerTypes: ["Battery"],
+    status: "planned"
+  },
+  {
+    slug: "agv-amr",
+    label: localized("AGV / AMR Solutions"),
+    summary: localized("Automation-ready material handling category reserved for future WEGO intelligent logistics products."),
+    image: "/images/catalog/factory.jpg",
+    capacityRange: "Project based",
+    powerTypes: ["Electric"],
+    status: "planned"
+  }
+];
+
 export const products: Product[] = [
   {
-    slug: "fg-electric-25",
-    sku: "FG-E25",
-    category: "electric-forklifts",
-    image: "/images/forklift-warehouse-hero.png",
-    capacityTons: "2.5 t",
-    liftHeightM: "3.0-6.0 m",
-    powerType: "Lithium / lead-acid battery",
+    slug: "wego-electric-forklift-15-35t",
+    sku: "CPD15E-CPD35E",
+    category: "lithium-electric-forklifts",
+    image: "/images/catalog/electric-15-35t.jpg",
+    capacityTons: "1.5T-3.5T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Lithium battery",
     availability: "PreOrder",
-    translations: productTranslations("FG Electric 2.5T Forklift", "electric forklifts"),
+    translations: productTranslations("WEGO Lithium Electric Forklift 1.5T-3.5T", "lithium electric forklifts", "1.5T-3.5T"),
+    specs: {
+      capacity: "1500-3500 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "500 mm",
+      turningRadius: "2200-2500 mm",
+      power: "Lithium battery",
+      tireType: "Pneumatic / solid options"
+    }
+  },
+  {
+    slug: "wego-diesel-forklift-25t",
+    sku: "CPCD25",
+    category: "diesel-forklifts",
+    image: "/images/catalog/diesel-25t.jpg",
+    capacityTons: "2.5T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO Diesel Forklift 2.5T", "diesel forklifts", "2.5T"),
     specs: {
       capacity: "2500 kg",
-      liftHeight: "3000-6000 mm",
+      liftHeight: "3000 mm standard",
       loadCenter: "500 mm",
-      turningRadius: "2240 mm",
-      power: "Lithium or lead-acid battery",
-      tireType: "Solid / pneumatic"
-    }
-  },
-  {
-    slug: "fg-diesel-35",
-    sku: "FG-D35",
-    category: "diesel-forklifts",
-    image: "/images/forklift-warehouse-hero.png",
-    capacityTons: "3.5 t",
-    liftHeightM: "3.0-6.0 m",
-    powerType: "Diesel engine",
-    availability: "PreOrder",
-    translations: productTranslations("FG Diesel 3.5T Forklift", "diesel forklifts"),
-    specs: {
-      capacity: "3500 kg",
-      liftHeight: "3000-6000 mm",
-      loadCenter: "500 mm",
-      turningRadius: "2540 mm",
+      turningRadius: "Catalog specification",
       power: "Diesel engine",
-      tireType: "Pneumatic / solid"
+      tireType: "Pneumatic"
     }
   },
   {
-    slug: "fg-lpg-30",
-    sku: "FG-LPG30",
-    category: "lpg-forklifts",
-    image: "/images/forklift-warehouse-hero.png",
-    capacityTons: "3.0 t",
-    liftHeightM: "3.0-5.0 m",
-    powerType: "LPG / gasoline",
+    slug: "wego-diesel-forklift-30t",
+    sku: "CPCD30",
+    category: "diesel-forklifts",
+    image: "/images/catalog/diesel-30t.jpg",
+    capacityTons: "3.0T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
     availability: "PreOrder",
-    translations: productTranslations("FG LPG 3.0T Forklift", "LPG forklifts"),
+    translations: productTranslations("WEGO Diesel Forklift 3.0T", "diesel forklifts", "3.0T"),
     specs: {
       capacity: "3000 kg",
-      liftHeight: "3000-5000 mm",
+      liftHeight: "3000 mm standard",
       loadCenter: "500 mm",
-      turningRadius: "2380 mm",
-      power: "LPG / gasoline",
-      tireType: "Solid / pneumatic"
+      turningRadius: "Catalog specification",
+      power: "Diesel engine",
+      tireType: "Pneumatic"
     }
   },
   {
-    slug: "fg-reach-16",
-    sku: "FG-R16",
-    category: "reach-trucks",
-    image: "/images/forklift-warehouse-hero.png",
-    capacityTons: "1.6 t",
-    liftHeightM: "6.0-10.5 m",
+    slug: "wego-diesel-forklift-35t",
+    sku: "CPCD35",
+    category: "diesel-forklifts",
+    image: "/images/catalog/diesel-35t.jpg",
+    capacityTons: "3.5T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO Diesel Forklift 3.5T", "diesel forklifts", "3.5T"),
+    specs: {
+      capacity: "3500 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "500 mm",
+      turningRadius: "Catalog specification",
+      power: "Diesel engine",
+      tireType: "Pneumatic"
+    }
+  },
+  {
+    slug: "wego-diesel-forklift-40t",
+    sku: "CPCD40",
+    category: "diesel-forklifts",
+    image: "/images/catalog/diesel-40t.jpg",
+    capacityTons: "4.0T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO Diesel Forklift 4.0T", "diesel forklifts", "4.0T"),
+    specs: {
+      capacity: "4000 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "500 mm",
+      turningRadius: "Catalog specification",
+      power: "Diesel engine",
+      tireType: "Pneumatic"
+    }
+  },
+  {
+    slug: "wego-diesel-forklift-50t",
+    sku: "CPCD50",
+    category: "diesel-forklifts",
+    image: "/images/catalog/diesel-50t.jpg",
+    capacityTons: "5.0T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO Diesel Forklift 5.0T", "diesel forklifts", "5.0T"),
+    specs: {
+      capacity: "5000 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "500 mm",
+      turningRadius: "Catalog specification",
+      power: "Diesel engine",
+      tireType: "Pneumatic"
+    }
+  },
+  {
+    slug: "wego-heavy-duty-diesel-forklift-70t",
+    sku: "CPCD70",
+    category: "heavy-duty-forklifts",
+    image: "/images/catalog/diesel-70t.jpg",
+    capacityTons: "7.0T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO Heavy Duty Diesel Forklift 7.0T", "heavy duty forklifts", "7.0T"),
+    specs: {
+      capacity: "7000 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "600 mm",
+      turningRadius: "Catalog specification",
+      power: "Diesel engine",
+      tireType: "Large pneumatic"
+    }
+  },
+  {
+    slug: "wego-heavy-duty-diesel-forklift-80t",
+    sku: "CPCD80",
+    category: "heavy-duty-forklifts",
+    image: "/images/catalog/diesel-80t.jpg",
+    capacityTons: "8.0T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO Heavy Duty Diesel Forklift 8.0T", "heavy duty forklifts", "8.0T"),
+    specs: {
+      capacity: "8000 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "600 mm",
+      turningRadius: "Catalog specification",
+      power: "Diesel engine",
+      tireType: "Large pneumatic"
+    }
+  },
+  {
+    slug: "wego-heavy-duty-diesel-forklift-100t",
+    sku: "CPCD100",
+    category: "heavy-duty-forklifts",
+    image: "/images/catalog/diesel-100t.jpg",
+    capacityTons: "10.0T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO Heavy Duty Diesel Forklift 10.0T", "heavy duty forklifts", "10.0T"),
+    specs: {
+      capacity: "10000 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "600 mm",
+      turningRadius: "Catalog specification",
+      power: "Diesel engine",
+      tireType: "Large pneumatic"
+    }
+  },
+  {
+    slug: "wego-lpg-forklift-25t",
+    sku: "CPQD25",
+    category: "lpg-forklifts",
+    image: "/images/catalog/lpg-25t.jpg",
+    capacityTons: "2.5T",
+    liftHeightM: "3.0 m standard",
+    powerType: "LPG / gasoline",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO LPG Forklift 2.5T", "LPG forklifts", "2.5T"),
+    specs: {
+      capacity: "2500 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "500 mm",
+      turningRadius: "Catalog specification",
+      power: "LPG / gasoline",
+      tireType: "Pneumatic"
+    }
+  },
+  {
+    slug: "wego-rough-terrain-forklift-30-50t",
+    sku: "CPCY30-CPCY50",
+    category: "rough-terrain-forklifts",
+    image: "/images/catalog/rough-terrain-30-50t.jpg",
+    capacityTons: "3.0T-5.0T",
+    liftHeightM: "3.0 m standard",
+    powerType: "Diesel",
+    availability: "PreOrder",
+    translations: productTranslations("WEGO Rough Terrain Forklift 3.0T-5.0T", "rough terrain forklifts", "3.0T-5.0T"),
+    specs: {
+      capacity: "3000-5000 kg",
+      liftHeight: "3000 mm standard",
+      loadCenter: "500 mm",
+      turningRadius: "Catalog specification",
+      power: "Diesel engine",
+      tireType: "Large pneumatic"
+    }
+  },
+  {
+    slug: "wego-electric-pallet-stacker-20t",
+    sku: "CDD20",
+    category: "electric-pallet-stackers",
+    image: "/images/catalog/electric-pallet-stacker-20t.jpg",
+    capacityTons: "2.0T",
+    liftHeightM: "Catalog options",
     powerType: "Battery",
     availability: "PreOrder",
-    translations: productTranslations("FG Reach Truck 1.6T", "warehouse reach trucks"),
-    specs: {
-      capacity: "1600 kg",
-      liftHeight: "6000-10500 mm",
-      loadCenter: "600 mm",
-      turningRadius: "1680 mm",
-      power: "Battery",
-      tireType: "Polyurethane"
-    }
-  },
-  {
-    slug: "fg-pallet-20",
-    sku: "FG-PT20",
-    category: "pallet-trucks",
-    image: "/images/forklift-warehouse-hero.png",
-    capacityTons: "2.0 t",
-    liftHeightM: "0.2 m",
-    powerType: "Manual / electric",
-    availability: "PreOrder",
-    translations: productTranslations("FG Pallet Truck 2.0T", "pallet trucks"),
+    translations: productTranslations("WEGO Electric Pallet Stacker 2.0T", "electric pallet stackers", "2.0T"),
     specs: {
       capacity: "2000 kg",
-      liftHeight: "200 mm",
+      liftHeight: "Catalog options",
       loadCenter: "600 mm",
-      turningRadius: "1460 mm",
-      power: "Manual / electric",
+      turningRadius: "Catalog specification",
+      power: "Battery",
       tireType: "PU / nylon"
     }
   },
   {
-    slug: "fg-rough-terrain-35",
-    sku: "FG-RT35",
-    category: "rough-terrain-forklifts",
-    image: "/images/forklift-warehouse-hero.png",
-    capacityTons: "3.5 t",
-    liftHeightM: "3.0-6.0 m",
-    powerType: "Diesel engine",
+    slug: "wego-electric-pallet-stacker-15t",
+    sku: "CDD15",
+    category: "electric-pallet-stackers",
+    image: "/images/catalog/electric-pallet-stacker-15t.jpg",
+    capacityTons: "1.5T",
+    liftHeightM: "Catalog options",
+    powerType: "Battery",
     availability: "PreOrder",
-    translations: productTranslations("FG Rough Terrain 3.5T Forklift", "rough terrain forklifts"),
+    translations: productTranslations("WEGO Electric Pallet Stacker 1.5T", "electric pallet stackers", "1.5T"),
     specs: {
-      capacity: "3500 kg",
-      liftHeight: "3000-6000 mm",
-      loadCenter: "500 mm",
-      turningRadius: "3050 mm",
-      power: "Diesel engine",
-      tireType: "Large pneumatic"
+      capacity: "1500 kg",
+      liftHeight: "Catalog options",
+      loadCenter: "600 mm",
+      turningRadius: "Catalog specification",
+      power: "Battery",
+      tireType: "PU / nylon"
     }
   }
 ];
@@ -401,4 +418,8 @@ export function getProduct(slug: string) {
 
 export function getProductName(product: Product, lang: Lang) {
   return product.translations[lang]?.name ?? product.translations.en.name;
+}
+
+export function getCategoryProducts(categorySlug: string) {
+  return products.filter((product) => product.category === categorySlug);
 }

@@ -1,0 +1,74 @@
+---
+import { CheckCircle2, ShieldCheck } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import LeadForm from "@components/LeadForm.astro";
+import ProductCard from "@components/ProductCard.astro";
+import { languages, type Lang } from "@data/languages";
+import { getSolution, solutions } from "@data/content";
+import { getCategory, getCategoryProducts } from "@data/products";
+import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
+import { breadcrumbSchema } from "@lib/schema";
+
+export function getStaticPaths() {
+  return languages.flatMap((language) => solutions.map((solution) => ({ params: { lang: language.code, slug: solution.slug } })));
+}
+
+const lang = Astro.params.lang as Lang;
+const solution = getSolution(Astro.params.slug ?? "");
+if (!solution) {
+  return Astro.redirect(languagePath(lang, "/solutions/"));
+}
+const pagePath = `/solutions/${solution.slug}/`;
+const recommendedProducts = solution.recommendedCategories.flatMap((categorySlug) => getCategoryProducts(categorySlug)).slice(0, 6);
+const recommendedCategories = solution.recommendedCategories.map(getCategory).filter(Boolean);
+const breadcrumbs = [
+  { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
+  { name: "Solutions", url: languagePath(lang, "/solutions/") },
+  { name: solution.title[lang], url: languagePath(lang, pagePath) }
+];
+---
+
+<Layout lang={lang} title={`${solution.title[lang]} Forklift Solution | WEGO Forklift`} description={solution.summary[lang]} path={pagePath} image={solution.image} schema={breadcrumbSchema(breadcrumbs)}>
+  <main>
+    <header class="page-header solution-header">
+      <div class="container">
+        <Breadcrumbs items={[
+          { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
+          { label: "Solutions", href: languagePath(lang, "/solutions/") },
+          { label: solution.title[lang] }
+        ]} />
+        <span class="section-label"><ShieldCheck size={17} aria-hidden="true" /> Application Solution</span>
+        <h1 class="section-title">{solution.title[lang]}</h1>
+        <p class="lead">{solution.summary[lang]}</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container split">
+        <div>
+          <div class="product-media solution-image">
+            <img src={solution.image} alt={solution.title[lang]} width="1280" height="720" />
+          </div>
+          <h2>Buyer needs</h2>
+          <ul class="check-list">
+            {solution.needs.map((need) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{need}</span></li>)}
+          </ul>
+          <h2>Recommended product lines</h2>
+          <div class="meta-row">
+            {recommendedCategories.map((category) => category && <a class="pill" href={languagePath(lang, `/products/${category.slug}/`)}>{category.label[lang]}</a>)}
+          </div>
+        </div>
+        <LeadForm lang={lang} />
+      </div>
+    </section>
+    <section class="section soft">
+      <div class="container">
+        <h2 class="section-title">Recommended catalog models</h2>
+        <div class="grid three">
+          {recommendedProducts.map((product) => <ProductCard product={product} lang={lang} />)}
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

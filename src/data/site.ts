@@ -9,7 +9,7 @@ export const siteConfig = {
   whatsapp: "+10000000000",
   address: "Add your factory or export office address here",
   logo: "/images/wego-logo.svg",
-  defaultImage: "/images/forklift-warehouse-hero.png",
+  defaultImage: "/images/catalog/hero-forklift.jpg",
   foundedYear: "2026",
   social: {
     linkedin: "",

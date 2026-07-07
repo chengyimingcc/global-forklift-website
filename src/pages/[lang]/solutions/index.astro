@@ -1,0 +1,45 @@
+---
+import { ShieldCheck } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import { languages, type Lang } from "@data/languages";
+import { solutions } from "@data/content";
+import { languagePath } from "@lib/seo";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} title="Forklift Solutions | WEGO Forklift" description="Explore WEGO forklift solutions for logistics, manufacturing, ports, construction yards, food and pharma warehousing, chemical and energy operations." path="/solutions/">
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <span class="section-label"><ShieldCheck size={17} aria-hidden="true" /> Solutions</span>
+        <h1 class="section-title">Forklift solutions by working scene</h1>
+        <p class="lead">Match the buyer's application to the right WEGO product line, capacity range, and export support path.</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container">
+        <div class="grid three">
+          {
+            solutions.map((solution) => (
+              <article class="card solution-card">
+                <a class="card-media" href={languagePath(lang, `/solutions/${solution.slug}/`)}>
+                  <img src={solution.image} alt={solution.title[lang]} loading="lazy" width="1280" height="720" />
+                </a>
+                <div class="card-body">
+                  <h2><a href={languagePath(lang, `/solutions/${solution.slug}/`)}>{solution.title[lang]}</a></h2>
+                  <p>{solution.summary[lang]}</p>
+                  <a class="btn secondary" href={languagePath(lang, `/solutions/${solution.slug}/`)}>View solution</a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

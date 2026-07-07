@@ -1,99 +1,206 @@
 ---
-import { CheckCircle2, Download } from "lucide-astro";
+import { CheckCircle2, Download, PackageCheck } from "lucide-astro";
 import Layout from "@layouts/Layout.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import LeadForm from "@components/LeadForm.astro";
 import ProductCard from "@components/ProductCard.astro";
 import SpecTable from "@components/SpecTable.astro";
 import { languages, type Lang } from "@data/languages";
-import { getCategory, getProduct, getProductName, products } from "@data/products";
+import { categories, getCategory, getCategoryProducts, getProduct, getProductName, products } from "@data/products";
+import { solutions } from "@data/content";
 import { t } from "@data/i18n";
 import { languagePath } from "@lib/seo";
 import { breadcrumbSchema, productSchema } from "@lib/schema";
 
 export function getStaticPaths() {
-  return languages.flatMap((language) =>
-    products.map((product) => ({
-      params: { lang: language.code, slug: product.slug }
-    }))
-  );
+  return languages.flatMap((language) => [
+    ...products.map((product) => ({ params: { lang: language.code, slug: product.slug } })),
+    ...categories.map((category) => ({ params: { lang: language.code, slug: category.slug } }))
+  ]);
 }
 
 const lang = Astro.params.lang as Lang;
-const product = getProduct(Astro.params.slug ?? "");
-if (!product) {
+const slug = Astro.params.slug ?? "";
+const product = getProduct(slug);
+const category = getCategory(slug);
+
+if (!product && !category) {
   return Astro.redirect(languagePath(lang, "/products/"));
 }
-const copy = product.translations[lang] ?? product.translations.en;
-const category = getCategory(product.category);
-const pagePath = `/products/${product.slug}/`;
-const breadcrumbs = [
-  { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
-  { name: t(lang, "allProducts"), url: languagePath(lang, "/products/") },
-  { name: getProductName(product, lang), url: languagePath(lang, pagePath) }
-];
-const related = products.filter((item) => item.category === product.category && item.slug !== product.slug).slice(0, 3);
+
+const pagePath = `/products/${slug}/`;
+const pageTitle = product ? product.translations[lang].seoTitle : `${category!.label[lang]} | WEGO Forklift Products`;
+const pageDescription = product
+  ? product.translations[lang].seoDescription
+  : `${category!.summary[lang]} Compare WEGO catalog models and request an export quote.`;
+const pageImage = product ? product.image : category!.image;
+const breadcrumbs = product
+  ? [
+      { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
+      { name: t(lang, "allProducts"), url: languagePath(lang, "/products/") },
+      { name: getProductName(product, lang), url: languagePath(lang, pagePath) }
+    ]
+  : [
+      { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
+      { name: t(lang, "allProducts"), url: languagePath(lang, "/products/") },
+      { name: category!.label[lang], url: languagePath(lang, pagePath) }
+    ];
+const categoryProducts = category ? getCategoryProducts(category.slug) : [];
+const productCategory = product ? getCategory(product.category) : undefined;
+const related = product ? products.filter((item) => item.category === product.category && item.slug !== product.slug).slice(0, 3) : [];
+const relatedSolutions = category ? solutions.filter((solution) => solution.recommendedCategories.includes(category.slug)).slice(0, 3) : [];
+const collectionSchema = category
+  ? {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: category.label[lang],
+      description: category.summary[lang],
+      hasPart: categoryProducts.map((item) => ({
+        "@type": "Product",
+        name: getProductName(item, lang),
+        url: languagePath(lang, `/products/${item.slug}/`)
+      }))
+    }
+  : undefined;
+const schema = product ? [productSchema(product, lang), breadcrumbSchema(breadcrumbs)] : [collectionSchema, breadcrumbSchema(breadcrumbs)];
 ---
 
-<Layout lang={lang} title={copy.seoTitle} description={copy.seoDescription} path={pagePath} image={product.image} type="product" schema={[productSchema(product, lang), breadcrumbSchema(breadcrumbs)]}>
+<Layout lang={lang} title={pageTitle} description={pageDescription} path={pagePath} image={pageImage} type={product ? "product" : "website"} schema={schema}>
   <main>
-    <section class="product-hero">
-      <div class="container">
-        <Breadcrumbs items={[
-          { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
-          { label: t(lang, "allProducts"), href: languagePath(lang, "/products/") },
-          { label: getProductName(product, lang) }
-        ]} />
-        <div class="split" style="margin-top: 32px;">
-          <div>
-            <div class="meta-row">
-              {category && <span class="pill">{category.label[lang]}</span>}
-              <span class="pill">{product.sku}</span>
-              <span class="pill">{product.capacityTons}</span>
+    {
+      category && (
+        <>
+          <section class="product-hero category-hero">
+            <div class="container">
+              <Breadcrumbs items={[
+                { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
+                { label: t(lang, "allProducts"), href: languagePath(lang, "/products/") },
+                { label: category.label[lang] }
+              ]} />
+              <div class="split category-hero-grid">
+                <div>
+                  <span class="section-label"><PackageCheck size={17} aria-hidden="true" /> Product Line</span>
+                  <h1 class="section-title">{category.label[lang]}</h1>
+                  <p class="lead">{category.summary[lang]}</p>
+                  <div class="meta-row">
+                    <span class="pill">{category.capacityRange}</span>
+                    {category.powerTypes.map((type) => <span class="pill">{type}</span>)}
+                    <span class="pill">{category.status === "catalog" ? "From WEGO brochure" : "Reserved for expansion"}</span>
+                  </div>
+                  <div class="button-row" style="margin-top: 22px;">
+                    <a class="btn primary" href="#models">{categoryProducts.length ? "Compare models" : "Request availability"}</a>
+                    <a class="btn secondary" href="#inquiry">{t(lang, "requestQuote")}</a>
+                  </div>
+                </div>
+                <div class="product-media">
+                  <img src={category.image} alt={category.label[lang]} width="1280" height="720" />
+                </div>
+              </div>
             </div>
-            <h1 class="section-title">{getProductName(product, lang)}</h1>
-            <p class="lead">{copy.shortDescription}</p>
-            <div class="button-row" style="margin-top: 22px;">
-              <a class="btn primary" href="#inquiry">{t(lang, "requestQuote")}</a>
-              {product.brochure && <a class="btn secondary" href={product.brochure}><Download size={17} aria-hidden="true" /> {t(lang, "downloadSpec")}</a>}
+          </section>
+
+          <section id="models" class="section">
+            <div class="container">
+              <h2 class="section-title">{categoryProducts.length ? "Catalog models" : "Model pages reserved"}</h2>
+              <p class="section-intro">{categoryProducts.length ? "These models are created from the current WEGO forklift brochure images and specification ranges." : "This product category is in the architecture now so future catalog content can be added without changing URLs."}</p>
+              <div class="grid three">
+                {categoryProducts.length ? categoryProducts.map((item) => <ProductCard product={item} lang={lang} />) : (
+                  <article class="card">
+                    <div class="card-body">
+                      <h3>Future model range</h3>
+                      <p>Add exact WEGO models, images, specifications, and brochure downloads here when available.</p>
+                    </div>
+                  </article>
+                )}
+              </div>
             </div>
-          </div>
-          <div class="product-media">
-            <img src={product.image} alt={getProductName(product, lang)} width="960" height="600" />
-          </div>
-        </div>
-      </div>
-    </section>
+          </section>
 
-    <section class="section">
-      <div class="container split">
-        <div>
-          <h2>{t(lang, "productSpecs")}</h2>
-          <SpecTable product={product} lang={lang} />
-          <h2>{t(lang, "highlights")}</h2>
-          <ul class="check-list">
-            {copy.highlights.map((item) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{item}</span></li>)}
-          </ul>
-          <h2>{t(lang, "applications")}</h2>
-          <ul class="check-list">
-            {copy.applications.map((item) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{item}</span></li>)}
-          </ul>
-        </div>
-        <aside id="inquiry">
-          <LeadForm lang={lang} defaultProduct={product.slug} />
-        </aside>
-      </div>
-    </section>
+          <section class="section soft">
+            <div class="container split">
+              <div>
+                <h2 class="section-title">Recommended applications</h2>
+                <div class="grid">
+                  {relatedSolutions.map((solution) => (
+                    <a class="service-link light" href={languagePath(lang, `/solutions/${solution.slug}/`)}>
+                      <strong>{solution.title[lang]}</strong>
+                      <span>{solution.summary[lang]}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <aside id="inquiry">
+                <LeadForm lang={lang} />
+              </aside>
+            </div>
+          </section>
+        </>
+      )
+    }
 
-    {related.length > 0 && (
-      <section class="section soft">
-        <div class="container">
-          <h2 class="section-title">{t(lang, "relatedProducts")}</h2>
-          <div class="grid three">
-            {related.map((item) => <ProductCard product={item} lang={lang} />)}
-          </div>
-        </div>
-      </section>
-    )}
+    {
+      product && (
+        <>
+          <section class="product-hero">
+            <div class="container">
+              <Breadcrumbs items={[
+                { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
+                { label: t(lang, "allProducts"), href: languagePath(lang, "/products/") },
+                { label: getProductName(product, lang) }
+              ]} />
+              <div class="split" style="margin-top: 32px;">
+                <div>
+                  <div class="meta-row">
+                    {productCategory && <span class="pill">{productCategory.label[lang]}</span>}
+                    <span class="pill">{product.sku}</span>
+                    <span class="pill">{product.capacityTons}</span>
+                  </div>
+                  <h1 class="section-title">{getProductName(product, lang)}</h1>
+                  <p class="lead">{product.translations[lang].shortDescription}</p>
+                  <div class="button-row" style="margin-top: 22px;">
+                    <a class="btn primary" href="#inquiry">{t(lang, "requestQuote")}</a>
+                    {product.brochure && <a class="btn secondary" href={product.brochure}><Download size={17} aria-hidden="true" /> {t(lang, "downloadSpec")}</a>}
+                  </div>
+                </div>
+                <div class="product-media">
+                  <img src={product.image} alt={getProductName(product, lang)} width="1280" height="720" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="container split">
+              <div>
+                <h2>{t(lang, "productSpecs")}</h2>
+                <SpecTable product={product} lang={lang} />
+                <h2>{t(lang, "highlights")}</h2>
+                <ul class="check-list">
+                  {product.translations[lang].highlights.map((item) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{item}</span></li>)}
+                </ul>
+                <h2>{t(lang, "applications")}</h2>
+                <ul class="check-list">
+                  {product.translations[lang].applications.map((item) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{item}</span></li>)}
+                </ul>
+              </div>
+              <aside id="inquiry">
+                <LeadForm lang={lang} defaultProduct={product.slug} />
+              </aside>
+            </div>
+          </section>
+
+          {related.length > 0 && (
+            <section class="section soft">
+              <div class="container">
+                <h2 class="section-title">{t(lang, "relatedProducts")}</h2>
+                <div class="grid three">
+                  {related.map((item) => <ProductCard product={item} lang={lang} />)}
+                </div>
+              </div>
+            </section>
+          )}
+        </>
+      )
+    }
   </main>
 </Layout>

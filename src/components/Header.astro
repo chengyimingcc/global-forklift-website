@@ -14,18 +14,19 @@ const { lang, path } = Astro.props;
 const pathname = Astro.url.pathname;
 const navItems = [
   { label: t(lang, "navProducts"), href: languagePath(lang, "/products/"), match: `/${lang}/products/` },
-  { label: t(lang, "navIndustries"), href: languagePath(lang, "/industries/warehousing/"), match: `/${lang}/industries/` },
-  { label: t(lang, "navServices"), href: languagePath(lang, "/services/"), match: `/${lang}/services/` },
+  { label: "Solutions", href: languagePath(lang, "/solutions/"), match: `/${lang}/solutions/` },
+  { label: "Parts & Service", href: languagePath(lang, "/parts-service/"), match: `/${lang}/parts-service/` },
+  { label: "Why WEGO", href: languagePath(lang, "/why-wego/"), match: `/${lang}/why-wego/` },
   { label: t(lang, "navResources"), href: languagePath(lang, "/resources/forklift-buying-guide/"), match: `/${lang}/resources/` },
-  { label: t(lang, "navAbout"), href: languagePath(lang, "/about/"), match: `/${lang}/about/` }
+  { label: t(lang, "navContact"), href: languagePath(lang, "/contact/"), match: `/${lang}/contact/` }
 ];
 ---
 
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href={languagePath(lang, "/")} aria-label={siteConfig.brand}>
-      <img class="brand-logo" src={siteConfig.logo} alt="" width="156" height="53" />
-      <span class="sr-only">{siteConfig.brand}</span>
+      <span class="brand-token" aria-hidden="true">WEGO</span>
+      <span class="brand-name">Forklift</span>
     </a>
 
     <nav class="nav" aria-label="Primary navigation">

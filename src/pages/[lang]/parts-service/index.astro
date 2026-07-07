@@ -1,0 +1,39 @@
+---
+import { Wrench } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import { languages, type Lang } from "@data/languages";
+import { servicePages } from "@data/content";
+import { languagePath } from "@lib/seo";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} title="Parts & Service | WEGO Forklift" description="WEGO parts and service pages for spare parts, after-sales support, warranty, downloads, manuals, and export buyer support." path="/parts-service/">
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <span class="section-label"><Wrench size={17} aria-hidden="true" /> Parts & Service</span>
+        <h1 class="section-title">After-sales support for export buyers</h1>
+        <p class="lead">Build buyer confidence with spare parts, warranty workflow, support planning, and downloadable catalog materials.</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container">
+        <div class="grid two">
+          {
+            servicePages.map((page) => (
+              <a class="service-link light service-card" href={languagePath(lang, `/parts-service/${page.slug}/`)}>
+                <strong>{page.title[lang]}</strong>
+                <span>{page.summary[lang]}</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

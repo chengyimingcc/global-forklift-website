@@ -1,0 +1,40 @@
+---
+import { Factory } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import { languages, type Lang } from "@data/languages";
+import { companyPages } from "@data/content";
+import { languagePath } from "@lib/seo";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} title="Why WEGO | Company, Certificates and Global Support" description="Learn why global buyers work with WEGO Forklift: company profile, certificates, case studies, global network, and export support." path="/why-wego/">
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <span class="section-label"><Factory size={17} aria-hidden="true" /> Why WEGO</span>
+        <h1 class="section-title">Company proof for global forklift buyers</h1>
+        <p class="lead">A reserved company credibility center for factory background, certificates, global network, and customer cases.</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container">
+        <div class="brand-proof">
+          {
+            companyPages.map((page) => (
+              <a class="proof-item" href={languagePath(lang, `/why-wego/${page.slug}/`)}>
+                <Factory size={24} aria-hidden="true" />
+                <strong>{page.title[lang]}</strong>
+                <span>{page.summary[lang]}</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

@@ -2,7 +2,7 @@
 import { Mail, MessageCircle, Phone } from "lucide-astro";
 import type { Lang } from "@data/languages";
 import { categories } from "@data/products";
-import { resources } from "@data/content";
+import { resources, servicePages, solutions } from "@data/content";
 import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
 import { languagePath } from "@lib/seo";
@@ -32,16 +32,17 @@ const { lang } = Astro.props;
     <div class="footer-grid">
       <div class="footer-col">
         <h3>{t(lang, "navProducts")}</h3>
-        {categories.slice(0, 5).map((category) => <a href={languagePath(lang, `/products/?category=${category.slug}`)}>{category.label[lang]}</a>)}
+        {categories.slice(0, 5).map((category) => <a href={languagePath(lang, `/products/${category.slug}/`)}>{category.label[lang]}</a>)}
       </div>
       <div class="footer-col">
-        <h3>{t(lang, "navResources")}</h3>
-        {resources.map((resource) => <a href={languagePath(lang, `/resources/${resource.slug}/`)}>{resource.title[lang]}</a>)}
+        <h3>Solutions</h3>
+        {solutions.slice(0, 4).map((solution) => <a href={languagePath(lang, `/solutions/${solution.slug}/`)}>{solution.title[lang]}</a>)}
       </div>
       <div class="footer-col">
-        <h3>{t(lang, "navContact")}</h3>
-        <a href={languagePath(lang, "/about/")}>{t(lang, "navAbout")}</a>
-        <a href={languagePath(lang, "/services/")}>{t(lang, "navServices")}</a>
+        <h3>Support</h3>
+        {servicePages.slice(0, 3).map((page) => <a href={languagePath(lang, `/parts-service/${page.slug}/`)}>{page.title[lang]}</a>)}
+        <a href={languagePath(lang, "/why-wego/")}>Why WEGO</a>
+        {resources.slice(0, 1).map((resource) => <a href={languagePath(lang, `/resources/${resource.slug}/`)}>{resource.title[lang]}</a>)}
         <a href={languagePath(lang, "/contact/")}>{t(lang, "navInquiry")}</a>
         <a href={languagePath(lang, "/privacy/")}>Privacy</a>
         <a href={languagePath(lang, "/terms/")}>Terms</a>
