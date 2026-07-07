@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import { languages, type Lang } from "@data/languages";
+import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
 
 export function getStaticPaths() {
@@ -10,7 +11,7 @@ export function getStaticPaths() {
 const lang = Astro.params.lang as Lang;
 ---
 
-<Layout lang={lang} title="Terms | Forklift Global" description={t(lang, "termsIntro")} path="/terms/" noindex={true}>
+<Layout lang={lang} title={`Terms | ${siteConfig.brand}`} description={t(lang, "termsIntro")} path="/terms/" noindex={true}>
   <main>
     <header class="page-header">
       <div class="container">
