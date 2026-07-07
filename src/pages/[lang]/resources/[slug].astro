@@ -4,6 +4,7 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import LeadForm from "@components/LeadForm.astro";
 import { languages, type Lang } from "@data/languages";
 import { resources } from "@data/content";
+import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
 import { languagePath } from "@lib/seo";
 import { breadcrumbSchema, faqSchema } from "@lib/schema";
@@ -35,7 +36,7 @@ const faqs = [
 ];
 ---
 
-<Layout lang={lang} title={`${resource.title[lang]} | Forklift Global`} description={resource.summary[lang]} path={pagePath} type="article" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]}>
+<Layout lang={lang} title={`${resource.title[lang]} | ${siteConfig.brand}`} description={resource.summary[lang]} path={pagePath} type="article" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]}>
   <main>
     <header class="page-header">
       <div class="container">
