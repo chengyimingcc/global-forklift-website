@@ -29,7 +29,7 @@ export function organizationSchema() {
     "@type": "Organization",
     name: siteConfig.legalName,
     url: absoluteUrl("/"),
-    logo: absoluteUrl("/favicon.svg"),
+    logo: absoluteUrl(siteConfig.logo),
     email: siteConfig.email,
     telephone: siteConfig.phone,
     foundingDate: siteConfig.foundedYear
