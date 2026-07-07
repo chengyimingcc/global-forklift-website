@@ -4,11 +4,11 @@ export function GET() {
   return new Response(
     JSON.stringify({
       name: siteConfig.brand,
-      short_name: "Forklift",
+      short_name: "WEGO",
       start_url: "/en/",
       display: "standalone",
       background_color: "#ffffff",
-      theme_color: "#0b6d61",
+      theme_color: "#d4111f",
       icons: [
         {
           src: "/favicon.svg",
