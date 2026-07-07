@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import LeadForm from "@components/LeadForm.astro";
 import { languages, type Lang } from "@data/languages";
+import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
 
 export function getStaticPaths() {
@@ -11,7 +12,7 @@ export function getStaticPaths() {
 const lang = Astro.params.lang as Lang;
 ---
 
-<Layout lang={lang} title={`${t(lang, "navAbout")} | Forklift Global`} description={t(lang, "aboutIntro")} path="/about/">
+<Layout lang={lang} title={`${t(lang, "navAbout")} | ${siteConfig.brand}`} description={t(lang, "aboutIntro")} path="/about/">
   <main>
     <header class="page-header">
       <div class="container">
