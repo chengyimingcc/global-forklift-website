@@ -37,6 +37,8 @@ function cleanLead(payload) {
     message: String(payload.message || "").trim(),
     language: String(payload.language || "").trim(),
     source_path: String(payload.source_path || "").trim(),
+    inquiry_type: String(payload.inquiry_type || "general").trim(),
+    preferred_contact: String(payload.preferred_contact || "").trim(),
     submitted_at: new Date().toISOString()
   };
 }

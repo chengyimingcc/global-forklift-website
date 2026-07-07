@@ -2,6 +2,7 @@
 import SEO from "@components/SEO.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import InquiryDock from "@components/InquiryDock.astro";
 import { languageMeta, type Lang } from "@data/languages";
 import "@styles/global.css";
 import "@styles/wego.css";
@@ -33,5 +34,6 @@ const currentPath = Astro.props.path ?? (Astro.url.pathname.replace(new RegExp(`
     <Header lang={lang} path={currentPath} />
     <slot />
     <Footer lang={lang} />
+    <InquiryDock lang={lang} />
   </body>
 </html>

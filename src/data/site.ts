@@ -8,7 +8,7 @@ export const siteConfig = {
   phone: "+1 000 000 0000",
   whatsapp: "+10000000000",
   address: "Add your factory or export office address here",
-  logo: "/images/wego-logo.svg",
+  logo: "/images/brand/wego-logo.png",
   defaultImage: "/images/catalog/hero-forklift.jpg",
   foundedYear: "2026",
   social: {

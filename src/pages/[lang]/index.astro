@@ -1,5 +1,5 @@
 ---
-import { ArrowRight, CheckCircle2, Factory, Globe2, PackageCheck, Search, ShieldCheck, Wrench } from "lucide-astro";
+import { ArrowRight, CheckCircle2, ChevronLeft, ChevronRight, Factory, Globe2, PackageCheck, Search, Send, ShieldCheck, Wrench } from "lucide-astro";
 import Layout from "@layouts/Layout.astro";
 import LeadForm from "@components/LeadForm.astro";
 import ProductCard from "@components/ProductCard.astro";
@@ -18,6 +18,46 @@ const lang = Astro.params.lang as Lang;
 const schema = [organizationSchema(), websiteSchema(lang)];
 const catalogCategories = categories.filter((category) => category.status === "catalog");
 const featuredProducts = products.slice(0, 6);
+const heroSlides = [
+  {
+    image: "/images/catalog/hero-forklift.jpg",
+    kicker: "Global forklift supply",
+    title: "WEGO forklifts for export buyers",
+    body: "Compare catalog models, request pricing, and prepare your buying plan from one inquiry-ready homepage.",
+    href: languagePath(lang, "/products/"),
+    cta: "View products"
+  },
+  {
+    image: "/images/catalog/electric-15-35t.jpg",
+    kicker: "Lithium electric series",
+    title: "Clean indoor handling from 1.5T to 3.5T",
+    body: "Built for warehouses, factories, and logistics teams comparing battery forklifts for daily operation.",
+    href: languagePath(lang, "/products/lithium-electric-forklifts/"),
+    cta: "Electric forklifts"
+  },
+  {
+    image: "/images/catalog/diesel-50t.jpg",
+    kicker: "Diesel workhorses",
+    title: "Outdoor forklifts for yards and loading docks",
+    body: "Diesel models are ready for quote requests across factory yards, dock work, and heavy outdoor handling.",
+    href: languagePath(lang, "/products/diesel-forklifts/"),
+    cta: "Diesel forklifts"
+  },
+  {
+    image: "/images/catalog/diesel-100t.jpg",
+    kicker: "Heavy duty handling",
+    title: "Large capacity forklifts for industrial cargo",
+    body: "Reserve the heavy-duty path for port, steel, construction, and container handling inquiries.",
+    href: languagePath(lang, "/products/heavy-duty-forklifts/"),
+    cta: "Heavy duty"
+  }
+];
+const mosaicTiles = [
+  { image: "/images/catalog/electric-15-35t.jpg", label: "Lithium Electric", detail: "1.5T-3.5T" },
+  { image: "/images/catalog/diesel-35t.jpg", label: "Diesel Forklift", detail: "2.5T-5.0T" },
+  { image: "/images/catalog/rough-terrain-30-50t.jpg", label: "Rough Terrain", detail: "3.0T-5.0T" },
+  { image: "/images/catalog/electric-pallet-stacker-20t.jpg", label: "Pallet Stacker", detail: "1.5T-2.0T" }
+];
 ---
 
 <Layout
@@ -29,34 +69,70 @@ const featuredProducts = products.slice(0, 6);
   schema={schema}
 >
   <main>
-    <section class="hero wego-hero">
-      <div class="hero-media">
-        <img src={siteConfig.defaultImage} alt="WEGO forklift catalog model" width="1280" height="720" fetchpriority="high" />
+    <section class="hero wego-hero" data-hero-slider>
+      <div class="hero-slider" aria-hidden="true">
+        {
+          heroSlides.map((slide, index) => (
+            <div class:list={["hero-slide", index === 0 && "is-active"]} data-slide>
+              <img src={slide.image} alt="" width="1280" height="720" fetchpriority={index === 0 ? "high" : "auto"} />
+            </div>
+          ))
+        }
       </div>
       <div class="hero-content">
-        <div class="hero-brand" aria-label={siteConfig.brand}>
-          <span>WEGO</span>
-          <strong>Forklift</strong>
-        </div>
-        <span class="eyebrow"><Globe2 size={17} aria-hidden="true" /> Global forklift supply and export support</span>
-        <h1 class="headline">Find the right WEGO forklift for your market</h1>
-        <p class="lead">
-          Compare catalog models across lithium electric forklifts, diesel forklifts, heavy duty forklifts, LPG forklifts, rough terrain forklifts, and electric pallet stackers.
-        </p>
+        <img class="hero-logo" src={siteConfig.logo} alt={siteConfig.brand} width="291" height="99" />
+        <span class="eyebrow"><Globe2 size={17} aria-hidden="true" /> <span data-hero-kicker>{heroSlides[0].kicker}</span></span>
+        <h1 class="headline" data-hero-title>{heroSlides[0].title}</h1>
+        <p class="lead" data-hero-body>{heroSlides[0].body}</p>
         <div class="button-row">
-          <a class="btn warning" href="#product-finder">
+          <a class="btn warning" href={heroSlides[0].href} data-hero-cta>
             <Search size={17} aria-hidden="true" />
-            <span>Find your forklift</span>
+            <span>{heroSlides[0].cta}</span>
           </a>
           <a class="btn secondary" href={languagePath(lang, "/contact/")}>
             <span>{t(lang, "requestQuote")}</span>
             <ArrowRight size={17} aria-hidden="true" />
           </a>
         </div>
+        <div class="hero-controls" aria-label="Homepage slide controls">
+          <button class="hero-arrow" type="button" data-slide-dir="-1" aria-label="Previous slide"><ChevronLeft size={22} aria-hidden="true" /></button>
+          <div class="hero-dots">
+            {heroSlides.map((_, index) => <button type="button" data-slide-to={index} aria-label={`Go to slide ${index + 1}`} aria-current={index === 0 ? "true" : undefined}></button>)}
+          </div>
+          <button class="hero-arrow" type="button" data-slide-dir="1" aria-label="Next slide"><ChevronRight size={22} aria-hidden="true" /></button>
+        </div>
         <div class="hero-panel" aria-label="WEGO catalog readiness">
           <div class="hero-stat"><strong>{catalogCategories.length}</strong><span>Catalog product lines</span></div>
           <div class="hero-stat"><strong>{products.length}</strong><span>Model pages ready</span></div>
           <div class="hero-stat"><strong>{primaryMarkets.length}</strong><span>Export regions</span></div>
+        </div>
+      </div>
+      <script is:inline type="application/json" data-hero-slides set:html={JSON.stringify(heroSlides)} />
+    </section>
+
+    <section class="section mosaic-section" data-mosaic>
+      <div class="container mosaic-layout">
+        <div class="mosaic-copy">
+          <span class="section-label"><Factory size={17} aria-hidden="true" /> Product Motion</span>
+          <h2 class="section-title">A faster visual path from product interest to inquiry</h2>
+          <p class="section-intro">Large catalog visuals are arranged as a scroll-linked product wall. The images can be replaced later with refined photography without changing the page structure.</p>
+          <a class="btn primary" href={languagePath(lang, "/contact/")}>
+            <Send size={17} aria-hidden="true" />
+            <span>Start inquiry</span>
+          </a>
+        </div>
+        <div class="mosaic-wall" aria-label="WEGO forklift product visual wall">
+          {
+            mosaicTiles.map((tile, index) => (
+              <article class:list={["mosaic-tile", `tile-${index + 1}`]}>
+                <img src={tile.image} alt={`${tile.label} ${tile.detail}`} loading="lazy" width="900" height="620" />
+                <span>
+                  <strong>{tile.label}</strong>
+                  <small>{tile.detail}</small>
+                </span>
+              </article>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -203,4 +279,74 @@ const featuredProducts = products.slice(0, 6);
       </div>
     </section>
   </main>
+
+  <script>
+    document.querySelectorAll("[data-hero-slider]").forEach((slider) => {
+      const slidesDataNode = slider.querySelector("[data-hero-slides]");
+      const slidesData = slidesDataNode?.textContent ? JSON.parse(slidesDataNode.textContent) : [];
+      const slides = Array.from(slider.querySelectorAll("[data-slide]"));
+      const dots = Array.from(slider.querySelectorAll("[data-slide-to]"));
+      const title = slider.querySelector("[data-hero-title]");
+      const body = slider.querySelector("[data-hero-body]");
+      const kicker = slider.querySelector("[data-hero-kicker]");
+      const cta = slider.querySelector("[data-hero-cta]");
+      let active = 0;
+      let timer = 0;
+
+      const setActive = (next: number) => {
+        active = (next + slides.length) % slides.length;
+        slides.forEach((slide, index) => slide.classList.toggle("is-active", index === active));
+        dots.forEach((dot, index) => {
+          if (index === active) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
+        });
+        const slideData = slidesData[active];
+        if (!slideData) return;
+        if (title) title.textContent = slideData.title;
+        if (body) body.textContent = slideData.body;
+        if (kicker) kicker.textContent = slideData.kicker;
+        if (cta instanceof HTMLAnchorElement) {
+          cta.href = slideData.href;
+          const ctaText = cta.querySelector("span");
+          if (ctaText) ctaText.textContent = slideData.cta;
+        }
+      };
+
+      const start = () => {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        window.clearInterval(timer);
+        timer = window.setInterval(() => setActive(active + 1), 5200);
+      };
+
+      slider.querySelectorAll("[data-slide-dir]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const dir = Number((button as HTMLElement).dataset.slideDir || 1);
+          setActive(active + dir);
+          start();
+        });
+      });
+
+      dots.forEach((dot) => {
+        dot.addEventListener("click", () => {
+          setActive(Number((dot as HTMLElement).dataset.slideTo || 0));
+          start();
+        });
+      });
+
+      start();
+    });
+
+    const mosaic = document.querySelector("[data-mosaic]");
+    if (mosaic && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) mosaic.classList.add("is-visible");
+        },
+        { threshold: 0.25 }
+      );
+      observer.observe(mosaic);
+    } else {
+      mosaic?.classList.add("is-visible");
+    }
+  </script>
 </Layout>

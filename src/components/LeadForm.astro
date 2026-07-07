@@ -8,14 +8,27 @@ import { t } from "@data/i18n";
 interface Props {
   lang: Lang;
   defaultProduct?: string;
+  idPrefix?: string;
+  inquiryType?: string;
+  preferredContact?: string;
+  defaultMessage?: string;
 }
 
-const { lang, defaultProduct = "" } = Astro.props;
+const {
+  lang,
+  defaultProduct = "",
+  idPrefix = "lead",
+  inquiryType = "general",
+  preferredContact = "",
+  defaultMessage = ""
+} = Astro.props;
 ---
 
 <form class="lead-form" data-lead-form data-email={siteConfig.email} data-success={t(lang, "formSuccess")} data-error={t(lang, "formError")} action="/.netlify/functions/lead" method="post">
   <input type="hidden" name="language" value={lang} />
   <input type="hidden" name="source_path" value={Astro.url.pathname} />
+  <input type="hidden" name="inquiry_type" value={inquiryType} />
+  <input type="hidden" name="preferred_contact" value={preferredContact} />
   <div class="honeypot" aria-hidden="true">
     <label>Company website <input type="text" name="company_website" tabindex="-1" autocomplete="off" /></label>
   </div>
@@ -25,39 +38,39 @@ const { lang, defaultProduct = "" } = Astro.props;
   </div>
   <div class="field-grid">
     <div class="field">
-      <label for="lead-name">{t(lang, "formName")}</label>
-      <input id="lead-name" name="name" autocomplete="name" required />
+      <label for={`${idPrefix}-name`}>{t(lang, "formName")}</label>
+      <input id={`${idPrefix}-name`} name="name" autocomplete="name" required />
     </div>
     <div class="field">
-      <label for="lead-company">{t(lang, "formCompany")}</label>
-      <input id="lead-company" name="company" autocomplete="organization" />
+      <label for={`${idPrefix}-company`}>{t(lang, "formCompany")}</label>
+      <input id={`${idPrefix}-company`} name="company" autocomplete="organization" />
     </div>
     <div class="field">
-      <label for="lead-email">{t(lang, "formEmail")}</label>
-      <input id="lead-email" name="email" type="email" autocomplete="email" />
+      <label for={`${idPrefix}-email`}>{t(lang, "formEmail")}</label>
+      <input id={`${idPrefix}-email`} name="email" type="email" autocomplete="email" />
     </div>
     <div class="field">
-      <label for="lead-phone">{t(lang, "formPhone")}</label>
-      <input id="lead-phone" name="phone" autocomplete="tel" />
+      <label for={`${idPrefix}-phone`}>{t(lang, "formPhone")}</label>
+      <input id={`${idPrefix}-phone`} name="phone" autocomplete="tel" />
     </div>
     <div class="field">
-      <label for="lead-country">{t(lang, "formCountry")}</label>
-      <input id="lead-country" name="country" autocomplete="country-name" />
+      <label for={`${idPrefix}-country`}>{t(lang, "formCountry")}</label>
+      <input id={`${idPrefix}-country`} name="country" autocomplete="country-name" />
     </div>
     <div class="field">
-      <label for="lead-product">{t(lang, "formProduct")}</label>
-      <select id="lead-product" name="product">
+      <label for={`${idPrefix}-product`}>{t(lang, "formProduct")}</label>
+      <select id={`${idPrefix}-product`} name="product">
         <option value="">Select</option>
         {products.map((product) => <option value={product.slug} selected={product.slug === defaultProduct}>{getProductName(product, lang)}</option>)}
       </select>
     </div>
     <div class="field">
-      <label for="lead-quantity">{t(lang, "formQuantity")}</label>
-      <input id="lead-quantity" name="quantity" inputmode="numeric" />
+      <label for={`${idPrefix}-quantity`}>{t(lang, "formQuantity")}</label>
+      <input id={`${idPrefix}-quantity`} name="quantity" inputmode="numeric" />
     </div>
     <div class="field full">
-      <label for="lead-message">{t(lang, "formMessage")}</label>
-      <textarea id="lead-message" name="message" required></textarea>
+      <label for={`${idPrefix}-message`}>{t(lang, "formMessage")}</label>
+      <textarea id={`${idPrefix}-message`} name="message" required>{defaultMessage}</textarea>
     </div>
   </div>
   <button class="btn primary" type="submit">

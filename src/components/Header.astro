@@ -3,6 +3,8 @@ import { Menu, Send, X } from "lucide-astro";
 import { languages, type Lang } from "@data/languages";
 import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
+import { categories } from "@data/products";
+import { companyPages, servicePages, solutions } from "@data/content";
 import { languagePath } from "@lib/seo";
 
 interface Props {
@@ -13,28 +15,91 @@ interface Props {
 const { lang, path } = Astro.props;
 const pathname = Astro.url.pathname;
 const navItems = [
-  { label: t(lang, "navProducts"), href: languagePath(lang, "/products/"), match: `/${lang}/products/` },
-  { label: "Solutions", href: languagePath(lang, "/solutions/"), match: `/${lang}/solutions/` },
-  { label: "Parts & Service", href: languagePath(lang, "/parts-service/"), match: `/${lang}/parts-service/` },
-  { label: "Why WEGO", href: languagePath(lang, "/why-wego/"), match: `/${lang}/why-wego/` },
-  { label: t(lang, "navResources"), href: languagePath(lang, "/resources/forklift-buying-guide/"), match: `/${lang}/resources/` },
-  { label: t(lang, "navContact"), href: languagePath(lang, "/contact/"), match: `/${lang}/contact/` }
+  { label: t(lang, "navProducts"), href: languagePath(lang, "/products/"), match: `/${lang}/products/`, menu: "products" },
+  { label: "Solutions", href: languagePath(lang, "/solutions/"), match: `/${lang}/solutions/`, menu: "solutions" },
+  { label: "Parts & Service", href: languagePath(lang, "/parts-service/"), match: `/${lang}/parts-service/`, menu: "service" },
+  { label: "Why WEGO", href: languagePath(lang, "/why-wego/"), match: `/${lang}/why-wego/`, menu: "company" },
+  { label: t(lang, "navResources"), href: languagePath(lang, "/resources/forklift-buying-guide/"), match: `/${lang}/resources/`, menu: undefined },
+  { label: t(lang, "navContact"), href: languagePath(lang, "/contact/"), match: `/${lang}/contact/`, menu: undefined }
 ];
+const catalogCategories = categories.filter((category) => category.status === "catalog");
 ---
 
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href={languagePath(lang, "/")} aria-label={siteConfig.brand}>
-      <span class="brand-token" aria-hidden="true">WEGO</span>
-      <span class="brand-name">Forklift</span>
+      <img class="brand-logo" src={siteConfig.logo} alt={siteConfig.brand} width="194" height="66" />
     </a>
 
     <nav class="nav" aria-label="Primary navigation">
       {
         navItems.map((item) => (
-          <a href={item.href} aria-current={pathname.startsWith(item.match) ? "page" : undefined}>
-            {item.label}
-          </a>
+          <div class:list={["nav-item", item.menu && "has-mega"]}>
+            <a href={item.href} aria-current={pathname.startsWith(item.match) ? "page" : undefined}>
+              {item.label}
+            </a>
+            {
+              item.menu === "products" && (
+                <div class="mega-menu">
+                  <div class="mega-feature">
+                    <strong>Product Finder</strong>
+                    <span>Choose by capacity, power type, and working scene.</span>
+                    <a href={languagePath(lang, "/products/")}>View all WEGO products</a>
+                  </div>
+                  <div class="mega-grid">
+                    {catalogCategories.map((category) => (
+                      <a class="mega-card" href={languagePath(lang, `/products/${category.slug}/`)}>
+                        <img src={category.image} alt="" loading="lazy" width="96" height="64" />
+                        <span>
+                          <strong>{category.label[lang]}</strong>
+                          <small>{category.capacityRange}</small>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
+            {
+              item.menu === "solutions" && (
+                <div class="mega-menu compact">
+                  <div class="mega-feature">
+                    <strong>Application Solutions</strong>
+                    <span>Match buyer scenes to suitable WEGO product lines.</span>
+                  </div>
+                  <div class="mega-list">
+                    {solutions.map((solution) => <a href={languagePath(lang, `/solutions/${solution.slug}/`)}>{solution.title[lang]}</a>)}
+                  </div>
+                </div>
+              )
+            }
+            {
+              item.menu === "service" && (
+                <div class="mega-menu compact">
+                  <div class="mega-feature">
+                    <strong>Parts & Service</strong>
+                    <span>Keep quote, spare parts, warranty, and downloads close to the buyer.</span>
+                  </div>
+                  <div class="mega-list">
+                    {servicePages.map((page) => <a href={languagePath(lang, `/parts-service/${page.slug}/`)}>{page.title[lang]}</a>)}
+                  </div>
+                </div>
+              )
+            }
+            {
+              item.menu === "company" && (
+                <div class="mega-menu compact">
+                  <div class="mega-feature">
+                    <strong>Why WEGO</strong>
+                    <span>Reserved credibility pages for company proof and global support.</span>
+                  </div>
+                  <div class="mega-list">
+                    {companyPages.map((page) => <a href={languagePath(lang, `/why-wego/${page.slug}/`)}>{page.title[lang]}</a>)}
+                  </div>
+                </div>
+              )
+            }
+          </div>
         ))
       }
     </nav>
@@ -103,5 +168,28 @@ const navItems = [
       openIcon.style.display = open ? "none" : "block";
       closeIcon.style.display = open ? "block" : "none";
     }
+  });
+
+  document.querySelectorAll(".nav-item.has-mega").forEach((item) => {
+    const open = () => item.classList.add("is-open");
+    const close = () => item.classList.remove("is-open");
+    const isRelatedTargetInside = (event: Event) => {
+      const relatedTarget = event instanceof MouseEvent ? event.relatedTarget : null;
+      return relatedTarget instanceof Node && item.contains(relatedTarget);
+    };
+    item.addEventListener("pointerenter", open);
+    item.addEventListener("pointerleave", close);
+    item.addEventListener("mouseenter", open);
+    item.addEventListener("mouseleave", close);
+    item.addEventListener("mouseover", open);
+    item.addEventListener("mouseout", (event) => {
+      if (!isRelatedTargetInside(event)) close();
+    });
+    item.addEventListener("focusin", open);
+    item.addEventListener("focusout", () => {
+      window.setTimeout(() => {
+        if (!item.contains(document.activeElement)) close();
+      }, 20);
+    });
   });
 </script>

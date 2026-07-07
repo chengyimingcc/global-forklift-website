@@ -18,6 +18,8 @@ export function GET() {
           message: "Inquiry details",
           language: "Website language code",
           source_path: "Page where the lead was submitted",
+          inquiry_type: "Inquiry source type such as quote, catalog, service, or dock",
+          preferred_contact: "Preferred contact method such as email, WhatsApp, or phone",
           company_website: "Hidden honeypot field"
         }
       },
