@@ -7,6 +7,7 @@ import ProductCard from "@components/ProductCard.astro";
 import { languages, type Lang } from "@data/languages";
 import { industries } from "@data/content";
 import { products } from "@data/products";
+import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
 import { languagePath } from "@lib/seo";
 import { breadcrumbSchema } from "@lib/schema";
@@ -28,7 +29,7 @@ const breadcrumbs = [
 ];
 ---
 
-<Layout lang={lang} title={`${industry.title[lang]} Forklift Solutions | Forklift Global`} description={industry.summary[lang]} path={pagePath} schema={breadcrumbSchema(breadcrumbs)}>
+<Layout lang={lang} title={`${industry.title[lang]} Forklift Solutions | ${siteConfig.brand}`} description={industry.summary[lang]} path={pagePath} schema={breadcrumbSchema(breadcrumbs)}>
   <main>
     <header class="page-header">
       <div class="container">
