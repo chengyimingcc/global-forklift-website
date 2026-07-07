@@ -83,7 +83,7 @@ const { lang, defaultProduct = "" } = Astro.props;
       if (!(form instanceof HTMLFormElement)) return;
       const status = form.querySelector(".form-status");
       const submit = form.querySelector("button[type='submit']");
-      const email = form.dataset.email || "sales@example.com";
+      const email = form.dataset.email || "sales@wegoforklift.com";
       const success = form.dataset.success || "Inquiry sent.";
       const error = form.dataset.error || "Endpoint unavailable.";
       const formData = new FormData(form);
