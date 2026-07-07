@@ -1,0 +1,40 @@
+---
+import { ArrowRight } from "lucide-astro";
+import type { Lang } from "@data/languages";
+import { getCategory, getProductName, type Product } from "@data/products";
+import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
+
+interface Props {
+  product: Product;
+  lang: Lang;
+}
+
+const { product, lang } = Astro.props;
+const copy = product.translations[lang] ?? product.translations.en;
+const category = getCategory(product.category);
+---
+
+<article class="card product-card" data-category={product.category} data-name={`${getProductName(product, lang)} ${copy.shortDescription}`}>
+  <a class="card-media" href={languagePath(lang, `/products/${product.slug}/`)}>
+    <img src={product.image} alt={getProductName(product, lang)} loading="lazy" width="960" height="600" />
+  </a>
+  <div class="card-body">
+    <div class="meta-row">
+      {category && <span class="pill">{category.label[lang]}</span>}
+      <span class="pill">{product.capacityTons}</span>
+    </div>
+    <h3>
+      <a href={languagePath(lang, `/products/${product.slug}/`)}>{getProductName(product, lang)}</a>
+    </h3>
+    <p>{copy.shortDescription}</p>
+    <div class="meta-row">
+      <span class="pill">{product.liftHeightM}</span>
+      <span class="pill">{product.powerType}</span>
+    </div>
+    <a class="btn secondary" href={languagePath(lang, `/products/${product.slug}/`)}>
+      <span>{t(lang, "viewDetails")}</span>
+      <ArrowRight size={17} aria-hidden="true" />
+    </a>
+  </div>
+</article>

@@ -1,0 +1,53 @@
+---
+import type { Lang } from "@data/languages";
+import { siteConfig } from "@data/site";
+import { absoluteUrl, alternateLinks, jsonLd, languagePath } from "@lib/seo";
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path?: string;
+  image?: string;
+  type?: "website" | "article" | "product";
+  schema?: unknown | unknown[];
+  noindex?: boolean;
+}
+
+const {
+  lang,
+  title,
+  description,
+  path = "/",
+  image = siteConfig.defaultImage,
+  type = "website",
+  schema = [],
+  noindex = !siteConfig.allowIndexing
+} = Astro.props;
+
+const canonical = absoluteUrl(languagePath(lang, path));
+const imageUrl = absoluteUrl(image);
+const schemas = Array.isArray(schema) ? schema : [schema];
+const robots = noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large";
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+<link rel="canonical" href={canonical} />
+{alternateLinks(path).map((alternate) => <link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />)}
+<link rel="alternate" hreflang="x-default" href={absoluteUrl(languagePath("en", path))} />
+<meta property="og:site_name" content={siteConfig.brand} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="theme-color" content="#0b6d61" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="/manifest.webmanifest" />
+{schemas.filter(Boolean).map((item) => <script is:inline type="application/ld+json" set:html={jsonLd(item)} />)}

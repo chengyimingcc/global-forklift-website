@@ -1,0 +1,54 @@
+---
+import { Mail, MessageCircle, Phone } from "lucide-astro";
+import type { Lang } from "@data/languages";
+import { categories } from "@data/products";
+import { resources } from "@data/content";
+import { siteConfig } from "@data/site";
+import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-col">
+      <h2>{siteConfig.brand}</h2>
+      <p>{t(lang, "footerNote")}</p>
+      <p>
+        <Mail size={16} aria-hidden="true" /> {siteConfig.email}
+      </p>
+      <p>
+        <Phone size={16} aria-hidden="true" /> {siteConfig.phone}
+      </p>
+      <p>
+        <MessageCircle size={16} aria-hidden="true" /> WhatsApp {siteConfig.whatsapp}
+      </p>
+    </div>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>{t(lang, "navProducts")}</h3>
+        {categories.slice(0, 5).map((category) => <a href={languagePath(lang, `/products/?category=${category.slug}`)}>{category.label[lang]}</a>)}
+      </div>
+      <div class="footer-col">
+        <h3>{t(lang, "navResources")}</h3>
+        {resources.map((resource) => <a href={languagePath(lang, `/resources/${resource.slug}/`)}>{resource.title[lang]}</a>)}
+      </div>
+      <div class="footer-col">
+        <h3>{t(lang, "navContact")}</h3>
+        <a href={languagePath(lang, "/about/")}>{t(lang, "navAbout")}</a>
+        <a href={languagePath(lang, "/services/")}>{t(lang, "navServices")}</a>
+        <a href={languagePath(lang, "/contact/")}>{t(lang, "navInquiry")}</a>
+        <a href={languagePath(lang, "/privacy/")}>Privacy</a>
+        <a href={languagePath(lang, "/terms/")}>Terms</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">© {new Date().getFullYear()} {siteConfig.legalName}. {siteConfig.address}</div>
+  </div>
+</footer>

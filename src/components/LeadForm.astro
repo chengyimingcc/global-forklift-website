@@ -1,0 +1,109 @@
+---
+import { Send } from "lucide-astro";
+import type { Lang } from "@data/languages";
+import { products, getProductName } from "@data/products";
+import { siteConfig } from "@data/site";
+import { t } from "@data/i18n";
+
+interface Props {
+  lang: Lang;
+  defaultProduct?: string;
+}
+
+const { lang, defaultProduct = "" } = Astro.props;
+---
+
+<form class="lead-form" data-lead-form data-email={siteConfig.email} data-success={t(lang, "formSuccess")} data-error={t(lang, "formError")} action="/.netlify/functions/lead" method="post">
+  <input type="hidden" name="language" value={lang} />
+  <input type="hidden" name="source_path" value={Astro.url.pathname} />
+  <div class="honeypot" aria-hidden="true">
+    <label>Company website <input type="text" name="company_website" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <div>
+    <h2>{t(lang, "leadTitle")}</h2>
+    <p>{t(lang, "leadBody")}</p>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <label for="lead-name">{t(lang, "formName")}</label>
+      <input id="lead-name" name="name" autocomplete="name" required />
+    </div>
+    <div class="field">
+      <label for="lead-company">{t(lang, "formCompany")}</label>
+      <input id="lead-company" name="company" autocomplete="organization" />
+    </div>
+    <div class="field">
+      <label for="lead-email">{t(lang, "formEmail")}</label>
+      <input id="lead-email" name="email" type="email" autocomplete="email" />
+    </div>
+    <div class="field">
+      <label for="lead-phone">{t(lang, "formPhone")}</label>
+      <input id="lead-phone" name="phone" autocomplete="tel" />
+    </div>
+    <div class="field">
+      <label for="lead-country">{t(lang, "formCountry")}</label>
+      <input id="lead-country" name="country" autocomplete="country-name" />
+    </div>
+    <div class="field">
+      <label for="lead-product">{t(lang, "formProduct")}</label>
+      <select id="lead-product" name="product">
+        <option value="">Select</option>
+        {products.map((product) => <option value={product.slug} selected={product.slug === defaultProduct}>{getProductName(product, lang)}</option>)}
+      </select>
+    </div>
+    <div class="field">
+      <label for="lead-quantity">{t(lang, "formQuantity")}</label>
+      <input id="lead-quantity" name="quantity" inputmode="numeric" />
+    </div>
+    <div class="field full">
+      <label for="lead-message">{t(lang, "formMessage")}</label>
+      <textarea id="lead-message" name="message" required></textarea>
+    </div>
+  </div>
+  <button class="btn primary" type="submit">
+    <Send size={17} aria-hidden="true" />
+    <span>{t(lang, "formSubmit")}</span>
+  </button>
+  <div class="form-status" role="status" aria-live="polite"></div>
+</form>
+
+<script>
+  function buildMailto(form: HTMLFormElement, email: string) {
+    const data = new FormData(form);
+    const subject = encodeURIComponent(`Forklift inquiry: ${data.get("product") || "general"}`);
+    const lines = Array.from(data.entries())
+      .filter(([key, value]) => key !== "company_website" && String(value).trim())
+      .map(([key, value]) => `${key}: ${value}`);
+    return `mailto:${email}?subject=${subject}&body=${encodeURIComponent(lines.join("\n"))}`;
+  }
+
+  document.querySelectorAll("[data-lead-form]").forEach((form) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!(form instanceof HTMLFormElement)) return;
+      const status = form.querySelector(".form-status");
+      const submit = form.querySelector("button[type='submit']");
+      const email = form.dataset.email || "sales@example.com";
+      const success = form.dataset.success || "Inquiry sent.";
+      const error = form.dataset.error || "Endpoint unavailable.";
+      const formData = new FormData(form);
+
+      if (submit instanceof HTMLButtonElement) submit.disabled = true;
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: formData
+        });
+        if (!response.ok) throw new Error(`Lead endpoint failed: ${response.status}`);
+        if (status) status.textContent = success;
+        form.reset();
+      } catch {
+        if (status) status.textContent = error;
+        window.location.href = buildMailto(form, email);
+      } finally {
+        if (submit instanceof HTMLButtonElement) submit.disabled = false;
+      }
+    });
+  });
+</script>

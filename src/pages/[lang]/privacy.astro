@@ -1,0 +1,30 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { languages, type Lang } from "@data/languages";
+import { t } from "@data/i18n";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} title="Privacy Policy | Forklift Global" description={t(lang, "privacyIntro")} path="/privacy/" noindex={true}>
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <h1 class="section-title">Privacy Policy</h1>
+        <p class="lead">{t(lang, "privacyIntro")}</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container prose">
+        <h2>Data collected</h2>
+        <p>Replace with real privacy policy terms for inquiry forms, analytics, advertising pixels, and CRM storage.</p>
+        <h2>Contact</h2>
+        <p>Replace with your data controller contact details.</p>
+      </div>
+    </section>
+  </main>
+</Layout>

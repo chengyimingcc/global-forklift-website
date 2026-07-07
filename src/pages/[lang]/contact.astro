@@ -1,0 +1,54 @@
+---
+import { Mail, MessageCircle, Phone } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import LeadForm from "@components/LeadForm.astro";
+import { languages, type Lang } from "@data/languages";
+import { siteConfig } from "@data/site";
+import { t } from "@data/i18n";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} title={`${t(lang, "navContact")} | Forklift Global`} description={t(lang, "contactIntro")} path="/contact/">
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <span class="eyebrow">{t(lang, "navContact")}</span>
+        <h1 class="section-title">{t(lang, "requestQuote")}</h1>
+        <p class="lead">{t(lang, "contactIntro")}</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container split">
+        <div class="grid">
+          <article class="card">
+            <div class="card-body">
+              <Mail size={24} aria-hidden="true" />
+              <h2>Email</h2>
+              <p>{siteConfig.email}</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-body">
+              <Phone size={24} aria-hidden="true" />
+              <h2>Phone</h2>
+              <p>{siteConfig.phone}</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-body">
+              <MessageCircle size={24} aria-hidden="true" />
+              <h2>WhatsApp</h2>
+              <p>{siteConfig.whatsapp}</p>
+            </div>
+          </article>
+        </div>
+        <LeadForm lang={lang} />
+      </div>
+    </section>
+  </main>
+</Layout>

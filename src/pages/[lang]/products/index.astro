@@ -1,0 +1,69 @@
+---
+import { Search } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import ProductCard from "@components/ProductCard.astro";
+import { languages, type Lang } from "@data/languages";
+import { categories, products } from "@data/products";
+import { t } from "@data/i18n";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} title={`${t(lang, "allProducts")} | Forklift Global`} description="Browse forklift product templates by category, capacity, lift height, and power type." path="/products/">
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <span class="eyebrow">{t(lang, "navProducts")}</span>
+        <h1 class="section-title">{t(lang, "allProducts")}</h1>
+        <p class="lead">{t(lang, "heroBody")}</p>
+        <div class="field" style="max-width: 520px; margin-top: 22px;">
+          <label for="product-search"><Search size={16} aria-hidden="true" /> Search</label>
+          <input id="product-search" type="search" placeholder="Model, capacity, power type" />
+        </div>
+        <div class="filters" aria-label="Product filters">
+          <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">{t(lang, "allProducts")}</button>
+          {categories.map((category) => <button class="filter-btn" type="button" data-filter={category.slug} aria-pressed="false">{category.label[lang]}</button>)}
+        </div>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container">
+        <div class="grid three product-grid">
+          {products.map((product) => <ProductCard product={product} lang={lang} />)}
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  const filterButtons = document.querySelectorAll("[data-filter]");
+  const searchInput = document.querySelector("#product-search");
+  const cards = document.querySelectorAll(".product-card");
+  let activeFilter = "all";
+
+  function applyFilters() {
+    const query = searchInput instanceof HTMLInputElement ? searchInput.value.trim().toLowerCase() : "";
+    cards.forEach((card) => {
+      if (!(card instanceof HTMLElement)) return;
+      const categoryMatch = activeFilter === "all" || card.dataset.category === activeFilter;
+      const text = `${card.dataset.name || ""} ${card.textContent || ""}`.toLowerCase();
+      const queryMatch = !query || text.includes(query);
+      card.style.display = categoryMatch && queryMatch ? "" : "none";
+    });
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!(button instanceof HTMLButtonElement)) return;
+      activeFilter = button.dataset.filter || "all";
+      filterButtons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      applyFilters();
+    });
+  });
+  searchInput?.addEventListener("input", applyFilters);
+</script>

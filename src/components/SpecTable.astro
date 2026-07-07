@@ -1,0 +1,27 @@
+---
+import type { Lang } from "@data/languages";
+import type { Product } from "@data/products";
+import { t } from "@data/i18n";
+
+interface Props {
+  product: Product;
+  lang: Lang;
+}
+
+const { product, lang } = Astro.props;
+const rows = [
+  [t(lang, "capacity"), product.specs.capacity],
+  [t(lang, "liftHeight"), product.specs.liftHeight],
+  ["Load center", product.specs.loadCenter],
+  ["Turning radius", product.specs.turningRadius],
+  [t(lang, "powerType"), product.specs.power],
+  ["Tire type", product.specs.tireType],
+  [t(lang, "availability"), product.availability]
+];
+---
+
+<table class="spec-table">
+  <tbody>
+    {rows.map(([label, value]) => <tr><th scope="row">{label}</th><td>{value}</td></tr>)}
+  </tbody>
+</table>

@@ -1,0 +1,30 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { languages, type Lang } from "@data/languages";
+import { t } from "@data/i18n";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} title="Terms | Forklift Global" description={t(lang, "termsIntro")} path="/terms/" noindex={true}>
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <h1 class="section-title">Terms</h1>
+        <p class="lead">{t(lang, "termsIntro")}</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container prose">
+        <h2>Commercial terms</h2>
+        <p>Replace with payment, delivery, warranty, limitation, and dispute terms before launch.</p>
+        <h2>Product information</h2>
+        <p>Replace with accuracy, availability, model update, and specification disclaimer terms.</p>
+      </div>
+    </section>
+  </main>
+</Layout>

@@ -1,0 +1,41 @@
+---
+import { CheckCircle2, Wrench } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import LeadForm from "@components/LeadForm.astro";
+import { languages, type Lang } from "@data/languages";
+import { t } from "@data/i18n";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<Layout lang={lang} title={`${t(lang, "servicesTitle")} | Forklift Global`} description={t(lang, "servicesIntro")} path="/services/">
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <span class="eyebrow"><Wrench size={17} aria-hidden="true" /> {t(lang, "servicesTitle")}</span>
+        <h1 class="section-title">{t(lang, "servicesTitle")}</h1>
+        <p class="lead">{t(lang, "servicesIntro")}</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container split">
+        <div class="grid">
+          {["Spare parts", "Warranty", "OEM / ODM", "Shipping documents", "After-sales support"].map((item) => (
+            <article class="card">
+              <div class="card-body">
+                <CheckCircle2 size={24} aria-hidden="true" />
+                <h2>{item}</h2>
+                <p>Replace this placeholder with your actual service terms, workflow, and proof.</p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <LeadForm lang={lang} />
+      </div>
+    </section>
+  </main>
+</Layout>

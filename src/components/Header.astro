@@ -1,0 +1,106 @@
+---
+import { Menu, Send, X } from "lucide-astro";
+import { languages, type Lang } from "@data/languages";
+import { siteConfig } from "@data/site";
+import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
+
+interface Props {
+  lang: Lang;
+  path: string;
+}
+
+const { lang, path } = Astro.props;
+const pathname = Astro.url.pathname;
+const navItems = [
+  { label: t(lang, "navProducts"), href: languagePath(lang, "/products/"), match: `/${lang}/products/` },
+  { label: t(lang, "navIndustries"), href: languagePath(lang, "/industries/warehousing/"), match: `/${lang}/industries/` },
+  { label: t(lang, "navServices"), href: languagePath(lang, "/services/"), match: `/${lang}/services/` },
+  { label: t(lang, "navResources"), href: languagePath(lang, "/resources/forklift-buying-guide/"), match: `/${lang}/resources/` },
+  { label: t(lang, "navAbout"), href: languagePath(lang, "/about/"), match: `/${lang}/about/` }
+];
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={languagePath(lang, "/")} aria-label={siteConfig.brand}>
+      <span class="brand-mark">FG</span>
+      <span>{siteConfig.brand}</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary navigation">
+      {
+        navItems.map((item) => (
+          <a href={item.href} aria-current={pathname.startsWith(item.match) ? "page" : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="header-actions">
+      <label class="sr-only" for="language-switcher">{t(lang, "language")}</label>
+      <select id="language-switcher" class="language-select" aria-label={t(lang, "language")}>
+        {
+          languages.map((language) => (
+            <option value={languagePath(language.code, path)} selected={language.code === lang}>
+              {language.name}
+            </option>
+          ))
+        }
+      </select>
+      <a class="btn primary" href={languagePath(lang, "/contact/")}>
+        <Send size={17} aria-hidden="true" />
+        <span>{t(lang, "navInquiry")}</span>
+      </a>
+    </div>
+
+    <button class="btn secondary icon menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <Menu class="menu-open-icon" size={21} aria-hidden="true" />
+      <X class="menu-close-icon" size={21} aria-hidden="true" style="display:none" />
+    </button>
+  </div>
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    {
+      navItems.map((item) => (
+        <a href={item.href} aria-current={pathname.startsWith(item.match) ? "page" : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+    <a href={languagePath(lang, "/contact/")}>{t(lang, "navInquiry")}</a>
+    <select class="language-select" aria-label={t(lang, "language")}>
+      {
+        languages.map((language) => (
+          <option value={languagePath(language.code, path)} selected={language.code === lang}>
+            {language.name}
+          </option>
+        ))
+      }
+    </select>
+  </nav>
+</header>
+
+<script>
+  const switches = document.querySelectorAll(".language-select");
+  switches.forEach((switcher) => {
+    switcher.addEventListener("change", (event) => {
+      const target = event.currentTarget;
+      if (target instanceof HTMLSelectElement) {
+        window.location.href = target.value;
+      }
+    });
+  });
+
+  const menuToggle = document.querySelector(".menu-toggle");
+  const openIcon = document.querySelector(".menu-open-icon");
+  const closeIcon = document.querySelector(".menu-close-icon");
+  menuToggle?.addEventListener("click", () => {
+    const open = document.body.classList.toggle("menu-open");
+    menuToggle.setAttribute("aria-expanded", String(open));
+    if (openIcon instanceof SVGElement && closeIcon instanceof SVGElement) {
+      openIcon.style.display = open ? "none" : "block";
+      closeIcon.style.display = open ? "block" : "none";
+    }
+  });
+</script>

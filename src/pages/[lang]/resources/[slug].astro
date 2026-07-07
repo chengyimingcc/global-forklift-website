@@ -1,0 +1,70 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import LeadForm from "@components/LeadForm.astro";
+import { languages, type Lang } from "@data/languages";
+import { resources } from "@data/content";
+import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
+import { breadcrumbSchema, faqSchema } from "@lib/schema";
+
+export function getStaticPaths() {
+  return languages.flatMap((language) => resources.map((resource) => ({ params: { lang: language.code, slug: resource.slug } })));
+}
+
+const lang = Astro.params.lang as Lang;
+const resource = resources.find((item) => item.slug === Astro.params.slug);
+if (!resource) {
+  return Astro.redirect(languagePath(lang, "/"));
+}
+const pagePath = `/resources/${resource.slug}/`;
+const breadcrumbs = [
+  { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
+  { name: t(lang, "allResources"), url: languagePath(lang, "/resources/forklift-buying-guide/") },
+  { name: resource.title[lang], url: languagePath(lang, pagePath) }
+];
+const faqs = [
+  {
+    question: "Which forklift capacity should buyers request?",
+    answer: "Replace this answer with guidance based on load weight, load center, pallet size, and future growth."
+  },
+  {
+    question: "What details should an inquiry include?",
+    answer: "Destination country, working environment, lift height, load weight, power preference, order quantity, and target delivery time."
+  }
+];
+---
+
+<Layout lang={lang} title={`${resource.title[lang]} | Forklift Global`} description={resource.summary[lang]} path={pagePath} type="article" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]}>
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <Breadcrumbs items={[
+          { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
+          { label: t(lang, "allResources") },
+          { label: resource.title[lang] }
+        ]} />
+        <span class="eyebrow">{t(lang, "resourcesTitle")}</span>
+        <h1 class="section-title">{resource.title[lang]}</h1>
+        <p class="lead">{resource.summary[lang]}</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container split">
+        <article class="prose">
+          <h2>1. Buyer intent</h2>
+          <p>{resource.summary[lang]}</p>
+          <h2>2. Specification checklist</h2>
+          <ul>
+            <li>Capacity, load center, lift height, and mast type.</li>
+            <li>Indoor or outdoor operation, floor condition, aisle width, and tire type.</li>
+            <li>Battery, diesel, LPG, charger, spare parts, and warranty requirements.</li>
+          </ul>
+          <h2>3. Quote information</h2>
+          <p>Replace this section with real commercial terms, incoterms, delivery time, and certification notes before allowing indexing.</p>
+        </article>
+        <LeadForm lang={lang} />
+      </div>
+    </section>
+  </main>
+</Layout>

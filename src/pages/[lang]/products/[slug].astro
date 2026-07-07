@@ -1,0 +1,99 @@
+---
+import { CheckCircle2, Download } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import LeadForm from "@components/LeadForm.astro";
+import ProductCard from "@components/ProductCard.astro";
+import SpecTable from "@components/SpecTable.astro";
+import { languages, type Lang } from "@data/languages";
+import { getCategory, getProduct, getProductName, products } from "@data/products";
+import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
+import { breadcrumbSchema, productSchema } from "@lib/schema";
+
+export function getStaticPaths() {
+  return languages.flatMap((language) =>
+    products.map((product) => ({
+      params: { lang: language.code, slug: product.slug }
+    }))
+  );
+}
+
+const lang = Astro.params.lang as Lang;
+const product = getProduct(Astro.params.slug ?? "");
+if (!product) {
+  return Astro.redirect(languagePath(lang, "/products/"));
+}
+const copy = product.translations[lang] ?? product.translations.en;
+const category = getCategory(product.category);
+const pagePath = `/products/${product.slug}/`;
+const breadcrumbs = [
+  { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
+  { name: t(lang, "allProducts"), url: languagePath(lang, "/products/") },
+  { name: getProductName(product, lang), url: languagePath(lang, pagePath) }
+];
+const related = products.filter((item) => item.category === product.category && item.slug !== product.slug).slice(0, 3);
+---
+
+<Layout lang={lang} title={copy.seoTitle} description={copy.seoDescription} path={pagePath} image={product.image} type="product" schema={[productSchema(product, lang), breadcrumbSchema(breadcrumbs)]}>
+  <main>
+    <section class="product-hero">
+      <div class="container">
+        <Breadcrumbs items={[
+          { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
+          { label: t(lang, "allProducts"), href: languagePath(lang, "/products/") },
+          { label: getProductName(product, lang) }
+        ]} />
+        <div class="split" style="margin-top: 32px;">
+          <div>
+            <div class="meta-row">
+              {category && <span class="pill">{category.label[lang]}</span>}
+              <span class="pill">{product.sku}</span>
+              <span class="pill">{product.capacityTons}</span>
+            </div>
+            <h1 class="section-title">{getProductName(product, lang)}</h1>
+            <p class="lead">{copy.shortDescription}</p>
+            <div class="button-row" style="margin-top: 22px;">
+              <a class="btn primary" href="#inquiry">{t(lang, "requestQuote")}</a>
+              {product.brochure && <a class="btn secondary" href={product.brochure}><Download size={17} aria-hidden="true" /> {t(lang, "downloadSpec")}</a>}
+            </div>
+          </div>
+          <div class="product-media">
+            <img src={product.image} alt={getProductName(product, lang)} width="960" height="600" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container split">
+        <div>
+          <h2>{t(lang, "productSpecs")}</h2>
+          <SpecTable product={product} lang={lang} />
+          <h2>{t(lang, "highlights")}</h2>
+          <ul class="check-list">
+            {copy.highlights.map((item) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{item}</span></li>)}
+          </ul>
+          <h2>{t(lang, "applications")}</h2>
+          <ul class="check-list">
+            {copy.applications.map((item) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{item}</span></li>)}
+          </ul>
+        </div>
+        <aside id="inquiry">
+          <LeadForm lang={lang} defaultProduct={product.slug} />
+        </aside>
+      </div>
+    </section>
+
+    {related.length > 0 && (
+      <section class="section soft">
+        <div class="container">
+          <h2 class="section-title">{t(lang, "relatedProducts")}</h2>
+          <div class="grid three">
+            {related.map((item) => <ProductCard product={item} lang={lang} />)}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+</Layout>

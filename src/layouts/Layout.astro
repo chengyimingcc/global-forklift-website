@@ -1,0 +1,36 @@
+---
+import SEO from "@components/SEO.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import { languageMeta, type Lang } from "@data/languages";
+import "@styles/global.css";
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path?: string;
+  image?: string;
+  type?: "website" | "article" | "product";
+  schema?: unknown | unknown[];
+  noindex?: boolean;
+}
+
+const { lang, title, description, image, type, schema, noindex } = Astro.props;
+const meta = languageMeta(lang);
+const currentPath = Astro.props.path ?? (Astro.url.pathname.replace(new RegExp(`^/${lang}`), "") || "/");
+---
+
+<!doctype html>
+<html lang={meta.locale} dir="ltr" data-content-dir={meta.dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <SEO lang={lang} title={title} description={description} path={currentPath} image={image} type={type} schema={schema} noindex={noindex} />
+  </head>
+  <body>
+    <Header lang={lang} path={currentPath} />
+    <slot />
+    <Footer lang={lang} />
+  </body>
+</html>

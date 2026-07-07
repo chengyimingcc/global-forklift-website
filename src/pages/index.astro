@@ -1,0 +1,33 @@
+---
+import { Globe2 } from "lucide-astro";
+import { languages } from "@data/languages";
+import { siteConfig } from "@data/site";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,follow" />
+    <title>{siteConfig.brand}</title>
+    <meta http-equiv="refresh" content="2; url=/en/" />
+    <link rel="canonical" href="/en/" />
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; background: #eef3f7; color: #18222f; }
+      main { min-height: 100vh; display: grid; place-items: center; padding: 32px; }
+      section { width: min(720px, 100%); background: white; border: 1px solid #d9e2ea; border-radius: 8px; padding: 28px; }
+      a { display: inline-flex; margin: 6px; padding: 9px 12px; border: 1px solid #d9e2ea; border-radius: 8px; color: #084f49; text-decoration: none; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section>
+        <Globe2 size={32} aria-hidden="true" />
+        <h1>{siteConfig.brand}</h1>
+        <p>Redirecting to English. Choose a language:</p>
+        {languages.map((language) => <a href={`/${language.code}/`}>{language.name}</a>)}
+      </section>
+    </main>
+  </body>
+</html>

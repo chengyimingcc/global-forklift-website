@@ -1,0 +1,117 @@
+---
+import { ArrowRight, CheckCircle2, Factory, Globe2, PackageCheck, ShieldCheck } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import ProductCard from "@components/ProductCard.astro";
+import { languages, type Lang } from "@data/languages";
+import { t } from "@data/i18n";
+import { categories, products } from "@data/products";
+import { industries, resources } from "@data/content";
+import { primaryMarkets, siteConfig } from "@data/site";
+import { languagePath, organizationSchema, websiteSchema } from "@lib/seo";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const schema = [organizationSchema(), websiteSchema(lang)];
+---
+
+<Layout lang={lang} title={t(lang, "seoHomeTitle")} description={t(lang, "seoHomeDescription")} path="/" schema={schema}>
+  <main>
+    <section class="hero">
+      <div class="hero-media">
+        <img src={siteConfig.defaultImage} alt="Modern forklift in warehouse" width="1792" height="1024" fetchpriority="high" />
+      </div>
+      <div class="hero-content">
+        <span class="eyebrow"><Globe2 size={17} aria-hidden="true" /> {t(lang, "heroKicker")}</span>
+        <h1 class="headline">{t(lang, "heroTitle")}</h1>
+        <p class="lead">{t(lang, "heroBody")}</p>
+        <div class="button-row">
+          <a class="btn warning" href={languagePath(lang, "/products/")}>
+            <PackageCheck size={17} aria-hidden="true" />
+            <span>{t(lang, "heroPrimary")}</span>
+          </a>
+          <a class="btn secondary" href={languagePath(lang, "/contact/")}>
+            <span>{t(lang, "heroSecondary")}</span>
+            <ArrowRight size={17} aria-hidden="true" />
+          </a>
+        </div>
+        <div class="hero-panel" aria-label="Site readiness">
+          <div class="hero-stat"><strong>{languages.length}</strong><span>{t(lang, "statsLanguages")}</span></div>
+          <div class="hero-stat"><strong>{categories.length}</strong><span>{t(lang, "statsCategories")}</span></div>
+          <div class="hero-stat"><strong>{primaryMarkets.length}</strong><span>{t(lang, "statsMarkets")}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow"><Factory size={17} aria-hidden="true" /> {t(lang, "productCategories")}</span>
+        <h2 class="section-title">{t(lang, "featuredProducts")}</h2>
+        <div class="grid three">
+          {products.slice(0, 3).map((product) => <ProductCard product={product} lang={lang} />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft">
+      <div class="container">
+        <h2 class="section-title">{t(lang, "productCategories")}</h2>
+        <div class="grid three">
+          {
+            categories.map((category) => (
+              <article class="card">
+                <div class="card-body">
+                  <ShieldCheck size={24} aria-hidden="true" />
+                  <h3>{category.label[lang]}</h3>
+                  <p>{category.summary[lang]}</p>
+                  <a class="btn secondary" href={languagePath(lang, `/products/?category=${category.slug}`)}>{t(lang, "viewDetails")}</a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">{t(lang, "industriesTitle")}</h2>
+        <div class="grid three">
+          {
+            industries.slice(0, 3).map((industry) => (
+              <article class="card">
+                <div class="card-body">
+                  <CheckCircle2 size={24} aria-hidden="true" />
+                  <h3>{industry.title[lang]}</h3>
+                  <p>{industry.summary[lang]}</p>
+                  <a class="btn secondary" href={languagePath(lang, `/industries/${industry.slug}/`)}>{t(lang, "readMore")}</a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft">
+      <div class="container">
+        <h2 class="section-title">{t(lang, "latestResources")}</h2>
+        <div class="grid three">
+          {
+            resources.map((resource) => (
+              <article class="card">
+                <div class="card-body">
+                  <h3>{resource.title[lang]}</h3>
+                  <p>{resource.summary[lang]}</p>
+                  <a class="btn secondary" href={languagePath(lang, `/resources/${resource.slug}/`)}>{t(lang, "readMore")}</a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
