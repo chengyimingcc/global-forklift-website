@@ -109,6 +109,12 @@ const {
           body: formData
         });
         if (!response.ok) throw new Error(`Lead endpoint failed: ${response.status}`);
+        const result = await response.json();
+        if (result.mode === "dry-run") {
+          if (status) status.textContent = error;
+          window.location.href = buildMailto(form, email);
+          return;
+        }
         if (status) status.textContent = success;
         form.reset();
       } catch {

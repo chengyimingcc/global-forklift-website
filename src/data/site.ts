@@ -2,7 +2,7 @@ export const siteConfig = {
   brand: "WEGO Forklift",
   legalName: "WEGO Forklift",
   tagline: "Global forklift supply and export support",
-  baseUrl: import.meta.env.PUBLIC_SITE_URL || "https://www.wegoforklift.com",
+  baseUrl: import.meta.env.PUBLIC_SITE_URL || "https://wegoforklift.com",
   allowIndexing: import.meta.env.PUBLIC_ALLOW_INDEXING === "true",
   email: import.meta.env.LEAD_EMAIL || "sales@cnwegogroup.com",
   phone: "+86 15106998335",

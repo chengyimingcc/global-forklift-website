@@ -518,6 +518,23 @@ main {
   background: #ffffff;
 }
 
+.card-price {
+  display: grid;
+  gap: 2px;
+  margin-top: auto;
+  color: var(--steel);
+}
+
+.card-price span {
+  font-size: 0.78rem;
+  font-weight: 720;
+}
+
+.card-price strong {
+  color: var(--ink);
+  font-size: 1.08rem;
+}
+
 .split {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
@@ -528,6 +545,41 @@ main {
 .product-hero {
   padding: 54px 0 72px;
   background: linear-gradient(180deg, #f5f8fb, #ffffff);
+}
+
+.price-panel {
+  display: grid;
+  gap: 6px;
+  width: min(100%, 540px);
+  margin-top: 24px;
+  padding: 18px 20px;
+  border-inline-start: 4px solid var(--brand);
+  background: #f3f7f4;
+}
+
+.price-panel > span {
+  color: var(--steel);
+  font-size: 0.82rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.price-panel strong {
+  color: var(--ink);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  line-height: 1.15;
+}
+
+.price-panel strong small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 680;
+}
+
+.price-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
 }
 
 .product-media {

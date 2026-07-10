@@ -16,7 +16,13 @@ export function GET() {
       brand: product.brand,
       condition: "new",
       availability: product.availability === "InStock" ? "in stock" : "preorder",
-      price: "",
+      price_range: product.price
+        ? {
+            currency: product.price.currency,
+            low: product.price.low,
+            high: product.price.high
+          }
+        : null,
       product_type: category?.label[defaultLang] ?? product.category,
       custom_label_0: product.capacityTons,
       custom_label_1: product.powerType,

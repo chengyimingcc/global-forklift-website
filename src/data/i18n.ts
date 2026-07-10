@@ -64,9 +64,9 @@ const en: Dictionary = {
   allProducts: "All products",
   allIndustries: "All industries",
   allResources: "All resources",
-  seoHomeTitle: "Global Forklift Sales Website Framework",
+  seoHomeTitle: "WEGO Forklift Manufacturer | Electric, Diesel & Heavy Duty Forklifts",
   seoHomeDescription:
-    "Multilingual forklift sales website framework for global B2B inquiries, product pages, SEO metadata, structured data, and product feed preparation."
+    "Explore WEGO electric, diesel, rough terrain, heavy duty forklifts and pallet stackers. Request a confirmed export quotation from Jinan, China."
 };
 
 const es: Dictionary = {
@@ -130,8 +130,8 @@ const es: Dictionary = {
   allProducts: "Todos los productos",
   allIndustries: "Todas las industrias",
   allResources: "Todos los recursos",
-  seoHomeTitle: "Marco web global para venta de montacargas",
-  seoHomeDescription: "Sitio multilingue para consultas B2B, paginas de producto, SEO, datos estructurados y feed."
+  seoHomeTitle: "Fabricante de montacargas WEGO | Eléctricos, diésel y pesados",
+  seoHomeDescription: "Explore montacargas eléctricos, diésel, todoterreno y de gran capacidad WEGO. Solicite una cotización de exportación confirmada."
 };
 
 const fr: Dictionary = {
@@ -195,8 +195,8 @@ const fr: Dictionary = {
   allProducts: "Tous les produits",
   allIndustries: "Tous les secteurs",
   allResources: "Toutes les ressources",
-  seoHomeTitle: "Cadre web mondial pour chariots elevateurs",
-  seoHomeDescription: "Site multilingue pour demandes B2B, pages produit, SEO, donnees structurees et feed."
+  seoHomeTitle: "Fabricant de chariots WEGO | Électriques, diesel et lourds",
+  seoHomeDescription: "Découvrez les chariots électriques, diesel, tout-terrain et grande capacité WEGO. Demandez un devis export confirmé."
 };
 
 const ja: Dictionary = {
@@ -260,8 +260,8 @@ const ja: Dictionary = {
   allProducts: "すべての製品",
   allIndustries: "すべての業界",
   allResources: "すべての資料",
-  seoHomeTitle: "グローバルフォークリフト販売サイト基盤",
-  seoHomeDescription: "多言語B2B問い合わせ、製品ページ、SEO、構造化データ、商品フィードの基盤。"
+  seoHomeTitle: "WEGOフォークリフトメーカー | 電動・ディーゼル・大型車",
+  seoHomeDescription: "WEGOの電動、ディーゼル、不整地、大型フォークリフトとスタッカーをご覧いただき、確定輸出見積をご依頼ください。"
 };
 
 const de: Dictionary = {
@@ -325,8 +325,8 @@ const de: Dictionary = {
   allProducts: "Alle Produkte",
   allIndustries: "Alle Branchen",
   allResources: "Alle Ressourcen",
-  seoHomeTitle: "Globales Stapler-Webframework",
-  seoHomeDescription: "Mehrsprachige Website fur B2B-Anfragen, Produktseiten, SEO, strukturierte Daten und Feed."
+  seoHomeTitle: "WEGO Gabelstapler Hersteller | Elektro, Diesel und Schwerlast",
+  seoHomeDescription: "Entdecken Sie WEGO Elektro-, Diesel-, Gelände- und Schwerlaststapler. Fordern Sie ein bestätigtes Exportangebot an."
 };
 
 const pt: Dictionary = {
@@ -390,8 +390,8 @@ const pt: Dictionary = {
   allProducts: "Todos os produtos",
   allIndustries: "Todas as industrias",
   allResources: "Todos os recursos",
-  seoHomeTitle: "Framework global para venda de empilhadeiras",
-  seoHomeDescription: "Site multilingue para consultas B2B, paginas de produto, SEO, dados estruturados e feed."
+  seoHomeTitle: "Fabricante de empilhadeiras WEGO | Elétricas, diesel e pesadas",
+  seoHomeDescription: "Veja empilhadeiras elétricas, diesel, todo-terreno e pesadas WEGO. Solicite uma cotação de exportação confirmada."
 };
 
 const ko: Dictionary = {
@@ -455,8 +455,8 @@ const ko: Dictionary = {
   allProducts: "모든 제품",
   allIndustries: "모든 산업",
   allResources: "모든 자료",
-  seoHomeTitle: "글로벌 지게차 판매 웹사이트 프레임워크",
-  seoHomeDescription: "다국어 B2B 문의, 제품 페이지, SEO, 구조화 데이터, 상품 피드 기반."
+  seoHomeTitle: "WEGO 지게차 제조업체 | 전동, 디젤 및 대형 지게차",
+  seoHomeDescription: "WEGO 전동, 디젤, 험지용, 대형 지게차와 스태커를 확인하고 확정 수출 견적을 요청하세요."
 };
 
 const ar: Dictionary = {
@@ -520,8 +520,8 @@ const ar: Dictionary = {
   allProducts: "كل المنتجات",
   allIndustries: "كل القطاعات",
   allResources: "كل الموارد",
-  seoHomeTitle: "اطار موقع عالمي لبيع الرافعات الشوكية",
-  seoHomeDescription: "موقع متعدد اللغات لاستفسارات B2B وصفحات المنتجات وSEO والبيانات المنظمة والتغذية."
+  seoHomeTitle: "مصنع رافعات WEGO | كهربائية وديزل وخدمة شاقة",
+  seoHomeDescription: "استكشف رافعات WEGO الكهربائية والديزل والطرق الوعرة والخدمة الشاقة واطلب عرض تصدير مؤكدا."
 };
 
 const modernUi: Record<Lang, Dictionary> = {
@@ -743,6 +743,57 @@ const modernUi: Record<Lang, Dictionary> = {
   }
 };
 
+const commerceUi: Record<Lang, Dictionary> = {
+  en: {
+    indicativePrice: "Indicative FOB price",
+    priceOnRequest: "Price on request",
+    priceDisclaimer: "Public reference range. Final price depends on specification, quantity, and destination.",
+    priceCurrencyUnit: "USD / unit"
+  },
+  es: {
+    indicativePrice: "Precio FOB orientativo",
+    priceOnRequest: "Precio bajo consulta",
+    priceDisclaimer: "Rango público de referencia. El precio final depende de la configuración, cantidad y destino.",
+    priceCurrencyUnit: "USD / unidad"
+  },
+  fr: {
+    indicativePrice: "Prix FOB indicatif",
+    priceOnRequest: "Prix sur demande",
+    priceDisclaimer: "Fourchette publique indicative. Le prix final dépend de la configuration, de la quantité et de la destination.",
+    priceCurrencyUnit: "USD / unité"
+  },
+  ja: {
+    indicativePrice: "参考FOB価格",
+    priceOnRequest: "価格はお問い合わせください",
+    priceDisclaimer: "公開参考価格帯です。最終価格は仕様、数量、仕向地により異なります。",
+    priceCurrencyUnit: "USD / 台"
+  },
+  de: {
+    indicativePrice: "Unverbindlicher FOB-Preis",
+    priceOnRequest: "Preis auf Anfrage",
+    priceDisclaimer: "Öffentliche Referenzspanne. Der Endpreis hängt von Ausführung, Menge und Zielort ab.",
+    priceCurrencyUnit: "USD / Stück"
+  },
+  pt: {
+    indicativePrice: "Preço FOB indicativo",
+    priceOnRequest: "Preço sob consulta",
+    priceDisclaimer: "Faixa pública de referência. O preço final depende da configuração, quantidade e destino.",
+    priceCurrencyUnit: "USD / unidade"
+  },
+  ko: {
+    indicativePrice: "참고 FOB 가격",
+    priceOnRequest: "가격 문의",
+    priceDisclaimer: "공개 참고 가격대입니다. 최종 가격은 사양, 수량 및 목적지에 따라 달라집니다.",
+    priceCurrencyUnit: "USD / 대"
+  },
+  ar: {
+    indicativePrice: "سعر FOB استرشادي",
+    priceOnRequest: "السعر عند الطلب",
+    priceDisclaimer: "نطاق مرجعي معلن. يعتمد السعر النهائي على التجهيز والكمية والوجهة.",
+    priceCurrencyUnit: "دولار / وحدة"
+  }
+};
+
 const specUi: Record<Lang, Dictionary> = {
   en: {
     specModel: "Model",
@@ -909,5 +960,5 @@ const specUi: Record<Lang, Dictionary> = {
 const dictionaries: Record<Lang, Dictionary> = { en, es, fr, ja, de, pt, ko, ar };
 
 export function t(lang: Lang, key: string) {
-  return specUi[lang]?.[key] ?? modernUi[lang]?.[key] ?? dictionaries[lang]?.[key] ?? specUi.en[key] ?? modernUi.en[key] ?? en[key] ?? key;
+  return commerceUi[lang]?.[key] ?? specUi[lang]?.[key] ?? modernUi[lang]?.[key] ?? dictionaries[lang]?.[key] ?? commerceUi.en[key] ?? specUi.en[key] ?? modernUi.en[key] ?? en[key] ?? key;
 }

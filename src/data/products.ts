@@ -41,6 +41,12 @@ export type Product = {
   liftHeightM: string;
   powerType: string;
   availability: "PreOrder" | "InStock" | "OutOfStock";
+  price?: {
+    currency: "USD";
+    low: number;
+    high: number;
+    sourceUrl: string;
+  };
   brochure?: string;
   translations: Record<
     Lang,
@@ -69,41 +75,103 @@ type ProductSeed = {
   powerType: string;
   tireType: string;
   applications?: string[];
+  price?: Product["price"];
 };
 
 function productTranslations(seed: ProductSeed): Product["translations"] {
-  const category = categories.find((item) => item.slug === seed.category)?.label.en ?? "forklift";
-  const shortDescription = `${seed.name} with ${seed.capacity} rated capacity and ${seed.mastType.toLowerCase()}. Compare the current product photography and request a confirmed configuration for export.`;
-  const seoDescription = `Request a quote for ${seed.name}. Review current product images and confirm mast, engine or battery, tires, attachments, shipping destination, and export support with the WEGO team.`;
-  const highlights = [
-    "Current product photography supplied by the WEGO sales team",
-    `Rated capacity: ${seed.capacity}`,
-    `${seed.mastType}; final lift height and configuration are confirmed before quotation`
-  ];
-  const applications = seed.applications ?? [
-    "Factory and warehouse material handling",
-    "Loading, unloading, and short-distance transport",
-    "Export projects requiring model and attachment confirmation"
-  ];
-  const copy = {
-    name: seed.name,
-    shortDescription,
-    seoTitle: `${seed.name} | ${category} | WEGO`,
-    seoDescription,
-    highlights,
-    applications
+  const brand = seed.brand ?? "WEGO";
+  const category = categories.find((item) => item.slug === seed.category);
+  const kind: Record<Lang, string> = {
+    en: category?.label.en ?? "Forklift",
+    es: category?.label.es ?? "Montacargas",
+    fr: category?.label.fr ?? "Chariot élévateur",
+    ja: category?.label.ja ?? "フォークリフト",
+    de: category?.label.de ?? "Gabelstapler",
+    pt: category?.label.pt ?? "Empilhadeira",
+    ko: category?.label.ko ?? "지게차",
+    ar: category?.label.ar ?? "رافعة شوكية"
+  };
+  const names: Record<Lang, string> = {
+    en: seed.name,
+    es: `${brand} ${seed.sku} ${seed.capacity} - ${kind.es}`,
+    fr: `${brand} ${seed.sku} ${seed.capacity} - ${kind.fr}`,
+    ja: `${brand} ${seed.sku} ${seed.capacity} ${kind.ja}`,
+    de: `${brand} ${seed.sku} ${seed.capacity} ${kind.de}`,
+    pt: `${brand} ${seed.sku} ${seed.capacity} - ${kind.pt}`,
+    ko: `${brand} ${seed.sku} ${seed.capacity} ${kind.ko}`,
+    ar: `${brand} ${seed.sku} ${seed.capacity} - ${kind.ar}`
+  };
+  const mast: Record<Lang, string> = {
+    en: seed.mastType,
+    es: seed.mastType.includes("3-stage") ? "mástil de 3 etapas" : seed.mastType.includes("2-stage") ? "mástil de 2 etapas" : "mástil configurable",
+    fr: seed.mastType.includes("3-stage") ? "mât à 3 étages" : seed.mastType.includes("2-stage") ? "mât à 2 étages" : "mât configurable",
+    ja: seed.mastType.includes("3-stage") ? "3段マスト" : seed.mastType.includes("2-stage") ? "2段マスト" : "選択可能なマスト",
+    de: seed.mastType.includes("3-stage") ? "3-Stufen-Mast" : seed.mastType.includes("2-stage") ? "2-Stufen-Mast" : "konfigurierbarer Mast",
+    pt: seed.mastType.includes("3-stage") ? "mastro de 3 estágios" : seed.mastType.includes("2-stage") ? "mastro de 2 estágios" : "mastro configurável",
+    ko: seed.mastType.includes("3-stage") ? "3단 마스트" : seed.mastType.includes("2-stage") ? "2단 마스트" : "선택형 마스트",
+    ar: seed.mastType.includes("3-stage") ? "سارية ثلاثية المراحل" : seed.mastType.includes("2-stage") ? "سارية ثنائية المراحل" : "سارية قابلة للتخصيص"
+  };
+  const templates: Record<Lang, { short: string; seo: string; highlights: string[]; applications: string[] }> = {
+    en: {
+      short: `${names.en} with ${seed.capacity} rated capacity and ${mast.en.toLowerCase()}. Confirm the final powertrain, lift height, tyres, and attachments for export.`,
+      seo: `View specifications, current images, and an indicative FOB price range for ${names.en}. Request a confirmed WEGO export quotation for your destination and configuration.`,
+      highlights: [`Rated capacity: ${seed.capacity}`, `Model: ${seed.sku}`, `${mast.en}; final configuration is confirmed before quotation`],
+      applications: seed.applications ?? ["Factory and warehouse material handling", "Loading, unloading, and short-distance transport", "Export projects requiring model and attachment confirmation"]
+    },
+    es: {
+      short: `${names.es}, capacidad nominal de ${seed.capacity} y ${mast.es}. Confirme motor o batería, altura, neumáticos y accesorios para exportación.`,
+      seo: `Consulte especificaciones, fotos y precio FOB orientativo de ${names.es}. Solicite una cotización WEGO confirmada para su destino y configuración.`,
+      highlights: [`Capacidad nominal: ${seed.capacity}`, `Modelo: ${seed.sku}`, `${mast.es}; la configuración final se confirma antes de cotizar`],
+      applications: ["Manipulación en fábricas y almacenes", "Carga, descarga y transporte interno", "Proyectos de exportación con accesorios personalizados"]
+    },
+    fr: {
+      short: `${names.fr}, capacité nominale ${seed.capacity} et ${mast.fr}. Confirmez la motorisation, la hauteur, les pneus et les accessoires pour l'export.`,
+      seo: `Consultez les caractéristiques, photos et prix FOB indicatif de ${names.fr}. Demandez un devis export WEGO confirmé selon votre destination.`,
+      highlights: [`Capacité nominale : ${seed.capacity}`, `Modèle : ${seed.sku}`, `${mast.fr} ; la configuration finale est confirmée avant devis`],
+      applications: ["Manutention en usine et en entrepôt", "Chargement, déchargement et transport interne", "Projets export avec accessoires personnalisés"]
+    },
+    ja: {
+      short: `${names.ja}。定格荷重${seed.capacity}、${mast.ja}。輸出仕様の動力、揚高、タイヤ、アタッチメントを見積時に確定します。`,
+      seo: `${names.ja}の仕様、現行写真、参考FOB価格帯をご確認いただけます。仕向地と仕様に応じたWEGOの確定輸出見積をご依頼ください。`,
+      highlights: [`定格荷重：${seed.capacity}`, `モデル：${seed.sku}`, `${mast.ja}、最終仕様は見積前に確定`],
+      applications: ["工場・倉庫内の荷役", "積み込み、荷下ろし、構内搬送", "アタッチメント指定を伴う輸出案件"]
+    },
+    de: {
+      short: `${names.de} mit ${seed.capacity} Nenntragfähigkeit und ${mast.de}. Antrieb, Hubhöhe, Reifen und Anbaugeräte werden für den Export bestätigt.`,
+      seo: `Technische Daten, aktuelle Bilder und unverbindliche FOB-Preisspanne für ${names.de}. Fordern Sie ein bestätigtes WEGO Exportangebot an.`,
+      highlights: [`Nenntragfähigkeit: ${seed.capacity}`, `Modell: ${seed.sku}`, `${mast.de}; die endgültige Ausführung wird vor dem Angebot bestätigt`],
+      applications: ["Materialumschlag in Werk und Lager", "Be- und Entladen sowie innerbetrieblicher Transport", "Exportprojekte mit kundenspezifischen Anbaugeräten"]
+    },
+    pt: {
+      short: `${names.pt}, capacidade nominal de ${seed.capacity} e ${mast.pt}. Confirme motorização, elevação, pneus e acessórios para exportação.`,
+      seo: `Veja especificações, fotos e faixa de preço FOB indicativa de ${names.pt}. Solicite uma cotação WEGO confirmada para o seu destino.`,
+      highlights: [`Capacidade nominal: ${seed.capacity}`, `Modelo: ${seed.sku}`, `${mast.pt}; a configuração final é confirmada antes da cotação`],
+      applications: ["Movimentação em fábricas e armazéns", "Carga, descarga e transporte interno", "Projetos de exportação com acessórios personalizados"]
+    },
+    ko: {
+      short: `${names.ko}. 정격 하중 ${seed.capacity}, ${mast.ko}. 수출용 동력계, 인상 높이, 타이어와 어태치먼트는 견적 시 확정합니다.`,
+      seo: `${names.ko}의 사양, 현재 사진과 참고 FOB 가격대를 확인하고 목적지와 구성에 맞는 WEGO 수출 견적을 요청하세요.`,
+      highlights: [`정격 하중: ${seed.capacity}`, `모델: ${seed.sku}`, `${mast.ko}, 최종 구성은 견적 전에 확정`],
+      applications: ["공장 및 창고 자재 운반", "상하차와 단거리 구내 운송", "맞춤형 어태치먼트가 필요한 수출 프로젝트"]
+    },
+    ar: {
+      short: `${names.ar} بحمولة مقننة ${seed.capacity} و${mast.ar}. يتم تأكيد المحرك وارتفاع الرفع والإطارات والملحقات للتصدير.`,
+      seo: `اطلع على المواصفات والصور ونطاق سعر FOB الاسترشادي لـ ${names.ar}. اطلب عرض تصدير مؤكدا من WEGO حسب الوجهة والتجهيز.`,
+      highlights: [`الحمولة المقننة: ${seed.capacity}`, `الموديل: ${seed.sku}`, `${mast.ar}؛ يؤكد التجهيز النهائي قبل عرض السعر`],
+      applications: ["مناولة المواد في المصانع والمستودعات", "التحميل والتفريغ والنقل الداخلي", "مشروعات التصدير ذات الملحقات المخصصة"]
+    }
   };
 
-  return {
-    en: copy,
-    es: copy,
-    fr: copy,
-    ja: copy,
-    de: copy,
-    pt: copy,
-    ko: copy,
-    ar: copy
-  };
+  return Object.fromEntries(
+    (Object.keys(templates) as Lang[]).map((lang) => [lang, {
+      name: names[lang],
+      shortDescription: templates[lang].short,
+      seoTitle: `${names[lang]} | ${kind[lang]} | WEGO`,
+      seoDescription: templates[lang].seo,
+      highlights: templates[lang].highlights,
+      applications: templates[lang].applications
+    }])
+  ) as Product["translations"];
 }
 
 function imageGallery(directory: string, count: number) {
@@ -123,7 +191,16 @@ export const categories: ProductCategory[] = [
       ko: "리튬 및 전동 지게차",
       ar: "رافعات الليثيوم والكهرباء"
     }),
-    summary: localized("2.5T-3.5T battery-powered counterbalance forklifts for warehouses, factories, and clean material handling."),
+    summary: translated({
+      en: "2.5T-3.5T battery-powered counterbalance forklifts for warehouses, factories, and clean material handling.",
+      es: "Montacargas contrapesados de batería de 2,5T a 3,5T para almacenes, fábricas y manipulación limpia.",
+      fr: "Chariots électriques à contrepoids de 2,5T à 3,5T pour entrepôts, usines et manutention propre.",
+      ja: "倉庫、工場、クリーンな荷役向けの2.5T～3.5Tバッテリー式カウンターバランスフォークリフト。",
+      de: "Batteriebetriebene Gegengewichtsstapler von 2,5T bis 3,5T für Lager, Werke und sauberen Materialumschlag.",
+      pt: "Empilhadeiras contrabalançadas a bateria de 2,5T a 3,5T para armazéns, fábricas e movimentação limpa.",
+      ko: "창고, 공장 및 청정 작업용 2.5T-3.5T 배터리 카운터밸런스 지게차.",
+      ar: "رافعات كهربائية متوازنة بحمولة 2.5T إلى 3.5T للمستودعات والمصانع والمناولة النظيفة."
+    }),
     image: "/images/products/lithium-25t/01.webp",
     capacityRange: "2.5T-3.5T",
     powerTypes: ["Lithium battery", "Electric"],
@@ -141,7 +218,16 @@ export const categories: ProductCategory[] = [
       ko: "디젤 지게차",
       ar: "رافعات ديزل"
     }),
-    summary: localized("2.5T-5.0T diesel forklifts with two-stage and three-stage mast options for general outdoor and industrial handling."),
+    summary: translated({
+      en: "2.5T-5.0T diesel forklifts with two-stage and three-stage mast options for general outdoor and industrial handling.",
+      es: "Montacargas diésel de 2,5T a 5,0T con mástiles de 2 y 3 etapas para trabajo industrial y exterior.",
+      fr: "Chariots diesel de 2,5T à 5,0T avec mâts à 2 ou 3 étages pour la manutention industrielle et extérieure.",
+      ja: "屋外・産業用途向け、2段または3段マストを選べる2.5T～5.0Tディーゼルフォークリフト。",
+      de: "Dieselstapler von 2,5T bis 5,0T mit 2- oder 3-Stufen-Mast für Industrie- und Außeneinsätze.",
+      pt: "Empilhadeiras a diesel de 2,5T a 5,0T com mastros de 2 ou 3 estágios para trabalho industrial e externo.",
+      ko: "산업 및 야외 작업용 2단·3단 마스트 옵션의 2.5T-5.0T 디젤 지게차.",
+      ar: "رافعات ديزل بحمولة 2.5T إلى 5.0T مع سارية ثنائية أو ثلاثية المراحل للعمل الصناعي والخارجي."
+    }),
     image: "/images/products/diesel-35t-2-stage/01.webp",
     capacityRange: "2.5T-5.0T",
     powerTypes: ["Diesel"],
@@ -159,7 +245,16 @@ export const categories: ProductCategory[] = [
       ko: "대형 지게차",
       ar: "رافعات للخدمة الشاقة"
     }),
-    summary: localized("7.0T-10.0T diesel forklifts for large loads, industrial yards, steel, ports, and demanding logistics work."),
+    summary: translated({
+      en: "7.0T-10.0T diesel forklifts for large loads, industrial yards, steel, ports, and demanding logistics work.",
+      es: "Montacargas diésel de 7,0T a 10,0T para grandes cargas, patios industriales, acero, puertos y logística exigente.",
+      fr: "Chariots diesel de 7,0T à 10,0T pour charges lourdes, parcs industriels, sidérurgie, ports et logistique exigeante.",
+      ja: "大型荷物、工業ヤード、鉄鋼、港湾、高負荷物流向けの7.0T～10.0Tディーゼルフォークリフト。",
+      de: "Diesel-Schwerlaststapler von 7,0T bis 10,0T für große Lasten, Industriehöfe, Stahlwerke, Häfen und anspruchsvolle Logistik.",
+      pt: "Empilhadeiras a diesel de 7,0T a 10,0T para grandes cargas, pátios industriais, aço, portos e logística exigente.",
+      ko: "대형 화물, 산업 야드, 철강, 항만 및 고강도 물류용 7.0T-10.0T 디젤 지게차.",
+      ar: "رافعات ديزل بحمولة 7.0T إلى 10.0T للأحمال الكبيرة والساحات الصناعية والصلب والموانئ."
+    }),
     image: "/images/products/heavy-duty-100t/01.webp",
     capacityRange: "7.0T-10.0T",
     powerTypes: ["Diesel"],
@@ -177,7 +272,16 @@ export const categories: ProductCategory[] = [
       ko: "험지용 지게차",
       ar: "رافعات للأراضي الوعرة"
     }),
-    summary: localized("3.5T rough terrain forklift for uneven yards, construction sites, farms, and outdoor cargo handling."),
+    summary: translated({
+      en: "3.5T rough terrain forklift for uneven yards, construction sites, farms, and outdoor cargo handling.",
+      es: "Montacargas todoterreno de 3,5T para patios irregulares, obras, granjas y manipulación exterior.",
+      fr: "Chariot tout-terrain de 3,5T pour terrains irréguliers, chantiers, exploitations agricoles et manutention extérieure.",
+      ja: "不整地ヤード、建設現場、農場、屋外荷役向けの3.5T不整地フォークリフト。",
+      de: "3,5T-Geländestapler für unebene Höfe, Baustellen, Landwirtschaft und Materialumschlag im Freien.",
+      pt: "Empilhadeira todo-terreno de 3,5T para pátios irregulares, obras, fazendas e movimentação externa.",
+      ko: "비포장 야드, 건설 현장, 농장 및 야외 화물 작업용 3.5T 험지용 지게차.",
+      ar: "رافعة للأراضي الوعرة بحمولة 3.5T للساحات غير المستوية ومواقع البناء والمزارع."
+    }),
     image: "/images/products/rough-terrain-35t/01.webp",
     capacityRange: "3.5T",
     powerTypes: ["Diesel"],
@@ -195,13 +299,30 @@ export const categories: ProductCategory[] = [
       ko: "전동 스태커",
       ar: "مكدسات طبالي كهربائية"
     }),
-    summary: localized("Compact electric pallet stacker for pallet movement and warehouse stacking. Capacity and lift configuration are confirmed per inquiry."),
+    summary: translated({
+      en: "Compact electric pallet stacker for pallet movement and warehouse stacking. Capacity and lift configuration are confirmed per inquiry.",
+      es: "Apilador eléctrico compacto para mover palés y apilar en almacenes. La capacidad y elevación se confirman con cada consulta.",
+      fr: "Gerbeur électrique compact pour déplacer et stocker les palettes. La capacité et la levée sont confirmées sur demande.",
+      ja: "パレット搬送と倉庫内積み付け向けの小型電動スタッカー。能力と揚高はお問い合わせ時に確認します。",
+      de: "Kompakter Elektro-Hochhubwagen für Palettentransport und Lagereinsätze. Tragfähigkeit und Hubhöhe werden auf Anfrage bestätigt.",
+      pt: "Empilhador elétrico compacto para movimentação e armazenagem de paletes. Capacidade e elevação são confirmadas na consulta.",
+      ko: "팔레트 이동 및 창고 적재용 소형 전동 스태커. 용량과 인상 사양은 문의 시 확정됩니다.",
+      ar: "مكدس طبالي كهربائي مدمج لنقل الطبالي والتكديس بالمستودع. تؤكد الحمولة والرفع عند الاستفسار."
+    }),
     image: "/images/products/electric-pallet-stacker/01.webp",
     capacityRange: "Model based",
     powerTypes: ["Battery"],
     status: "catalog"
   }
 ];
+
+const madeInChinaStore = "https://jnwego.en.made-in-china.com/";
+const publicPrice = (low: number, high: number): NonNullable<Product["price"]> => ({
+  currency: "USD",
+  low,
+  high,
+  sourceUrl: madeInChinaStore
+});
 
 const productSeeds: ProductSeed[] = [
   {
@@ -214,7 +335,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "2.5T",
     mastType: "3-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(8000, 10000)
   },
   {
     slug: "wego-diesel-forklift-25t-classic",
@@ -226,7 +348,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "2.5T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(8000, 10000)
   },
   {
     slug: "wego-lithium-forklift-25t",
@@ -238,7 +361,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "2.5T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Lithium battery",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(10000, 15000)
   },
   {
     slug: "wego-diesel-forklift-30t-2-stage",
@@ -250,7 +374,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.0T",
     mastType: "2-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(10000, 15000)
   },
   {
     slug: "wego-lithium-forklift-30t",
@@ -262,7 +387,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.0T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Lithium battery",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(10000, 15000)
   },
   {
     slug: "wego-diesel-forklift-35t-2-stage",
@@ -274,7 +400,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.5T",
     mastType: "2-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(10000, 15000)
   },
   {
     slug: "wego-electric-forklift-k35",
@@ -286,7 +413,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.5T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Electric",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(10000, 15000)
   },
   {
     slug: "wego-diesel-forklift-35t-classic",
@@ -298,7 +426,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.5T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(10000, 15000)
   },
   {
     slug: "wego-rough-terrain-forklift-35t",
@@ -311,6 +440,7 @@ const productSeeds: ProductSeed[] = [
     mastType: "Mast configuration to be confirmed",
     powerType: "Diesel",
     tireType: "Rough-terrain pneumatic",
+    price: publicPrice(15000, 20000),
     applications: ["Construction sites and uneven yards", "Farms, timber, and outdoor storage", "Outdoor loading on unpaved surfaces"]
   },
   {
@@ -323,7 +453,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "4.0T",
     mastType: "2-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(10000, 15000)
   },
   {
     slug: "wego-diesel-forklift-40t-3-stage",
@@ -335,7 +466,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "4.0T",
     mastType: "3-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(10000, 15000)
   },
   {
     slug: "wego-diesel-forklift-50t-3-stage",
@@ -347,7 +479,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "5.0T",
     mastType: "3-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options"
+    tireType: "Pneumatic / solid options",
+    price: publicPrice(15000, 20000)
   },
   {
     slug: "wego-heavy-duty-forklift-70t-2-stage",
@@ -359,7 +492,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "7.0T",
     mastType: "2-stage mast",
     powerType: "Diesel",
-    tireType: "Large pneumatic"
+    tireType: "Large pneumatic",
+    price: publicPrice(20000, 25000)
   },
   {
     slug: "wego-heavy-duty-forklift-80t",
@@ -383,7 +517,8 @@ const productSeeds: ProductSeed[] = [
     capacity: "10.0T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Diesel",
-    tireType: "Large pneumatic"
+    tireType: "Large pneumatic",
+    price: publicPrice(30000, 35000)
   },
   {
     slug: "heli-electric-pallet-stacker-mc12",
@@ -758,6 +893,7 @@ export const products: Product[] = productSeeds.map((seed) => {
     liftHeightM: seed.mastType,
     powerType: seed.powerType,
     availability: "PreOrder",
+    price: seed.price,
     translations: productTranslations(seed),
     specs: productSpecs(seed)
   };

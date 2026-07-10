@@ -30,7 +30,7 @@ const pagePath = `/products/${slug}/`;
 const pageTitle = product ? product.translations[lang].seoTitle : `${category!.label[lang]} | WEGO Forklift Products`;
 const pageDescription = product
   ? product.translations[lang].seoDescription
-  : `${category!.summary[lang]} Compare WEGO catalog models and request an export quote.`;
+  : category!.summary[lang];
 const pageImage = product ? product.image : category!.image;
 const breadcrumbs = product
   ? [
@@ -133,9 +133,21 @@ const collectionSchema = category
     }
   : undefined;
 const schema = product ? [productSchema(product, lang), breadcrumbSchema(breadcrumbs)] : [collectionSchema, breadcrumbSchema(breadcrumbs)];
+const priceText = product?.price
+  ? `US$${product.price.low.toLocaleString("en-US")}-${product.price.high.toLocaleString("en-US")}`
+  : "";
 ---
 
-<Layout lang={lang} title={pageTitle} description={pageDescription} path={pagePath} image={pageImage} type={product ? "product" : "website"} schema={schema}>
+<Layout
+  lang={lang}
+  title={pageTitle}
+  description={pageDescription}
+  path={pagePath}
+  image={pageImage}
+  type={product ? "product" : "website"}
+  schema={schema}
+  noindex={category && lang !== "en" ? true : undefined}
+>
   <main>
     {
       category && (
@@ -144,7 +156,7 @@ const schema = product ? [productSchema(product, lang), breadcrumbSchema(breadcr
             <div class="container">
               <div class="split category-hero-grid">
                 <div>
-                  <span class="section-label"><PackageCheck size={17} aria-hidden="true" /> Product Line</span>
+                  <span class="section-label"><PackageCheck size={17} aria-hidden="true" /> {t(lang, "navProducts")}</span>
                   <h1 class="section-title">{category.label[lang]}</h1>
                   <p class="lead">{category.summary[lang]}</p>
                   <div class="meta-row">
@@ -162,7 +174,7 @@ const schema = product ? [productSchema(product, lang), breadcrumbSchema(breadcr
 
           <section id="models" class="section category-models">
             <div class="container">
-              <h2 class="section-title">{categoryProducts.length ? "Catalog models" : "Model pages reserved"}</h2>
+              <h2 class="section-title">{t(lang, "catalogModels")}</h2>
               <div class="grid three">
                 {categoryProducts.length ? categoryProducts.map((item) => <ProductCard product={item} lang={lang} />) : (
                   <article class="card">
@@ -208,6 +220,11 @@ const schema = product ? [productSchema(product, lang), breadcrumbSchema(breadcr
                   </div>
                   <h1 class="section-title">{getProductName(product, lang)}</h1>
                   <p class="lead">{product.translations[lang].shortDescription}</p>
+                  <div class="price-panel" aria-label={t(lang, "indicativePrice")}>
+                    <span>{product.price ? t(lang, "indicativePrice") : t(lang, "priceOnRequest")}</span>
+                    {product.price && <strong>{priceText} <small>{t(lang, "priceCurrencyUnit")}</small></strong>}
+                    <p>{t(lang, "priceDisclaimer")}</p>
+                  </div>
                   {product.brochure && (
                     <div class="button-row" style="margin-top: 22px;">
                       <a class="btn secondary" href={product.brochure}><Download size={17} aria-hidden="true" /> {t(lang, "downloadSpec")}</a>
@@ -221,6 +238,7 @@ const schema = product ? [productSchema(product, lang), breadcrumbSchema(breadcr
                       alt={getProductName(product, lang)}
                       width="1400"
                       height="1400"
+                      decoding="async"
                       fetchpriority="high"
                       data-gallery-main
                     />
@@ -235,7 +253,7 @@ const schema = product ? [productSchema(product, lang), breadcrumbSchema(breadcr
                           aria-current={index === 0 ? "true" : "false"}
                           data-gallery-src={image}
                         >
-                          <img src={image} alt="" loading="lazy" width="180" height="180" />
+                          <img src={image} alt="" loading="lazy" decoding="async" width="180" height="180" />
                         </button>
                       ))
                     }

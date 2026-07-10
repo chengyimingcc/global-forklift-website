@@ -673,7 +673,7 @@
   align-items: center;
   border-block: 1px solid var(--line);
   background-color: #f8faf7;
-  background-image: url("/images/company/global-market-network.png");
+  background-image: url("/images/company/global-market-network.avif");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -863,7 +863,7 @@
 
   .hero,
   .hero-content {
-    min-height: 760px;
+    min-height: calc(100svh - 112px);
   }
 
   .finder-panel,

@@ -28,7 +28,7 @@ const {
 const canonical = absoluteUrl(languagePath(lang, path));
 const imageUrl = absoluteUrl(image);
 const schemas = Array.isArray(schema) ? schema : [schema];
-const robots = noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large";
+const robots = noindex ? "noindex,follow" : "index,follow,max-image-preview:large";
 ---
 
 <title>{title}</title>
