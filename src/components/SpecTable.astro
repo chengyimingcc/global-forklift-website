@@ -9,19 +9,11 @@ interface Props {
 }
 
 const { product, lang } = Astro.props;
-const rows = [
-  [t(lang, "capacity"), product.specs.capacity],
-  [t(lang, "liftHeight"), product.specs.liftHeight],
-  ["Load center", product.specs.loadCenter],
-  ["Turning radius", product.specs.turningRadius],
-  [t(lang, "powerType"), product.specs.power],
-  ["Tire type", product.specs.tireType],
-  [t(lang, "availability"), product.availability]
-];
+const rows = product.specs.map((item) => [t(lang, item.labelKey), item.value[lang] ?? item.value.en]);
 ---
 
 <table class="spec-table">
   <tbody>
-    {rows.map(([label, value]) => <tr><th scope="row">{label}</th><td>{value}</td></tr>)}
+    {rows.map(([label, value]) => <tr><th scope="row" dir="auto">{label}</th><td dir="auto">{value}</td></tr>)}
   </tbody>
 </table>

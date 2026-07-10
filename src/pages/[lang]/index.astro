@@ -1,12 +1,13 @@
 ---
-import { CheckCircle2, Factory, PackageCheck, Search, Send, ShieldCheck, Wrench } from "lucide-astro";
+import { ArrowRight, CheckCircle2, Factory, PackageCheck, Search, Send, ShieldCheck, Wrench } from "lucide-astro";
 import Layout from "@layouts/Layout.astro";
 import LeadForm from "@components/LeadForm.astro";
 import ProductCard from "@components/ProductCard.astro";
 import { languages, type Lang } from "@data/languages";
 import { t } from "@data/i18n";
 import { categories, products } from "@data/products";
-import { companyPages, resources, servicePages, solutions } from "@data/content";
+import { servicePages, solutions } from "@data/content";
+import { companyProfile } from "@data/company";
 import { primaryMarkets, siteConfig } from "@data/site";
 import { languagePath, organizationSchema, websiteSchema } from "@lib/seo";
 
@@ -17,41 +18,44 @@ export function getStaticPaths() {
 const lang = Astro.params.lang as Lang;
 const schema = [organizationSchema(), websiteSchema(lang)];
 const catalogCategories = categories.filter((category) => category.status === "catalog");
-const featuredProducts = products.slice(0, 6);
+const featuredProducts = [products[2], products[4], products[5], products[8], products[11], products[14]];
+const localizedHeroTitle = t(lang, "heroTitle");
+const localizedHeroBody = t(lang, "heroBody");
+const profileCopy = companyProfile[lang] ?? companyProfile.en;
 const heroSlides = [
   {
-    image: "/images/catalog/hero-forklift.jpg",
-    title: "WEGO forklifts for export buyers",
-    body: "Compare catalog models, request pricing, and prepare your buying plan from one inquiry-ready homepage."
+    image: "/images/products/heavy-duty-100t/01.webp",
+    title: localizedHeroTitle,
+    body: localizedHeroBody
   },
   {
-    image: "/images/catalog/electric-15-35t.jpg",
-    title: "Clean indoor handling from 1.5T to 3.5T",
-    body: "Built for warehouses, factories, and logistics teams comparing battery forklifts for daily operation."
+    image: "/images/products/lithium-25t/01.webp",
+    title: localizedHeroTitle,
+    body: localizedHeroBody
   },
   {
-    image: "/images/catalog/diesel-50t.jpg",
-    title: "Outdoor forklifts for yards and loading docks",
-    body: "Diesel models are ready for quote requests across factory yards, dock work, and heavy outdoor handling."
+    image: "/images/products/rough-terrain-35t/01.webp",
+    title: localizedHeroTitle,
+    body: localizedHeroBody
   },
   {
-    image: "/images/catalog/diesel-100t.jpg",
-    title: "Large capacity forklifts for industrial cargo",
-    body: "Reserve the heavy-duty path for port, steel, construction, and container handling inquiries."
+    image: "/images/products/diesel-50t-3-stage/01.webp",
+    title: localizedHeroTitle,
+    body: localizedHeroBody
   }
 ];
 const mosaicTiles = [
-  { image: "/images/catalog/electric-15-35t.jpg", label: "Lithium Electric", detail: "1.5T-3.5T" },
-  { image: "/images/catalog/diesel-35t.jpg", label: "Diesel Forklift", detail: "2.5T-5.0T" },
-  { image: "/images/catalog/rough-terrain-30-50t.jpg", label: "Rough Terrain", detail: "3.0T-5.0T" },
-  { image: "/images/catalog/electric-pallet-stacker-20t.jpg", label: "Pallet Stacker", detail: "1.5T-2.0T" }
+  { image: "/images/products/lithium-30t/01.webp", label: "Lithium Electric", detail: "2.5T-3.5T" },
+  { image: "/images/products/diesel-35t-2-stage/01.webp", label: "Diesel Forklift", detail: "2.5T-5.0T" },
+  { image: "/images/products/rough-terrain-35t/01.webp", label: "Rough Terrain", detail: "3.5T" },
+  { image: "/images/products/electric-pallet-stacker/01.webp", label: "Pallet Stacker", detail: "MC12" }
 ];
 ---
 
 <Layout
   lang={lang}
   title="WEGO Forklift | Global Forklift Supply, Parts and Export Support"
-  description="WEGO Forklift supplies lithium electric forklifts, diesel forklifts, heavy duty forklifts, LPG forklifts, rough terrain forklifts, and electric pallet stackers for global buyers."
+  description="WEGO Forklift supplies lithium electric forklifts, diesel forklifts, heavy duty forklifts, rough terrain forklifts, and electric pallet stackers for global buyers."
   path="/"
   image={siteConfig.defaultImage}
   schema={schema}
@@ -71,9 +75,9 @@ const mosaicTiles = [
         <h1 class="headline" data-hero-title>{heroSlides[0].title}</h1>
         <p class="lead" data-hero-body>{heroSlides[0].body}</p>
         <div class="hero-panel" aria-label="WEGO catalog readiness">
-          <div class="hero-stat"><strong>{catalogCategories.length}</strong><span>Catalog product lines</span></div>
-          <div class="hero-stat"><strong>{products.length}</strong><span>Model pages ready</span></div>
-          <div class="hero-stat"><strong>{primaryMarkets.length}</strong><span>Export regions</span></div>
+          <div class="hero-stat"><strong>{catalogCategories.length}</strong><span>{t(lang, "homeCatalogLines")}</span></div>
+          <div class="hero-stat"><strong>{products.length}</strong><span>{t(lang, "homeModelPages")}</span></div>
+          <div class="hero-stat"><strong>{primaryMarkets.length}</strong><span>{t(lang, "homeExportRegions")}</span></div>
         </div>
       </div>
       <script is:inline type="application/json" data-hero-slides set:html={JSON.stringify(heroSlides)} />
@@ -82,12 +86,12 @@ const mosaicTiles = [
     <section class="section mosaic-section" data-mosaic>
       <div class="container mosaic-layout">
         <div class="mosaic-copy">
-          <span class="section-label"><Factory size={17} aria-hidden="true" /> Product Motion</span>
-          <h2 class="section-title">A faster visual path from product interest to inquiry</h2>
-          <p class="section-intro">Large catalog visuals are arranged as a scroll-linked product wall. The images can be replaced later with refined photography without changing the page structure.</p>
+          <span class="section-label"><Factory size={17} aria-hidden="true" /> {t(lang, "productCategories")}</span>
+          <h2 class="section-title">{t(lang, "heroTitle")}</h2>
+          <p class="section-intro">{t(lang, "heroBody")}</p>
           <a class="btn primary" href={languagePath(lang, "/contact/")}>
             <Send size={17} aria-hidden="true" />
-            <span>Start inquiry</span>
+            <span>{t(lang, "heroSecondary")}</span>
           </a>
         </div>
         <div class="mosaic-wall" aria-label="WEGO forklift product visual wall">
@@ -108,27 +112,27 @@ const mosaicTiles = [
 
     <section id="product-finder" class="section dark-band">
       <div class="container">
-        <span class="section-label"><Search size={17} aria-hidden="true" /> Product Finder</span>
-        <h2 class="section-title">Choose by power, capacity and working scene</h2>
-        <p class="section-intro">A practical buyer path for visitors who know the job but not the exact model. These choices map directly to the WEGO catalog series.</p>
+        <span class="section-label"><Search size={17} aria-hidden="true" /> {t(lang, "megaProductFinder")}</span>
+        <h2 class="section-title">{t(lang, "compareSpecs")}</h2>
+        <p class="section-intro">{t(lang, "megaProductFinderBody")}</p>
         <div class="finder-panel">
           <a class="finder-cell finder-lead" href={languagePath(lang, "/products/")}>
-            <strong>Start with all products</strong>
-            <span>Browse every catalog model, then filter by category or capacity.</span>
+            <strong>{t(lang, "allProducts")}</strong>
+            <span>{t(lang, "megaViewAllProducts")}</span>
           </a>
-          <a class="finder-cell" href={languagePath(lang, "/products/lithium-electric-forklifts/")}><strong>Clean indoor work</strong><span>Lithium electric 1.5T-3.5T</span></a>
+          <a class="finder-cell" href={languagePath(lang, "/products/lithium-electric-forklifts/")}><strong>Clean indoor work</strong><span>Lithium electric 2.5T-3.5T</span></a>
           <a class="finder-cell" href={languagePath(lang, "/products/diesel-forklifts/")}><strong>Outdoor general duty</strong><span>Diesel 2.5T-5.0T</span></a>
           <a class="finder-cell" href={languagePath(lang, "/products/heavy-duty-forklifts/")}><strong>Heavy cargo</strong><span>Diesel 7.0T-10.0T</span></a>
-          <a class="finder-cell" href={languagePath(lang, "/products/electric-pallet-stackers/")}><strong>Pallet stacking</strong><span>Electric stacker 1.5T-2.0T</span></a>
+          <a class="finder-cell" href={languagePath(lang, "/products/electric-pallet-stackers/")}><strong>Pallet stacking</strong><span>HELI MC12 electric stacker</span></a>
         </div>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
-        <span class="section-label"><PackageCheck size={17} aria-hidden="true" /> Products</span>
-        <h2 class="section-title">WEGO forklift product lines</h2>
-        <p class="section-intro">Product categories are based on the current WEGO brochure. Planned categories are kept visible so future catalog expansion has a ready SEO structure.</p>
+        <span class="section-label"><PackageCheck size={17} aria-hidden="true" /> {t(lang, "navProducts")}</span>
+        <h2 class="section-title">{t(lang, "productCategories")}</h2>
+        <p class="section-intro">{t(lang, "heroBody")}</p>
         <div class="grid three">
           {
             categories.map((category) => (
@@ -154,8 +158,8 @@ const mosaicTiles = [
 
     <section class="section soft">
       <div class="container">
-        <span class="section-label"><Factory size={17} aria-hidden="true" /> Featured Models</span>
-        <h2 class="section-title">Catalog models ready for inquiry</h2>
+        <span class="section-label"><Factory size={17} aria-hidden="true" /> {t(lang, "featuredProducts")}</span>
+        <h2 class="section-title">{t(lang, "catalogModels")}</h2>
         <div class="grid three">
           {featuredProducts.map((product) => <ProductCard product={product} lang={lang} />)}
         </div>
@@ -164,9 +168,9 @@ const mosaicTiles = [
 
     <section class="section">
       <div class="container">
-        <span class="section-label"><ShieldCheck size={17} aria-hidden="true" /> Solutions</span>
-        <h2 class="section-title">Application paths for global buyers</h2>
-        <p class="section-intro">Solutions pages connect buyer scenarios to the right product lines, which is stronger for SEO than product pages alone.</p>
+        <span class="section-label"><ShieldCheck size={17} aria-hidden="true" /> {t(lang, "navSolutions")}</span>
+        <h2 class="section-title">{t(lang, "industriesTitle")}</h2>
+        <p class="section-intro">{t(lang, "megaSolutionsBody")}</p>
         <div class="grid three">
           {
             solutions.map((solution) => (
@@ -192,9 +196,9 @@ const mosaicTiles = [
     <section class="section dark-band">
       <div class="container split">
         <div>
-          <span class="section-label"><Wrench size={17} aria-hidden="true" /> Parts & Service</span>
-          <h2 class="section-title">Keep the export buyer path complete</h2>
-          <p class="section-intro">A forklift buyer wants more than a price. The site now reserves a full service path for spare parts, warranty, after-sales support, and downloads.</p>
+          <span class="section-label"><Wrench size={17} aria-hidden="true" /> {t(lang, "navSupport")}</span>
+          <h2 class="section-title">{t(lang, "servicesTitle")}</h2>
+          <p class="section-intro">{t(lang, "megaSupportBody")}</p>
           <div class="grid two">
             {
               servicePages.map((page) => (
@@ -210,43 +214,17 @@ const mosaicTiles = [
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <span class="section-label"><Factory size={17} aria-hidden="true" /> Why WEGO</span>
-        <h2 class="section-title">Company proof, catalog proof and export proof</h2>
-        <div class="brand-proof">
-          {
-            companyPages.slice(0, 3).map((page) => (
-              <a class="proof-item" href={languagePath(lang, `/why-wego/${page.slug}/`)}>
-                <ShieldCheck size={24} aria-hidden="true" />
-                <strong>{page.title[lang]}</strong>
-                <span>{page.summary[lang]}</span>
-              </a>
-            ))
-          }
-        </div>
+    <section class="company-home-band">
+      <div class="container" dir={lang === "ar" ? "rtl" : "ltr"}>
+        <span class="section-label"><Factory size={17} aria-hidden="true" /> {profileCopy.label}</span>
+        <h2 class="section-title">{profileCopy.networkTitle}</h2>
+        <p class="section-intro">{profileCopy.lead}</p>
+        <a class="btn primary" href={languagePath(lang, "/why-wego/")}>
+          {t(lang, "navWhyWego")} <ArrowRight size={17} aria-hidden="true" />
+        </a>
       </div>
     </section>
 
-    <section class="section soft">
-      <div class="container">
-        <span class="section-label"><CheckCircle2 size={17} aria-hidden="true" /> Resources</span>
-        <h2 class="section-title">{t(lang, "latestResources")}</h2>
-        <div class="grid three">
-          {
-            resources.map((resource) => (
-              <article class="card">
-                <div class="card-body">
-                  <h3>{resource.title[lang]}</h3>
-                  <p>{resource.summary[lang]}</p>
-                  <a class="btn secondary" href={languagePath(lang, `/resources/${resource.slug}/`)}>{t(lang, "readMore")}</a>
-                </div>
-              </article>
-            ))
-          }
-        </div>
-      </div>
-    </section>
   </main>
 
   <script>

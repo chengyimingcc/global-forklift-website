@@ -1,6 +1,5 @@
 import { defaultLang } from "@data/languages";
 import { getCategory, getProductName, products } from "@data/products";
-import { siteConfig } from "@data/site";
 import { absoluteUrl, languagePath } from "@lib/seo";
 
 export function GET() {
@@ -14,7 +13,7 @@ export function GET() {
       description: copy.seoDescription,
       link: absoluteUrl(languagePath(defaultLang, `/products/${product.slug}/`)),
       image_link: absoluteUrl(product.image),
-      brand: siteConfig.brand,
+      brand: product.brand,
       condition: "new",
       availability: product.availability === "InStock" ? "in stock" : "preorder",
       price: "",

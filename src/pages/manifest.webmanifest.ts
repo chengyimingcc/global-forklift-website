@@ -8,7 +8,7 @@ export function GET() {
       start_url: "/en/",
       display: "standalone",
       background_color: "#ffffff",
-      theme_color: "#d4111f",
+      theme_color: "#63bd3f",
       icons: [
         {
           src: "/favicon.svg",

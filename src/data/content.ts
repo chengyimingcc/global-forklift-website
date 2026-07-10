@@ -33,7 +33,7 @@ export const solutions: Solution[] = [
     slug: "transport-logistics",
     title: localized("Transport & Logistics"),
     summary: localized("Forklift and warehouse equipment selection for pallet handling, dock work, short-distance movement, and distribution centers."),
-    image: "/images/catalog/electric-15-35t.jpg",
+    image: "/images/products/lithium-25t/01.webp",
     recommendedCategories: ["lithium-electric-forklifts", "diesel-forklifts", "electric-pallet-stackers"],
     needs: ["Fast loading and unloading", "Mixed indoor-outdoor operation", "Reliable parts and service support"]
   },
@@ -41,15 +41,15 @@ export const solutions: Solution[] = [
     slug: "manufacturing",
     title: localized("Manufacturing"),
     summary: localized("Material handling plans for production lines, parts movement, finished goods storage, and factory logistics."),
-    image: "/images/catalog/factory.jpg",
-    recommendedCategories: ["lithium-electric-forklifts", "diesel-forklifts", "lpg-forklifts"],
+    image: "/images/products/electric-35t/01.webp",
+    recommendedCategories: ["lithium-electric-forklifts", "diesel-forklifts"],
     needs: ["Stable uptime", "Operator visibility", "Clean handling around production areas"]
   },
   {
     slug: "ports-terminals",
     title: localized("Ports & Terminals"),
     summary: localized("Heavy-duty forklift recommendations for containers, yards, ports, terminals, and export cargo movement."),
-    image: "/images/catalog/diesel-100t.jpg",
+    image: "/images/products/heavy-duty-100t/01.webp",
     recommendedCategories: ["heavy-duty-forklifts", "diesel-forklifts"],
     needs: ["High capacity", "Outdoor durability", "Long duty cycles"]
   },
@@ -57,7 +57,7 @@ export const solutions: Solution[] = [
     slug: "construction-yards",
     title: localized("Construction & Outdoor Yards"),
     summary: localized("Forklift choices for uneven ground, construction materials, rough yards, timber, stone, and outdoor cargo handling."),
-    image: "/images/catalog/rough-terrain-30-50t.jpg",
+    image: "/images/products/rough-terrain-35t/01.webp",
     recommendedCategories: ["rough-terrain-forklifts", "diesel-forklifts"],
     needs: ["Ground clearance", "Large pneumatic tires", "Outdoor power and traction"]
   },
@@ -65,7 +65,7 @@ export const solutions: Solution[] = [
     slug: "food-pharma",
     title: localized("Food & Pharma Warehousing"),
     summary: localized("Cleaner forklift and stacker options for indoor storage, cold-chain areas, packaging plants, and regulated warehouses."),
-    image: "/images/catalog/electric-pallet-stacker-20t.jpg",
+    image: "/images/products/electric-pallet-stacker/01.webp",
     recommendedCategories: ["lithium-electric-forklifts", "electric-pallet-stackers"],
     needs: ["Low emissions", "Compact turning", "Battery operation"]
   },
@@ -73,7 +73,7 @@ export const solutions: Solution[] = [
     slug: "chemical-energy",
     title: localized("Chemical & Energy"),
     summary: localized("Export-ready material handling planning for chemicals, energy sites, outdoor storage, and heavy industrial operations."),
-    image: "/images/catalog/diesel-70t.jpg",
+    image: "/images/products/heavy-duty-70t-2-stage/01.webp",
     recommendedCategories: ["diesel-forklifts", "heavy-duty-forklifts", "rough-terrain-forklifts"],
     needs: ["Heavy loads", "Outdoor reliability", "Clear safety and maintenance planning"]
   }
@@ -91,28 +91,28 @@ export const servicePages: SimplePage[] = [
     slug: "spare-parts",
     title: localized("Spare Parts"),
     summary: localized("Prepare spare parts lists, wearing parts, batteries, tires, filters, and long-term supply planning for export buyers."),
-    image: "/images/catalog/factory.jpg",
+    image: "/images/products/diesel-50t-3-stage/01.webp",
     bullets: ["Parts list by model", "Recommended first-order spare parts", "Export packing and shipment support"]
   },
   {
     slug: "after-sales-service",
     title: localized("After-sales Service"),
     summary: localized("A service framework for warranty, remote support, maintenance planning, and local partner coordination."),
-    image: "/images/catalog/diesel-35t.jpg",
+    image: "/images/products/diesel-35t-2-stage/01.webp",
     bullets: ["Warranty workflow", "Remote troubleshooting", "Maintenance schedule planning"]
   },
   {
     slug: "warranty",
     title: localized("Warranty"),
     summary: localized("Reserve this page for final WEGO warranty terms, covered components, exclusions, and claim process."),
-    image: "/images/catalog/electric-15-35t.jpg",
+    image: "/images/products/lithium-30t/01.webp",
     bullets: ["Warranty period", "Claim documents", "Replacement parts process"]
   },
   {
     slug: "downloads",
     title: localized("Downloads"),
     summary: localized("Central place for brochures, specification sheets, manuals, certificates, and buyer checklists."),
-    image: "/images/catalog/hero-forklift.jpg",
+    image: "/images/products/electric-pallet-stacker/01.webp",
     bullets: ["Product brochure", "Specification sheets", "Manuals and certificates"]
   }
 ];
@@ -122,28 +122,28 @@ export const companyPages: SimplePage[] = [
     slug: "company",
     title: localized("Company"),
     summary: localized("WEGO Forklift profile, export focus, manufacturing network, and global buyer support."),
-    image: "/images/catalog/factory.jpg",
+    image: "/images/products/diesel-40t-3-stage/01.webp",
     bullets: ["Founded in 2016", "Forklift and warehouse equipment focus", "Global export support"]
   },
   {
     slug: "global-network",
     title: localized("Global Network"),
     summary: localized("Reserved for distributors, dealers, service partners, export regions, and international project references."),
-    image: "/images/catalog/hero-forklift.jpg",
+    image: "/images/products/heavy-duty-100t/01.webp",
     bullets: ["Dealer inquiries", "Export regions", "Partner service support"]
   },
   {
     slug: "certificates",
     title: localized("Certificates"),
     summary: localized("Reserved for certificates, inspection documents, quality systems, and compliance proof."),
-    image: "/images/catalog/electric-15-35t.jpg",
+    image: "/images/products/lithium-25t/01.webp",
     bullets: ["Quality documentation", "Compliance documents", "Inspection workflow"]
   },
   {
     slug: "case-studies",
     title: localized("Case Studies"),
     summary: localized("Reserved for customer projects, shipping cases, application stories, and buyer proof."),
-    image: "/images/catalog/diesel-50t.jpg",
+    image: "/images/products/diesel-50t-3-stage/01.webp",
     bullets: ["Customer applications", "Container loading proof", "Industry stories"]
   }
 ];

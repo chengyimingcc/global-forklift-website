@@ -8,7 +8,14 @@ export default defineConfig({
   trailingSlash: "always",
   compressHTML: true,
   output: "static",
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      filter: (page) =>
+        !["/why-wego/company/", "/why-wego/global-network/", "/why-wego/certificates/", "/why-wego/case-studies/"].some((path) =>
+          page.includes(path)
+        )
+    })
+  ],
   build: {
     format: "directory"
   }

@@ -1,0 +1,66 @@
+---
+import { Check, ChevronDown } from "lucide-astro";
+import { languageMeta, languages, type Lang } from "@data/languages";
+import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
+
+interface Props {
+  lang: Lang;
+  pagePath: string;
+  mobile?: boolean;
+}
+
+const { lang, pagePath, mobile = false } = Astro.props;
+const currentLanguage = languageMeta(lang);
+---
+
+<details class:list={["language-menu", mobile && "mobile"]} data-language-menu>
+  <summary class="language-trigger" aria-label={`${t(lang, "language")}: ${currentLanguage.nativeName}`}>
+    <span>{currentLanguage.nativeName}</span>
+    <ChevronDown size={15} aria-hidden="true" />
+  </summary>
+  <div class="language-popover">
+    <div class="language-list">
+      {
+        languages.map((language) => (
+          <a
+            class="language-option"
+            href={languagePath(language.code, pagePath)}
+            lang={language.locale}
+            aria-label={language.name}
+            aria-current={language.code === lang ? "page" : undefined}
+            data-language-link
+          >
+            <span>{language.nativeName}</span>
+            {language.code === lang && <Check size={16} aria-hidden="true" />}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</details>
+
+<script>
+  document.querySelectorAll("[data-language-link]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (!(link instanceof HTMLAnchorElement)) return;
+      event.preventDefault();
+      const destination = new URL(link.href);
+      destination.search = window.location.search;
+      destination.hash = window.location.hash;
+      window.location.assign(destination);
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    document.querySelectorAll("[data-language-menu][open]").forEach((menu) => {
+      if (event.target instanceof Node && !menu.contains(event.target)) menu.removeAttribute("open");
+    });
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      document.querySelectorAll("[data-language-menu][open]").forEach((menu) => menu.removeAttribute("open"));
+    }
+  });
+</script>

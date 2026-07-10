@@ -2,13 +2,13 @@ export const defaultLang = "en" as const;
 
 export const languages = [
   { code: "en", name: "English", nativeName: "English", locale: "en", dir: "ltr" },
-  { code: "es", name: "Spanish", nativeName: "Spanish", locale: "es", dir: "ltr" },
-  { code: "fr", name: "French", nativeName: "French", locale: "fr", dir: "ltr" },
-  { code: "ja", name: "Japanese", nativeName: "Japanese", locale: "ja", dir: "ltr" },
+  { code: "es", name: "Spanish", nativeName: "Español", locale: "es", dir: "ltr" },
+  { code: "fr", name: "French", nativeName: "Français", locale: "fr", dir: "ltr" },
+  { code: "ja", name: "Japanese", nativeName: "日本語", locale: "ja", dir: "ltr" },
   { code: "de", name: "German", nativeName: "Deutsch", locale: "de", dir: "ltr" },
-  { code: "pt", name: "Portuguese", nativeName: "Portuguese", locale: "pt", dir: "ltr" },
-  { code: "ko", name: "Korean", nativeName: "Korean", locale: "ko", dir: "ltr" },
-  { code: "ar", name: "Arabic", nativeName: "Arabic", locale: "ar", dir: "rtl" }
+  { code: "pt", name: "Portuguese", nativeName: "Português", locale: "pt", dir: "ltr" },
+  { code: "ko", name: "Korean", nativeName: "한국어", locale: "ko", dir: "ltr" },
+  { code: "ar", name: "Arabic", nativeName: "العربية", locale: "ar", dir: "rtl" }
 ] as const;
 
 export type Lang = (typeof languages)[number]["code"];

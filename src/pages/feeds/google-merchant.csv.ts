@@ -1,6 +1,5 @@
 import { defaultLang } from "@data/languages";
 import { getCategory, getProductName, products } from "@data/products";
-import { siteConfig } from "@data/site";
 import { absoluteUrl, languagePath } from "@lib/seo";
 
 function csv(value: string) {
@@ -34,7 +33,7 @@ export function GET() {
       absoluteUrl(product.image),
       product.availability === "InStock" ? "in stock" : "preorder",
       "",
-      siteConfig.brand,
+      product.brand,
       "new",
       category?.label[defaultLang] ?? product.category,
       "Vehicles & Parts > Vehicles",

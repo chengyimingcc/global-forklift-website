@@ -1,6 +1,6 @@
 import { getCategory, getProductName, type Product } from "@data/products";
 import type { Lang } from "@data/languages";
-import { siteConfig } from "@data/site";
+import { t } from "@data/i18n";
 import { absoluteUrl } from "./seo";
 
 export function productSchema(product: Product, lang: Lang) {
@@ -14,17 +14,16 @@ export function productSchema(product: Product, lang: Lang) {
     sku: product.sku,
     brand: {
       "@type": "Brand",
-      name: siteConfig.brand
+      name: product.brand
     },
     category: category?.label[lang] ?? product.category,
-    image: [absoluteUrl(product.image)],
+    image: product.gallery.map((image) => absoluteUrl(image)),
     description: copy.seoDescription,
-    additionalProperty: [
-      { "@type": "PropertyValue", name: "Capacity", value: product.specs.capacity },
-      { "@type": "PropertyValue", name: "Lift height", value: product.specs.liftHeight },
-      { "@type": "PropertyValue", name: "Power", value: product.specs.power },
-      { "@type": "PropertyValue", name: "Tire type", value: product.specs.tireType }
-    ],
+    additionalProperty: product.specs.map((item) => ({
+      "@type": "PropertyValue",
+      name: t(lang, item.labelKey),
+      value: item.value[lang] ?? item.value.en
+    })),
     offers: {
       "@type": "Offer",
       url: absoluteUrl(`/${lang}/products/${product.slug}/`),

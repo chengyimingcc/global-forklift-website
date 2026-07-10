@@ -1,8 +1,9 @@
 ---
-import { FileText, MessageCircle, Send, X } from "lucide-astro";
-import LeadForm from "@components/LeadForm.astro";
+import { MessageCircle, Send } from "lucide-astro";
 import type { Lang } from "@data/languages";
 import { siteConfig } from "@data/site";
+import { t } from "@data/i18n";
+import { languagePath } from "@lib/seo";
 
 interface Props {
   lang: Lang;
@@ -13,87 +14,27 @@ const whatsappNumber = siteConfig.whatsapp.replace(/\D/g, "");
 const whatsappText = encodeURIComponent("Hello WEGO, I want to request a forklift quote.");
 ---
 
-<aside class="inquiry-dock" data-inquiry-dock aria-label="Quick inquiry methods">
-  <button
+<aside class="inquiry-dock" aria-label="Quick inquiry methods">
+  <a
     class="inquiry-dock-item"
-    type="button"
-    data-open-inquiry
-    data-inquiry-type="quick_quote"
-    data-preferred-contact="email"
-    data-message="Please send pricing, lead time, and recommended configuration for my forklift project."
+    href={languagePath(lang, "/contact/")}
+    aria-label={t(lang, "requestQuote")}
   >
-    <img src="/images/catalog/diesel-35t.jpg" alt="" loading="lazy" width="72" height="72" />
-    <span><Send size={17} aria-hidden="true" /> Get quote</span>
-  </button>
-  <a class="inquiry-dock-item" href={`https://wa.me/${whatsappNumber}?text=${whatsappText}`} target="_blank" rel="noopener noreferrer">
-    <img src="/images/catalog/electric-15-35t.jpg" alt="" loading="lazy" width="72" height="72" />
-    <span><MessageCircle size={17} aria-hidden="true" /> WhatsApp</span>
+    <span class="inquiry-dock-icon"><Send size={24} aria-hidden="true" /></span>
+    <span class="inquiry-dock-label">
+      <strong>{t(lang, "navInquiry")}</strong>
+    </span>
   </a>
-  <button
+  <a
     class="inquiry-dock-item"
-    type="button"
-    data-open-inquiry
-    data-inquiry-type="catalog_request"
-    data-preferred-contact="email"
-    data-message="Please send the latest WEGO forklift catalog, specification sheets, and export support information."
+    href={`https://wa.me/${whatsappNumber}?text=${whatsappText}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Contact WEGO on WhatsApp"
   >
-    <img src="/images/catalog/hero-forklift.jpg" alt="" loading="lazy" width="72" height="72" />
-    <span><FileText size={17} aria-hidden="true" /> Catalog</span>
-  </button>
-
-  <div class="inquiry-modal" data-inquiry-modal hidden>
-    <div class="inquiry-modal-backdrop" data-close-inquiry></div>
-    <div class="inquiry-modal-panel" role="dialog" aria-modal="true" aria-label="Send a WEGO forklift inquiry">
-      <button class="inquiry-modal-close" type="button" data-close-inquiry aria-label="Close inquiry form">
-        <X size={20} aria-hidden="true" />
-      </button>
-      <LeadForm
-        lang={lang}
-        idPrefix="dock-lead"
-        inquiryType="quick_quote"
-        preferredContact="email"
-        defaultMessage="Please send pricing, lead time, and recommended configuration for my forklift project."
-      />
-    </div>
-  </div>
+    <span class="inquiry-dock-icon"><MessageCircle size={24} aria-hidden="true" /></span>
+    <span class="inquiry-dock-label">
+      <strong>WhatsApp</strong>
+    </span>
+  </a>
 </aside>
-
-<script>
-  const inquiryDock = document.querySelector("[data-inquiry-dock]");
-  const inquiryModal = inquiryDock?.querySelector("[data-inquiry-modal]");
-  const inquiryForm = inquiryDock?.querySelector("[data-lead-form]");
-  const closeInquiry = () => {
-    if (inquiryModal instanceof HTMLElement) inquiryModal.hidden = true;
-    document.body.classList.remove("inquiry-modal-open");
-  };
-
-  inquiryDock?.querySelectorAll("[data-open-inquiry]").forEach((trigger) => {
-    trigger.addEventListener("click", () => {
-      if (!(inquiryModal instanceof HTMLElement) || !(inquiryForm instanceof HTMLFormElement)) return;
-      const button = trigger instanceof HTMLElement ? trigger : null;
-      const type = button?.dataset.inquiryType || "quick_quote";
-      const contact = button?.dataset.preferredContact || "email";
-      const message = button?.dataset.message || "";
-      const typeField = inquiryForm.elements.namedItem("inquiry_type");
-      const contactField = inquiryForm.elements.namedItem("preferred_contact");
-      const messageField = inquiryForm.elements.namedItem("message");
-
-      if (typeField instanceof HTMLInputElement) typeField.value = type;
-      if (contactField instanceof HTMLInputElement) contactField.value = contact;
-      if (messageField instanceof HTMLTextAreaElement) messageField.value = message;
-
-      inquiryModal.hidden = false;
-      document.body.classList.add("inquiry-modal-open");
-      const firstInput = inquiryForm.querySelector("input:not([type='hidden'])");
-      if (firstInput instanceof HTMLInputElement) firstInput.focus();
-    });
-  });
-
-  inquiryDock?.querySelectorAll("[data-close-inquiry]").forEach((trigger) => {
-    trigger.addEventListener("click", closeInquiry);
-  });
-
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeInquiry();
-  });
-</script>
