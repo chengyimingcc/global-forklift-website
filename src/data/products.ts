@@ -41,12 +41,6 @@ export type Product = {
   liftHeightM: string;
   powerType: string;
   availability: "PreOrder" | "InStock" | "OutOfStock";
-  price?: {
-    currency: "USD";
-    low: number;
-    high: number;
-    sourceUrl: string;
-  };
   brochure?: string;
   translations: Record<
     Lang,
@@ -75,7 +69,6 @@ type ProductSeed = {
   powerType: string;
   tireType: string;
   applications?: string[];
-  price?: Product["price"];
 };
 
 function productTranslations(seed: ProductSeed): Product["translations"] {
@@ -114,49 +107,49 @@ function productTranslations(seed: ProductSeed): Product["translations"] {
   const templates: Record<Lang, { short: string; seo: string; highlights: string[]; applications: string[] }> = {
     en: {
       short: `${names.en} with ${seed.capacity} rated capacity and ${mast.en.toLowerCase()}. Confirm the final powertrain, lift height, tyres, and attachments for export.`,
-      seo: `View specifications, current images, and an indicative FOB price range for ${names.en}. Request a confirmed WEGO export quotation for your destination and configuration.`,
+      seo: `View specifications and current images for ${names.en}. Request a confirmed WEGO export quotation for your destination, quantity, and configuration.`,
       highlights: [`Rated capacity: ${seed.capacity}`, `Model: ${seed.sku}`, `${mast.en}; final configuration is confirmed before quotation`],
       applications: seed.applications ?? ["Factory and warehouse material handling", "Loading, unloading, and short-distance transport", "Export projects requiring model and attachment confirmation"]
     },
     es: {
       short: `${names.es}, capacidad nominal de ${seed.capacity} y ${mast.es}. Confirme motor o batería, altura, neumáticos y accesorios para exportación.`,
-      seo: `Consulte especificaciones, fotos y precio FOB orientativo de ${names.es}. Solicite una cotización WEGO confirmada para su destino y configuración.`,
+      seo: `Consulte las especificaciones y fotos de ${names.es}. Solicite una cotización de exportación WEGO según destino, cantidad y configuración.`,
       highlights: [`Capacidad nominal: ${seed.capacity}`, `Modelo: ${seed.sku}`, `${mast.es}; la configuración final se confirma antes de cotizar`],
       applications: ["Manipulación en fábricas y almacenes", "Carga, descarga y transporte interno", "Proyectos de exportación con accesorios personalizados"]
     },
     fr: {
       short: `${names.fr}, capacité nominale ${seed.capacity} et ${mast.fr}. Confirmez la motorisation, la hauteur, les pneus et les accessoires pour l'export.`,
-      seo: `Consultez les caractéristiques, photos et prix FOB indicatif de ${names.fr}. Demandez un devis export WEGO confirmé selon votre destination.`,
+      seo: `Consultez les caractéristiques et photos de ${names.fr}. Demandez un devis export WEGO selon la destination, la quantité et la configuration.`,
       highlights: [`Capacité nominale : ${seed.capacity}`, `Modèle : ${seed.sku}`, `${mast.fr} ; la configuration finale est confirmée avant devis`],
       applications: ["Manutention en usine et en entrepôt", "Chargement, déchargement et transport interne", "Projets export avec accessoires personnalisés"]
     },
     ja: {
       short: `${names.ja}。定格荷重${seed.capacity}、${mast.ja}。輸出仕様の動力、揚高、タイヤ、アタッチメントを見積時に確定します。`,
-      seo: `${names.ja}の仕様、現行写真、参考FOB価格帯をご確認いただけます。仕向地と仕様に応じたWEGOの確定輸出見積をご依頼ください。`,
+      seo: `${names.ja}の仕様と現行写真をご確認いただけます。仕向地、数量、仕様に応じたWEGOの輸出見積をご依頼ください。`,
       highlights: [`定格荷重：${seed.capacity}`, `モデル：${seed.sku}`, `${mast.ja}、最終仕様は見積前に確定`],
       applications: ["工場・倉庫内の荷役", "積み込み、荷下ろし、構内搬送", "アタッチメント指定を伴う輸出案件"]
     },
     de: {
       short: `${names.de} mit ${seed.capacity} Nenntragfähigkeit und ${mast.de}. Antrieb, Hubhöhe, Reifen und Anbaugeräte werden für den Export bestätigt.`,
-      seo: `Technische Daten, aktuelle Bilder und unverbindliche FOB-Preisspanne für ${names.de}. Fordern Sie ein bestätigtes WEGO Exportangebot an.`,
+      seo: `Technische Daten und aktuelle Bilder für ${names.de}. Fordern Sie ein WEGO Exportangebot nach Zielort, Menge und Ausführung an.`,
       highlights: [`Nenntragfähigkeit: ${seed.capacity}`, `Modell: ${seed.sku}`, `${mast.de}; die endgültige Ausführung wird vor dem Angebot bestätigt`],
       applications: ["Materialumschlag in Werk und Lager", "Be- und Entladen sowie innerbetrieblicher Transport", "Exportprojekte mit kundenspezifischen Anbaugeräten"]
     },
     pt: {
       short: `${names.pt}, capacidade nominal de ${seed.capacity} e ${mast.pt}. Confirme motorização, elevação, pneus e acessórios para exportação.`,
-      seo: `Veja especificações, fotos e faixa de preço FOB indicativa de ${names.pt}. Solicite uma cotação WEGO confirmada para o seu destino.`,
+      seo: `Veja especificações e fotos de ${names.pt}. Solicite uma cotação de exportação WEGO conforme destino, quantidade e configuração.`,
       highlights: [`Capacidade nominal: ${seed.capacity}`, `Modelo: ${seed.sku}`, `${mast.pt}; a configuração final é confirmada antes da cotação`],
       applications: ["Movimentação em fábricas e armazéns", "Carga, descarga e transporte interno", "Projetos de exportação com acessórios personalizados"]
     },
     ko: {
       short: `${names.ko}. 정격 하중 ${seed.capacity}, ${mast.ko}. 수출용 동력계, 인상 높이, 타이어와 어태치먼트는 견적 시 확정합니다.`,
-      seo: `${names.ko}의 사양, 현재 사진과 참고 FOB 가격대를 확인하고 목적지와 구성에 맞는 WEGO 수출 견적을 요청하세요.`,
+      seo: `${names.ko}의 사양과 현재 사진을 확인하고 목적지, 수량 및 구성에 맞는 WEGO 수출 견적을 요청하세요.`,
       highlights: [`정격 하중: ${seed.capacity}`, `모델: ${seed.sku}`, `${mast.ko}, 최종 구성은 견적 전에 확정`],
       applications: ["공장 및 창고 자재 운반", "상하차와 단거리 구내 운송", "맞춤형 어태치먼트가 필요한 수출 프로젝트"]
     },
     ar: {
       short: `${names.ar} بحمولة مقننة ${seed.capacity} و${mast.ar}. يتم تأكيد المحرك وارتفاع الرفع والإطارات والملحقات للتصدير.`,
-      seo: `اطلع على المواصفات والصور ونطاق سعر FOB الاسترشادي لـ ${names.ar}. اطلب عرض تصدير مؤكدا من WEGO حسب الوجهة والتجهيز.`,
+      seo: `اطلع على المواصفات والصور الحالية لـ ${names.ar}. اطلب عرض تصدير من WEGO حسب الوجهة والكمية والتجهيز.`,
       highlights: [`الحمولة المقننة: ${seed.capacity}`, `الموديل: ${seed.sku}`, `${mast.ar}؛ يؤكد التجهيز النهائي قبل عرض السعر`],
       applications: ["مناولة المواد في المصانع والمستودعات", "التحميل والتفريغ والنقل الداخلي", "مشروعات التصدير ذات الملحقات المخصصة"]
     }
@@ -316,14 +309,6 @@ export const categories: ProductCategory[] = [
   }
 ];
 
-const madeInChinaStore = "https://jnwego.en.made-in-china.com/";
-const publicPrice = (low: number, high: number): NonNullable<Product["price"]> => ({
-  currency: "USD",
-  low,
-  high,
-  sourceUrl: madeInChinaStore
-});
-
 const productSeeds: ProductSeed[] = [
   {
     slug: "wego-diesel-forklift-25t-3-stage",
@@ -335,8 +320,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "2.5T",
     mastType: "3-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(8000, 10000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-diesel-forklift-25t-classic",
@@ -348,8 +332,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "2.5T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(8000, 10000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-lithium-forklift-25t",
@@ -361,8 +344,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "2.5T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Lithium battery",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(10000, 15000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-diesel-forklift-30t-2-stage",
@@ -374,8 +356,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.0T",
     mastType: "2-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(10000, 15000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-lithium-forklift-30t",
@@ -387,8 +368,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.0T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Lithium battery",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(10000, 15000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-diesel-forklift-35t-2-stage",
@@ -400,8 +380,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.5T",
     mastType: "2-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(10000, 15000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-electric-forklift-k35",
@@ -413,8 +392,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.5T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Electric",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(10000, 15000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-diesel-forklift-35t-classic",
@@ -426,8 +404,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "3.5T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(10000, 15000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-rough-terrain-forklift-35t",
@@ -440,7 +417,6 @@ const productSeeds: ProductSeed[] = [
     mastType: "Mast configuration to be confirmed",
     powerType: "Diesel",
     tireType: "Rough-terrain pneumatic",
-    price: publicPrice(15000, 20000),
     applications: ["Construction sites and uneven yards", "Farms, timber, and outdoor storage", "Outdoor loading on unpaved surfaces"]
   },
   {
@@ -453,8 +429,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "4.0T",
     mastType: "2-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(10000, 15000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-diesel-forklift-40t-3-stage",
@@ -466,8 +441,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "4.0T",
     mastType: "3-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(10000, 15000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-diesel-forklift-50t-3-stage",
@@ -479,8 +453,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "5.0T",
     mastType: "3-stage mast",
     powerType: "Diesel",
-    tireType: "Pneumatic / solid options",
-    price: publicPrice(15000, 20000)
+    tireType: "Pneumatic / solid options"
   },
   {
     slug: "wego-heavy-duty-forklift-70t-2-stage",
@@ -492,8 +465,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "7.0T",
     mastType: "2-stage mast",
     powerType: "Diesel",
-    tireType: "Large pneumatic",
-    price: publicPrice(20000, 25000)
+    tireType: "Large pneumatic"
   },
   {
     slug: "wego-heavy-duty-forklift-80t",
@@ -517,8 +489,7 @@ const productSeeds: ProductSeed[] = [
     capacity: "10.0T",
     mastType: "Mast configuration to be confirmed",
     powerType: "Diesel",
-    tireType: "Large pneumatic",
-    price: publicPrice(30000, 35000)
+    tireType: "Large pneumatic"
   },
   {
     slug: "heli-electric-pallet-stacker-mc12",
@@ -893,7 +864,6 @@ export const products: Product[] = productSeeds.map((seed) => {
     liftHeightM: seed.mastType,
     powerType: seed.powerType,
     availability: "PreOrder",
-    price: seed.price,
     translations: productTranslations(seed),
     specs: productSpecs(seed)
   };

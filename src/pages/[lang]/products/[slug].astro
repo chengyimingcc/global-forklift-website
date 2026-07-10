@@ -133,9 +133,6 @@ const collectionSchema = category
     }
   : undefined;
 const schema = product ? [productSchema(product, lang), breadcrumbSchema(breadcrumbs)] : [collectionSchema, breadcrumbSchema(breadcrumbs)];
-const priceText = product?.price
-  ? `US$${product.price.low.toLocaleString("en-US")}-${product.price.high.toLocaleString("en-US")}`
-  : "";
 ---
 
 <Layout
@@ -220,10 +217,9 @@ const priceText = product?.price
                   </div>
                   <h1 class="section-title">{getProductName(product, lang)}</h1>
                   <p class="lead">{product.translations[lang].shortDescription}</p>
-                  <div class="price-panel" aria-label={t(lang, "indicativePrice")}>
-                    <span>{product.price ? t(lang, "indicativePrice") : t(lang, "priceOnRequest")}</span>
-                    {product.price && <strong>{priceText} <small>{t(lang, "priceCurrencyUnit")}</small></strong>}
-                    <p>{t(lang, "priceDisclaimer")}</p>
+                  <div class="quote-panel" aria-label={t(lang, "requestQuote")}>
+                    <span>{t(lang, "requestQuote")}</span>
+                    <p>{t(lang, "quoteDisclaimer")}</p>
                   </div>
                   {product.brochure && (
                     <div class="button-row" style="margin-top: 22px;">

@@ -13,7 +13,6 @@ interface Props {
 const { product, lang } = Astro.props;
 const copy = product.translations[lang] ?? product.translations.en;
 const category = getCategory(product.category);
-const cardPrice = product.price ? `US$${product.price.low.toLocaleString("en-US")}-${product.price.high.toLocaleString("en-US")}` : "";
 ---
 
 <article class="card product-card" data-category={product.category} data-name={`${getProductName(product, lang)} ${copy.shortDescription}`}>
@@ -29,9 +28,8 @@ const cardPrice = product.price ? `US$${product.price.low.toLocaleString("en-US"
       <a href={languagePath(lang, `/products/${product.slug}/`)}>{getProductName(product, lang)}</a>
     </h3>
     <p>{copy.shortDescription}</p>
-    <div class="card-price">
-      <span>{product.price ? t(lang, "indicativePrice") : t(lang, "priceOnRequest")}</span>
-      {product.price && <strong>{cardPrice}</strong>}
+    <div class="card-quote">
+      <span>{t(lang, "requestQuote")}</span>
     </div>
     <a class="btn secondary" href={languagePath(lang, `/products/${product.slug}/`)}>
       <span>{t(lang, "viewDetails")}</span>

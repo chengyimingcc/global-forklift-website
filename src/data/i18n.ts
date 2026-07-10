@@ -53,7 +53,7 @@ const en: Dictionary = {
   formError: "The live endpoint is not connected yet. A mail draft has been opened as fallback.",
   servicesIntro: "Reserve this section for after-sales promises, spare parts, OEM/ODM options, and delivery workflows.",
   aboutIntro: "Reserve this section for factory strengths, export experience, certifications, and customer proof.",
-  contactIntro: "Use this page as the main conversion destination for Google organic traffic and ads.",
+  contactIntro: "Request a forklift quotation from WEGO for your destination, quantity, and required configuration.",
   privacyIntro: "Replace this template with a lawyer-reviewed privacy policy before launch.",
   termsIntro: "Replace this template with commercial terms before launch.",
   noIndexNotice: "Indexing is disabled until PUBLIC_ALLOW_INDEXING=true.",
@@ -119,7 +119,7 @@ const es: Dictionary = {
   formError: "El endpoint aun no esta conectado. Se abrio un borrador de correo como respaldo.",
   servicesIntro: "Reserve esta seccion para repuestos, garantia, OEM/ODM y entrega.",
   aboutIntro: "Reserve esta seccion para fabrica, experiencia exportadora, certificaciones y pruebas.",
-  contactIntro: "Use esta pagina como destino principal de trafico organico y anuncios.",
+  contactIntro: "Solicite una cotizacion de montacargas WEGO segun destino, cantidad y configuracion.",
   privacyIntro: "Reemplace esta plantilla con una politica revisada antes del lanzamiento.",
   termsIntro: "Reemplace esta plantilla con terminos comerciales antes del lanzamiento.",
   noIndexNotice: "La indexacion esta desactivada hasta PUBLIC_ALLOW_INDEXING=true.",
@@ -184,7 +184,7 @@ const fr: Dictionary = {
   formError: "Endpoint non connecte. Un brouillon email a ete ouvert.",
   servicesIntro: "Reserve pour pieces, garantie, OEM/ODM et livraison.",
   aboutIntro: "Reserve pour usine, experience export, certifications et preuves client.",
-  contactIntro: "Page principale de conversion pour SEO et annonces.",
+  contactIntro: "Demandez un devis WEGO selon la destination, la quantite et la configuration souhaitee.",
   privacyIntro: "Remplacez ce modele par une politique validee avant lancement.",
   termsIntro: "Remplacez ce modele par les conditions commerciales.",
   noIndexNotice: "Indexation desactivee jusqu'a PUBLIC_ALLOW_INDEXING=true.",
@@ -249,7 +249,7 @@ const ja: Dictionary = {
   formError: "本番エンドポイント未接続です。代替としてメール下書きを開きました。",
   servicesIntro: "部品、保証、OEM/ODM、配送フローをここに追加してください。",
   aboutIntro: "工場、輸出経験、認証、実績をここに追加してください。",
-  contactIntro: "SEOと広告流入の主要コンバージョンページです。",
+  contactIntro: "仕向地、数量、必要仕様に応じたWEGOフォークリフトの見積をご依頼ください。",
   privacyIntro: "公開前に法務確認済みのプライバシーポリシーへ差し替えてください。",
   termsIntro: "公開前に商取引条件へ差し替えてください。",
   noIndexNotice: "PUBLIC_ALLOW_INDEXING=true までインデックス無効です。",
@@ -314,7 +314,7 @@ const de: Dictionary = {
   formError: "Live-Endpunkt nicht verbunden. E-Mail-Entwurf wurde geoffnet.",
   servicesIntro: "Platzhalter fur Ersatzteile, Garantie, OEM/ODM und Lieferung.",
   aboutIntro: "Platzhalter fur Werk, Exporterfahrung, Zertifikate und Nachweise.",
-  contactIntro: "Hauptseite fur Conversions aus SEO und Anzeigen.",
+  contactIntro: "Fordern Sie ein WEGO Gabelstaplerangebot nach Zielort, Menge und Ausfuhrung an.",
   privacyIntro: "Vor Launch durch geprufte Datenschutzerklarung ersetzen.",
   termsIntro: "Vor Launch durch Handelsbedingungen ersetzen.",
   noIndexNotice: "Indexierung deaktiviert bis PUBLIC_ALLOW_INDEXING=true.",
@@ -379,7 +379,7 @@ const pt: Dictionary = {
   formError: "Endpoint ainda nao conectado. Um rascunho de email foi aberto.",
   servicesIntro: "Reserve para pecas, garantia, OEM/ODM e entrega.",
   aboutIntro: "Reserve para fabrica, experiencia de exportacao, certificacoes e provas.",
-  contactIntro: "Use como pagina principal de conversao para SEO e anuncios.",
+  contactIntro: "Solicite uma cotacao WEGO conforme destino, quantidade e configuracao desejada.",
   privacyIntro: "Substitua por politica revisada antes do lancamento.",
   termsIntro: "Substitua por termos comerciais antes do lancamento.",
   noIndexNotice: "Indexacao desativada ate PUBLIC_ALLOW_INDEXING=true.",
@@ -444,7 +444,7 @@ const ko: Dictionary = {
   formError: "라이브 엔드포인트가 아직 연결되지 않았습니다. 이메일 초안이 열렸습니다.",
   servicesIntro: "부품, 보증, OEM/ODM, 배송 프로세스를 여기에 추가하세요.",
   aboutIntro: "공장, 수출 경험, 인증, 고객 증거를 여기에 추가하세요.",
-  contactIntro: "SEO 및 광고 유입의 주요 전환 페이지입니다.",
+  contactIntro: "목적지, 수량 및 필요한 사양에 맞는 WEGO 지게차 견적을 요청하세요.",
   privacyIntro: "출시 전 검토된 개인정보 처리방침으로 교체하세요.",
   termsIntro: "출시 전 거래 조건으로 교체하세요.",
   noIndexNotice: "PUBLIC_ALLOW_INDEXING=true 전까지 색인이 비활성화됩니다.",
@@ -509,7 +509,7 @@ const ar: Dictionary = {
   formError: "نقطة النهاية غير متصلة بعد. تم فتح مسودة بريد كبديل.",
   servicesIntro: "خصص هذا القسم لقطع الغيار والضمان وOEM/ODM والتسليم.",
   aboutIntro: "خصص هذا القسم للمصنع وخبرة التصدير والشهادات والاثباتات.",
-  contactIntro: "استخدم هذه الصفحة كوجهة تحويل رئيسية للبحث والاعلانات.",
+  contactIntro: "اطلب عرض رافعة شوكية من WEGO حسب الوجهة والكمية والتجهيز المطلوب.",
   privacyIntro: "استبدل هذا القالب بسياسة خصوصية مراجعة قبل الاطلاق.",
   termsIntro: "استبدل هذا القالب بالشروط التجارية قبل الاطلاق.",
   noIndexNotice: "الفهرسة متوقفة حتى PUBLIC_ALLOW_INDEXING=true.",
@@ -745,52 +745,28 @@ const modernUi: Record<Lang, Dictionary> = {
 
 const commerceUi: Record<Lang, Dictionary> = {
   en: {
-    indicativePrice: "Indicative FOB price",
-    priceOnRequest: "Price on request",
-    priceDisclaimer: "Public reference range. Final price depends on specification, quantity, and destination.",
-    priceCurrencyUnit: "USD / unit"
+    quoteDisclaimer: "The quotation is confirmed according to configuration, quantity, destination, and trade terms."
   },
   es: {
-    indicativePrice: "Precio FOB orientativo",
-    priceOnRequest: "Precio bajo consulta",
-    priceDisclaimer: "Rango público de referencia. El precio final depende de la configuración, cantidad y destino.",
-    priceCurrencyUnit: "USD / unidad"
+    quoteDisclaimer: "La cotización se confirma según configuración, cantidad, destino y condiciones comerciales."
   },
   fr: {
-    indicativePrice: "Prix FOB indicatif",
-    priceOnRequest: "Prix sur demande",
-    priceDisclaimer: "Fourchette publique indicative. Le prix final dépend de la configuration, de la quantité et de la destination.",
-    priceCurrencyUnit: "USD / unité"
+    quoteDisclaimer: "Le devis est confirmé selon la configuration, la quantité, la destination et les conditions commerciales."
   },
   ja: {
-    indicativePrice: "参考FOB価格",
-    priceOnRequest: "価格はお問い合わせください",
-    priceDisclaimer: "公開参考価格帯です。最終価格は仕様、数量、仕向地により異なります。",
-    priceCurrencyUnit: "USD / 台"
+    quoteDisclaimer: "仕様、数量、仕向地、取引条件に応じて正式見積を確定します。"
   },
   de: {
-    indicativePrice: "Unverbindlicher FOB-Preis",
-    priceOnRequest: "Preis auf Anfrage",
-    priceDisclaimer: "Öffentliche Referenzspanne. Der Endpreis hängt von Ausführung, Menge und Zielort ab.",
-    priceCurrencyUnit: "USD / Stück"
+    quoteDisclaimer: "Das Angebot wird nach Ausführung, Menge, Zielort und Handelsbedingungen bestätigt."
   },
   pt: {
-    indicativePrice: "Preço FOB indicativo",
-    priceOnRequest: "Preço sob consulta",
-    priceDisclaimer: "Faixa pública de referência. O preço final depende da configuração, quantidade e destino.",
-    priceCurrencyUnit: "USD / unidade"
+    quoteDisclaimer: "A cotação é confirmada conforme configuração, quantidade, destino e condições comerciais."
   },
   ko: {
-    indicativePrice: "참고 FOB 가격",
-    priceOnRequest: "가격 문의",
-    priceDisclaimer: "공개 참고 가격대입니다. 최종 가격은 사양, 수량 및 목적지에 따라 달라집니다.",
-    priceCurrencyUnit: "USD / 대"
+    quoteDisclaimer: "구성, 수량, 목적지 및 거래 조건에 따라 최종 견적을 확정합니다."
   },
   ar: {
-    indicativePrice: "سعر FOB استرشادي",
-    priceOnRequest: "السعر عند الطلب",
-    priceDisclaimer: "نطاق مرجعي معلن. يعتمد السعر النهائي على التجهيز والكمية والوجهة.",
-    priceCurrencyUnit: "دولار / وحدة"
+    quoteDisclaimer: "يؤكد عرض السعر حسب التجهيز والكمية والوجهة وشروط التجارة."
   }
 };
 

@@ -23,21 +23,7 @@ export function productSchema(product: Product, lang: Lang) {
       "@type": "PropertyValue",
       name: t(lang, item.labelKey),
       value: item.value[lang] ?? item.value.en
-    })),
-    ...(product.price
-      ? {
-          offers: {
-            "@type": "AggregateOffer",
-            url: absoluteUrl(`/${lang}/products/${product.slug}/`),
-            priceCurrency: product.price.currency,
-            lowPrice: product.price.low,
-            highPrice: product.price.high,
-            offerCount: 1,
-            availability: `https://schema.org/${product.availability}`,
-            itemCondition: "https://schema.org/NewCondition"
-          }
-        }
-      : {})
+    }))
   };
 }
 
