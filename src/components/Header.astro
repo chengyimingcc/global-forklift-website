@@ -5,7 +5,7 @@ import type { Lang } from "@data/languages";
 import { siteConfig } from "@data/site";
 import { t } from "@data/i18n";
 import { categories } from "@data/products";
-import { servicePages, solutions } from "@data/content";
+import { solutions } from "@data/content";
 import { languagePath } from "@lib/seo";
 
 interface Props {
@@ -19,8 +19,10 @@ const pagePath = pathname.replace(new RegExp(`^/${lang}(?=/|$)`), "") || "/";
 const navItems = [
   { label: t(lang, "navProducts"), href: languagePath(lang, "/products/"), match: `/${lang}/products/`, menu: "products" },
   { label: t(lang, "navSolutions"), href: languagePath(lang, "/solutions/"), match: `/${lang}/solutions/`, menu: "solutions" },
-  { label: t(lang, "navSupport"), href: languagePath(lang, "/parts-service/"), match: `/${lang}/parts-service/`, menu: "service" },
-  { label: t(lang, "navWhyWego"), href: languagePath(lang, "/why-wego/"), match: `/${lang}/why-wego/` }
+  { label: t(lang, "navService"), href: languagePath(lang, "/service/"), match: `/${lang}/service/` },
+  { label: t(lang, "navNews"), href: languagePath(lang, "/news/"), match: `/${lang}/news/` },
+  { label: t(lang, "navAboutUs"), href: languagePath(lang, "/about/"), match: `/${lang}/about/` },
+  { label: t(lang, "navContactUs"), href: languagePath(lang, "/contact/"), match: `/${lang}/contact/` }
 ];
 const menuCategories = categories;
 ---
@@ -69,19 +71,6 @@ const menuCategories = categories;
                   </div>
                   <div class="mega-list">
                     {solutions.map((solution) => <a href={languagePath(lang, `/solutions/${solution.slug}/`)}>{solution.title[lang]}</a>)}
-                  </div>
-                </div>
-              )
-            }
-            {
-              item.menu === "service" && (
-                <div class="mega-menu list-menu">
-                  <div class="mega-feature">
-                    <strong>{t(lang, "navSupport")}</strong>
-                    <span>{t(lang, "megaSupportBody")}</span>
-                  </div>
-                  <div class="mega-list">
-                    {servicePages.map((page) => <a href={languagePath(lang, `/parts-service/${page.slug}/`)}>{page.title[lang]}</a>)}
                   </div>
                 </div>
               )

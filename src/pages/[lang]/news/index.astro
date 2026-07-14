@@ -1,0 +1,45 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import { languages, type Lang } from "@data/languages";
+import { languagePath } from "@lib/seo";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const articles = (await getCollection("news")).sort((a, b) => new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime());
+---
+
+<Layout lang={lang} title={`News | WEGO Forklift`} description="WEGO company updates, product guides, technical notes, and export-related forklift articles." path="/news/">
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <span class="eyebrow">News</span>
+        <h1 class="section-title">News and technical articles</h1>
+        <p class="lead">This section is designed for ongoing publishing through the admin panel so the site can keep adding fresh indexable content without changing templates.</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container">
+        <div class="news-list">
+          {
+            articles.map((article) => (
+              <article class="news-row">
+                <a class="news-row-media" href={languagePath(lang, `/news/${article.data.permalink}/`)}>
+                  <img src={article.data.cover} alt={article.data.title[lang]} width="960" height="540" loading="lazy" />
+                </a>
+                <div class="news-row-body">
+                  <p class="card-meta">{article.data.publishedAt.toISOString().slice(0, 10)}</p>
+                  <h2><a href={languagePath(lang, `/news/${article.data.permalink}/`)}>{article.data.title[lang]}</a></h2>
+                  <p>{article.data.excerpt[lang]}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

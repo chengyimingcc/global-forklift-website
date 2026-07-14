@@ -9,7 +9,7 @@ export const siteConfig = {
   whatsapp: "+8615106998335",
   address: "Industrial South Road, Licheng District, Jinan, Shandong, China",
   logo: "/images/brand/wego-logo.png",
-  defaultImage: "/images/products/heavy-duty-100t/01.webp",
+  defaultImage: "/images/home/wego-forklift-series-hero.jpg",
   foundedYear: "2008",
   social: {
     linkedin: "",

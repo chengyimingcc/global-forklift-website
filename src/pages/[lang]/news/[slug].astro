@@ -1,0 +1,64 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import ProductCard from "@components/ProductCard.astro";
+import { languages, type Lang } from "@data/languages";
+import { getCategoryProducts } from "@data/products";
+import { languagePath } from "@lib/seo";
+import { breadcrumbSchema } from "@lib/schema";
+
+export async function getStaticPaths() {
+  const news = await getCollection("news");
+  return languages.flatMap((language) => news.map((article) => ({ params: { lang: language.code, slug: article.data.permalink } })));
+}
+
+const lang = Astro.params.lang as Lang;
+const articles = await getCollection("news");
+const article = articles.find((entry) => entry.data.permalink === Astro.params.slug);
+if (!article) return Astro.redirect(languagePath(lang, "/news/"));
+
+const relatedProducts = article.data.relatedCategories.flatMap((category) => getCategoryProducts(category)).slice(0, 3);
+const breadcrumbs = [
+  { name: "Home", url: languagePath(lang, "/") },
+  { name: "News", url: languagePath(lang, "/news/") },
+  { name: article.data.title[lang], url: languagePath(lang, `/news/${article.data.permalink}/`) }
+];
+---
+
+<Layout
+  lang={lang}
+  title={article.data.seoTitle[lang]}
+  description={article.data.seoDescription[lang]}
+  path={`/news/${article.data.permalink}/`}
+  type="article"
+  image={article.data.cover}
+  schema={breadcrumbSchema(breadcrumbs)}
+>
+  <main>
+    <header class="page-header">
+      <div class="container">
+        <Breadcrumbs items={[{ label: "Home", href: languagePath(lang, "/") }, { label: "News", href: languagePath(lang, "/news/") }, { label: article.data.title[lang] }]} />
+        <span class="eyebrow">News</span>
+        <h1 class="section-title">{article.data.title[lang]}</h1>
+        <p class="lead">{article.data.excerpt[lang]}</p>
+        <p class="card-meta">{article.data.publishedAt.toISOString().slice(0, 10)} · {article.data.author}</p>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container split">
+        <article class="prose">
+          <img src={article.data.cover} alt={article.data.title[lang]} width="1280" height="720" />
+          {article.data.body[lang].map((paragraph) => <p>{paragraph}</p>)}
+        </article>
+        <aside class="news-side">
+          <h2 class="section-title">Related products</h2>
+          <div class="grid">
+            {relatedProducts.map((product) => <ProductCard product={product} lang={lang} />)}
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+</Layout>

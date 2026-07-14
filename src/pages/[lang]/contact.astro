@@ -21,30 +21,13 @@ const lang = Astro.params.lang as Lang;
         <h1 class="section-title">{t(lang, "requestQuote")}</h1>
       </div>
     </header>
+
     <section class="section">
       <div class="container split">
         <div class="grid">
-          <article class="card">
-            <div class="card-body">
-              <Mail size={24} aria-hidden="true" />
-              <h2>Email</h2>
-              <p>{siteConfig.email}</p>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-body">
-              <Phone size={24} aria-hidden="true" />
-              <h2>Phone</h2>
-              <p>{siteConfig.phone}</p>
-            </div>
-          </article>
-          <article class="card">
-            <div class="card-body">
-              <MessageCircle size={24} aria-hidden="true" />
-              <h2>WhatsApp</h2>
-              <p>{siteConfig.whatsapp}</p>
-            </div>
-          </article>
+          <article class="card"><div class="card-body"><Mail size={24} aria-hidden="true" /><h2>Email</h2><p>{siteConfig.email}</p></div></article>
+          <article class="card"><div class="card-body"><Phone size={24} aria-hidden="true" /><h2>Phone</h2><p>{siteConfig.phone}</p></div></article>
+          <article class="card"><div class="card-body"><MessageCircle size={24} aria-hidden="true" /><h2>WhatsApp</h2><p>{siteConfig.whatsapp}</p></div></article>
         </div>
         <LeadForm lang={lang} />
       </div>

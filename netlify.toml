@@ -30,6 +30,11 @@
     X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
   for = "/feeds/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
@@ -50,3 +55,28 @@
   from = "/api/lead"
   to = "/.netlify/functions/lead"
   status = 200
+
+[[redirects]]
+  from = "/:lang/parts-service/*"
+  to = "/:lang/service/"
+  status = 301
+
+[[redirects]]
+  from = "/:lang/services/"
+  to = "/:lang/service/"
+  status = 301
+
+[[redirects]]
+  from = "/:lang/why-wego/*"
+  to = "/:lang/about/"
+  status = 301
+
+[[redirects]]
+  from = "/:lang/resources/*"
+  to = "/:lang/news/"
+  status = 301
+
+[[redirects]]
+  from = "/:lang/industries/*"
+  to = "/:lang/solutions/:splat/"
+  status = 301

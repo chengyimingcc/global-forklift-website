@@ -1,0 +1,105 @@
+backend:
+  name: github
+  repo: chengyimingcc/global-forklift-website
+  branch: main
+  use_graphql: true
+
+publish_mode: simple
+locale: en
+show_preview_links: true
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+site_url: https://wegoforklift.com
+display_url: https://wegoforklift.com
+logo_url: /images/brand/wego-logo.png
+
+collections:
+  - name: news
+    label: News
+    label_singular: Article
+    folder: src/content/news
+    create: true
+    slug: "{{slug}}"
+    summary: "{{publishedAt}} · {{title.en}}"
+    sortable_fields: [publishedAt, updatedAt, title.en, category]
+    view_filters:
+      - { label: Featured, field: featured, pattern: true }
+      - { label: News, field: category, pattern: news }
+      - { label: Product guides, field: category, pattern: product-guide }
+    extension: md
+    format: frontmatter
+    fields:
+      - { label: Translation Key, name: translationKey, widget: string }
+      - { label: Slug, name: permalink, widget: string }
+      - { label: Category, name: category, widget: select, options: [news, events, product-guide, delivery-case, technical-guide] }
+      - { label: Author, name: author, widget: string, default: "WEGO Sales Team" }
+      - { label: Published At, name: publishedAt, widget: datetime, format: "YYYY-MM-DD", time_format: false }
+      - { label: Updated At, name: updatedAt, widget: datetime, format: "YYYY-MM-DD", time_format: false }
+      - { label: Cover Image, name: cover, widget: image }
+      - { label: Featured, name: featured, widget: boolean, default: false }
+      - label: Title
+        name: title
+        widget: object
+        fields:
+          - { label: English, name: en, widget: string }
+          - { label: Español, name: es, widget: string }
+          - { label: Français, name: fr, widget: string }
+          - { label: 日本語, name: ja, widget: string }
+          - { label: Deutsch, name: de, widget: string }
+          - { label: Português, name: pt, widget: string }
+          - { label: 한국어, name: ko, widget: string }
+          - { label: العربية, name: ar, widget: string }
+      - label: Excerpt
+        name: excerpt
+        widget: object
+        fields:
+          - { label: English, name: en, widget: text }
+          - { label: Español, name: es, widget: text }
+          - { label: Français, name: fr, widget: text }
+          - { label: 日本語, name: ja, widget: text }
+          - { label: Deutsch, name: de, widget: text }
+          - { label: Português, name: pt, widget: text }
+          - { label: 한국어, name: ko, widget: text }
+          - { label: العربية, name: ar, widget: text }
+      - label: SEO Title
+        name: seoTitle
+        widget: object
+        fields:
+          - { label: English, name: en, widget: string }
+          - { label: Español, name: es, widget: string }
+          - { label: Français, name: fr, widget: string }
+          - { label: 日本語, name: ja, widget: string }
+          - { label: Deutsch, name: de, widget: string }
+          - { label: Português, name: pt, widget: string }
+          - { label: 한국어, name: ko, widget: string }
+          - { label: العربية, name: ar, widget: string }
+      - label: SEO Description
+        name: seoDescription
+        widget: object
+        fields:
+          - { label: English, name: en, widget: text }
+          - { label: Español, name: es, widget: text }
+          - { label: Français, name: fr, widget: text }
+          - { label: 日本語, name: ja, widget: text }
+          - { label: Deutsch, name: de, widget: text }
+          - { label: Português, name: pt, widget: text }
+          - { label: 한국어, name: ko, widget: text }
+          - { label: العربية, name: ar, widget: text }
+      - label: Body
+        name: body
+        widget: object
+        fields:
+          - { label: English, name: en, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+          - { label: Español, name: es, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+          - { label: Français, name: fr, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+          - { label: 日本語, name: ja, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+          - { label: Deutsch, name: de, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+          - { label: Português, name: pt, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+          - { label: 한국어, name: ko, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+          - { label: العربية, name: ar, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+      - label: Related Categories
+        name: relatedCategories
+        widget: list
+        required: false
+        field: { label: Category Slug, name: category, widget: string }

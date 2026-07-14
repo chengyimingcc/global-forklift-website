@@ -1,65 +1,12 @@
 ---
-import { CheckCircle2 } from "lucide-astro";
-import Layout from "@layouts/Layout.astro";
-import Breadcrumbs from "@components/Breadcrumbs.astro";
-import LeadForm from "@components/LeadForm.astro";
-import ProductCard from "@components/ProductCard.astro";
 import { languages, type Lang } from "@data/languages";
-import { industries } from "@data/content";
-import { products } from "@data/products";
-import { siteConfig } from "@data/site";
-import { t } from "@data/i18n";
+import { solutions } from "@data/content";
 import { languagePath } from "@lib/seo";
-import { breadcrumbSchema } from "@lib/schema";
 
 export function getStaticPaths() {
-  return languages.flatMap((language) => industries.map((industry) => ({ params: { lang: language.code, slug: industry.slug } })));
+  return languages.flatMap((language) => solutions.map((solution) => ({ params: { lang: language.code, slug: solution.slug } })));
 }
 
 const lang = Astro.params.lang as Lang;
-const industry = industries.find((item) => item.slug === Astro.params.slug);
-if (!industry) {
-  return Astro.redirect(languagePath(lang, "/"));
-}
-const pagePath = `/industries/${industry.slug}/`;
-const breadcrumbs = [
-  { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
-  { name: t(lang, "allIndustries"), url: languagePath(lang, "/industries/warehousing/") },
-  { name: industry.title[lang], url: languagePath(lang, pagePath) }
-];
+return Astro.redirect(languagePath(lang, `/solutions/${Astro.params.slug}/`), 301);
 ---
-
-<Layout lang={lang} title={`${industry.title[lang]} Forklift Solutions | ${siteConfig.brand}`} description={industry.summary[lang]} path={pagePath} schema={breadcrumbSchema(breadcrumbs)}>
-  <main>
-    <header class="page-header">
-      <div class="container">
-        <Breadcrumbs items={[
-          { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
-          { label: t(lang, "allIndustries") },
-          { label: industry.title[lang] }
-        ]} />
-        <span class="eyebrow">{t(lang, "industriesTitle")}</span>
-        <h1 class="section-title">{industry.title[lang]}</h1>
-        <p class="lead">{industry.summary[lang]}</p>
-      </div>
-    </header>
-    <section class="section">
-      <div class="container split">
-        <article class="prose">
-          <h2>{t(lang, "compareSpecs")}</h2>
-          <p>{industry.summary[lang]}</p>
-          <ul>
-            <li><CheckCircle2 size={16} aria-hidden="true" /> Replace with real buyer questions for this industry.</li>
-            <li><CheckCircle2 size={16} aria-hidden="true" /> Add recommended capacity, tire, mast, battery, and attachment options.</li>
-            <li><CheckCircle2 size={16} aria-hidden="true" /> Add region-specific export and delivery notes.</li>
-          </ul>
-          <h2>{t(lang, "featuredProducts")}</h2>
-          <div class="grid two">
-            {products.slice(0, 2).map((product) => <ProductCard product={product} lang={lang} />)}
-          </div>
-        </article>
-        <LeadForm lang={lang} />
-      </div>
-    </section>
-  </main>
-</Layout>

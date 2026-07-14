@@ -1,161 +1,113 @@
 ---
-import { ArrowRight, CheckCircle2, Factory, PackageCheck, Search, Send, ShieldCheck, Wrench } from "lucide-astro";
+import { getCollection } from "astro:content";
+import { ArrowRight, Newspaper, ShieldCheck } from "lucide-astro";
 import Layout from "@layouts/Layout.astro";
 import LeadForm from "@components/LeadForm.astro";
 import ProductCard from "@components/ProductCard.astro";
 import { languages, type Lang } from "@data/languages";
-import { t } from "@data/i18n";
+import { heroSlides, homeCounters } from "@data/marketing";
 import { categories, products } from "@data/products";
-import { servicePages, solutions } from "@data/content";
-import { companyProfile } from "@data/company";
-import { primaryMarkets, siteConfig } from "@data/site";
-import { languagePath, organizationSchema, websiteSchema } from "@lib/seo";
+import { siteConfig } from "@data/site";
+import { solutions } from "@data/content";
+import { languagePath } from "@lib/seo";
+import { organizationSchema, websiteSchema } from "@lib/seo";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
   return languages.map((language) => ({ params: { lang: language.code } }));
 }
 
 const lang = Astro.params.lang as Lang;
+const latestNews = (await getCollection("news"))
+  .sort((a, b) => new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime())
+  .slice(0, 3);
+
+const featureProducts = products.slice(0, 6);
 const schema = [organizationSchema(), websiteSchema(lang)];
-const catalogCategories = categories.filter((category) => category.status === "catalog");
-const featuredProducts = [products[2], products[4], products[5], products[8], products[11], products[14]];
-const localizedHeroTitle = t(lang, "heroTitle");
-const localizedHeroBody = t(lang, "heroBody");
-const profileCopy = companyProfile[lang] ?? companyProfile.en;
-const heroSlides = [
-  {
-    image: "/images/products/heavy-duty-100t/01.webp",
-    title: localizedHeroTitle,
-    body: localizedHeroBody
-  },
-  {
-    image: "/images/products/lithium-25t/01.webp",
-    title: localizedHeroTitle,
-    body: localizedHeroBody
-  },
-  {
-    image: "/images/products/rough-terrain-35t/01.webp",
-    title: localizedHeroTitle,
-    body: localizedHeroBody
-  },
-  {
-    image: "/images/products/diesel-50t-3-stage/01.webp",
-    title: localizedHeroTitle,
-    body: localizedHeroBody
-  }
-];
-const mosaicTiles = [
-  { image: "/images/products/lithium-30t/01.webp", label: categories[0].label[lang], detail: "2.5T-3.5T" },
-  { image: "/images/products/diesel-35t-2-stage/01.webp", label: categories[1].label[lang], detail: "2.5T-5.0T" },
-  { image: "/images/products/rough-terrain-35t/01.webp", label: categories[3].label[lang], detail: "3.5T" },
-  { image: "/images/products/electric-pallet-stacker/01.webp", label: categories[4].label[lang], detail: "MC12" }
-];
 ---
 
 <Layout
   lang={lang}
-  title={t(lang, "seoHomeTitle")}
-  description={t(lang, "seoHomeDescription")}
+  title={`${siteConfig.brand} | ${heroSlides[0].title[lang]}`}
+  description={heroSlides[0].body[lang]}
   path="/"
-  image={siteConfig.defaultImage}
+  image={heroSlides[0].image}
   schema={schema}
 >
   <main>
-    <section class="hero wego-hero" data-hero-slider>
+    <section class="hero wego-home-hero" data-home-hero>
       <div class="hero-slider" aria-hidden="true">
         {
           heroSlides.map((slide, index) => (
-            <div class:list={["hero-slide", index === 0 && "is-active"]} data-slide>
+            <figure class:list={["hero-slide", index === 0 && "is-active"]} data-slide>
               <img
                 src={slide.image}
-                alt=""
-                width="1280"
-                height="720"
+                alt={slide.alt[lang]}
+                width="2279"
+                height="1280"
                 loading={index === 0 ? "eager" : "lazy"}
-                decoding="async"
-                fetchpriority={index === 0 ? "high" : "low"}
+                fetchpriority={index === 0 ? "high" : undefined}
               />
-            </div>
+            </figure>
           ))
         }
       </div>
-      <div class="hero-content">
-        <h1 class="headline" data-hero-title>{heroSlides[0].title}</h1>
-        <p class="lead" data-hero-body>{heroSlides[0].body}</p>
-        <div class="hero-panel" aria-label="WEGO catalog readiness">
-          <div class="hero-stat"><strong>{catalogCategories.length}</strong><span>{t(lang, "homeCatalogLines")}</span></div>
-          <div class="hero-stat"><strong>{products.length}</strong><span>{t(lang, "homeModelPages")}</span></div>
-          <div class="hero-stat"><strong>{primaryMarkets.length}</strong><span>{t(lang, "homeExportRegions")}</span></div>
+      <div class="container hero-content">
+        <div class="hero-copy">
+          <p class="eyebrow">{siteConfig.brand}</p>
+          <h1 class="headline" data-hero-title>{heroSlides[0].title[lang]}</h1>
+          <p class="lead" data-hero-body>{heroSlides[0].body[lang]}</p>
+          <div class="hero-actions">
+            <a class="btn primary" href={languagePath(lang, heroSlides[0].href)}>Explore products</a>
+            <a class="btn secondary" href={languagePath(lang, "/contact/")}>Send inquiry</a>
+          </div>
         </div>
       </div>
-      <script is:inline type="application/json" data-hero-slides set:html={JSON.stringify(heroSlides)} />
+      <script is:inline type="application/json" data-home-hero-slides set:html={JSON.stringify(heroSlides.map((slide) => ({ title: slide.title[lang], body: slide.body[lang] })))} />
     </section>
 
-    <section class="section mosaic-section" data-mosaic>
-      <div class="container mosaic-layout">
-        <div class="mosaic-copy">
-          <span class="section-label"><Factory size={17} aria-hidden="true" /> {t(lang, "productCategories")}</span>
-          <h2 class="section-title">{t(lang, "heroTitle")}</h2>
-          <p class="section-intro">{t(lang, "heroBody")}</p>
-          <a class="btn primary" href={languagePath(lang, "/contact/")}>
-            <Send size={17} aria-hidden="true" />
-            <span>{t(lang, "heroSecondary")}</span>
-          </a>
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-label">Products</span>
+          <h2 class="section-title">Current forklift families</h2>
+          <p class="section-intro">The product center stays organized around real export inquiry paths rather than retail pricing pages.</p>
         </div>
-        <div class="mosaic-wall" aria-label="WEGO forklift product visual wall">
+        <div class="product-family-grid">
           {
-            mosaicTiles.map((tile, index) => (
-              <article class:list={["mosaic-tile", `tile-${index + 1}`]}>
-                <img src={tile.image} alt={`${tile.label} ${tile.detail}`} loading="lazy" width="900" height="620" />
-                <span>
-                  <strong>{tile.label}</strong>
-                  <small>{tile.detail}</small>
-                </span>
-              </article>
+            categories.map((category) => (
+              <a class="family-card" href={languagePath(lang, `/products/${category.slug}/`)}>
+                <img src={category.image} alt={category.label[lang]} width="320" height="220" loading="lazy" />
+                <div>
+                  <strong>{category.label[lang]}</strong>
+                  <span>{category.summary[lang]}</span>
+                </div>
+              </a>
             ))
           }
         </div>
       </div>
     </section>
 
-    <section id="product-finder" class="section dark-band">
+    <section class="section soft">
       <div class="container">
-        <span class="section-label"><Search size={17} aria-hidden="true" /> {t(lang, "megaProductFinder")}</span>
-        <h2 class="section-title">{t(lang, "compareSpecs")}</h2>
-        <p class="section-intro">{t(lang, "megaProductFinderBody")}</p>
-        <div class="finder-panel">
-          <a class="finder-cell finder-lead" href={languagePath(lang, "/products/")}>
-            <strong>{t(lang, "allProducts")}</strong>
-            <span>{t(lang, "megaViewAllProducts")}</span>
-          </a>
-          <a class="finder-cell" href={languagePath(lang, "/products/lithium-electric-forklifts/")}><strong>{categories[0].label[lang]}</strong><span>{categories[0].capacityRange}</span></a>
-          <a class="finder-cell" href={languagePath(lang, "/products/diesel-forklifts/")}><strong>{categories[1].label[lang]}</strong><span>{categories[1].capacityRange}</span></a>
-          <a class="finder-cell" href={languagePath(lang, "/products/heavy-duty-forklifts/")}><strong>{categories[2].label[lang]}</strong><span>{categories[2].capacityRange}</span></a>
-          <a class="finder-cell" href={languagePath(lang, "/products/electric-pallet-stackers/")}><strong>{categories[4].label[lang]}</strong><span>HELI MC12</span></a>
+        <div class="section-heading">
+          <span class="section-label"><ShieldCheck size={16} aria-hidden="true" /> Solutions</span>
+          <h2 class="section-title">Solutions by working scene</h2>
+          <p class="section-intro">Each route starts from the buyer's operating condition and ends with a narrower WEGO model recommendation.</p>
         </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <span class="section-label"><PackageCheck size={17} aria-hidden="true" /> {t(lang, "navProducts")}</span>
-        <h2 class="section-title">{t(lang, "productCategories")}</h2>
-        <p class="section-intro">{t(lang, "heroBody")}</p>
-        <div class="grid three">
+        <div class="solution-grid">
           {
-            categories.map((category) => (
-              <article class="card category-card">
-                <a class="card-media" href={languagePath(lang, `/products/${category.slug}/`)}>
-                  <img src={category.image} alt={category.label[lang]} loading="lazy" width="1280" height="720" />
+            solutions.map((solution) => (
+              <article class="card solution-card">
+                <a class="card-media" href={languagePath(lang, `/solutions/${solution.slug}/`)}>
+                  <img src={solution.image} alt={solution.title[lang]} width="1280" height="720" loading="lazy" />
                 </a>
                 <div class="card-body">
-                  <div class="meta-row">
-                    <span class="pill">{category.capacityRange}</span>
-                    <span class="pill">{t(lang, "currentProductRange")}</span>
-                  </div>
-                  <h3><a href={languagePath(lang, `/products/${category.slug}/`)}>{category.label[lang]}</a></h3>
-                  <p>{category.summary[lang]}</p>
-                  <a class="btn secondary" href={languagePath(lang, `/products/${category.slug}/`)}>{t(lang, "viewDetails")}</a>
+                  <h3><a href={languagePath(lang, `/solutions/${solution.slug}/`)}>{solution.title[lang]}</a></h3>
+                  <p>{solution.summary[lang]}</p>
+                  <a class="inline-link" href={languagePath(lang, `/solutions/${solution.slug}/`)}>
+                    View solution <ArrowRight size={16} aria-hidden="true" />
+                  </a>
                 </div>
               </article>
             ))
@@ -166,33 +118,22 @@ const mosaicTiles = [
 
     <section class="section soft">
       <div class="container">
-        <span class="section-label"><Factory size={17} aria-hidden="true" /> {t(lang, "featuredProducts")}</span>
-        <h2 class="section-title">{t(lang, "catalogModels")}</h2>
-        <div class="grid three">
-          {featuredProducts.map((product) => <ProductCard product={product} lang={lang} />)}
+        <div class="section-heading">
+          <span class="section-label"><Newspaper size={16} aria-hidden="true" /> News</span>
+          <h2 class="section-title">Latest updates and technical articles</h2>
+          <p class="section-intro">The news area is set up for ongoing article publishing through the admin workspace.</p>
         </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <span class="section-label"><ShieldCheck size={17} aria-hidden="true" /> {t(lang, "navSolutions")}</span>
-        <h2 class="section-title">{t(lang, "industriesTitle")}</h2>
-        <p class="section-intro">{t(lang, "megaSolutionsBody")}</p>
         <div class="grid three">
           {
-            solutions.map((solution) => (
-              <article class="card solution-card">
-                <a class="card-media" href={languagePath(lang, `/solutions/${solution.slug}/`)}>
-                  <img src={solution.image} alt={solution.title[lang]} loading="lazy" width="1280" height="720" />
+            latestNews.map((article) => (
+              <article class="card news-card">
+                <a class="card-media" href={languagePath(lang, `/news/${article.data.permalink}/`)}>
+                  <img src={article.data.cover} alt={article.data.title[lang]} width="1280" height="720" loading="lazy" />
                 </a>
                 <div class="card-body">
-                  <h3>{solution.title[lang]}</h3>
-                  <p>{solution.summary[lang]}</p>
-                  <ul class="mini-list">
-                    {solution.needs.slice(0, 2).map((need) => <li><CheckCircle2 size={15} aria-hidden="true" /> {need}</li>)}
-                  </ul>
-                  <a class="btn secondary" href={languagePath(lang, `/solutions/${solution.slug}/`)}>{t(lang, "readMore")}</a>
+                  <p class="card-meta">{article.data.publishedAt.toISOString().slice(0, 10)}</p>
+                  <h3><a href={languagePath(lang, `/news/${article.data.permalink}/`)}>{article.data.title[lang]}</a></h3>
+                  <p>{article.data.excerpt[lang]}</p>
                 </div>
               </article>
             ))
@@ -201,79 +142,114 @@ const mosaicTiles = [
       </div>
     </section>
 
-    <section class="section dark-band">
+    <section class="section soft">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-label">Featured models</span>
+          <h2 class="section-title">Current inquiry-ready models</h2>
+          <p class="section-intro">Pricing is not published. Each product page is structured for specification review and direct quotation requests.</p>
+        </div>
+        <div class="grid three">
+          {featureProducts.map((product) => <ProductCard product={product} lang={lang} />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="section home-contact-band">
       <div class="container split">
         <div>
-          <span class="section-label"><Wrench size={17} aria-hidden="true" /> {t(lang, "navSupport")}</span>
-          <h2 class="section-title">{t(lang, "servicesTitle")}</h2>
-          <p class="section-intro">{t(lang, "megaSupportBody")}</p>
-          <div class="grid two">
-            {
-              servicePages.map((page) => (
-                <a class="service-link" href={languagePath(lang, `/parts-service/${page.slug}/`)}>
-                  <strong>{page.title[lang]}</strong>
-                  <span>{page.summary[lang]}</span>
-                </a>
-              ))
-            }
+          <span class="section-label">Contact Us</span>
+          <h2 class="section-title">Leave a message</h2>
+          <p class="section-intro">Use the form as the main conversion point for organic search traffic and direct overseas inquiries.</p>
+          <div class="contact-direct">
+            <p><strong>Email</strong> {siteConfig.email}</p>
+            <p><strong>Phone / WhatsApp</strong> {siteConfig.phone}</p>
+            <p><strong>Address</strong> {siteConfig.address}</p>
           </div>
         </div>
-        <LeadForm lang={lang} />
+        <LeadForm lang={lang} inquiryType="homepage" />
+      </div>
+      <div class="container counter-band" data-counter-band>
+        {
+          homeCounters.map((counter) => (
+            <article class="counter-card">
+              <strong data-count={counter.value} data-suffix={counter.suffix ?? ""} aria-label={`${counter.value}${counter.suffix ?? ""}`}>0</strong>
+              <span>{counter.label[lang]}</span>
+            </article>
+          ))
+        }
       </div>
     </section>
-
-    <section class="company-home-band">
-      <div class="container" dir={lang === "ar" ? "rtl" : "ltr"}>
-        <span class="section-label"><Factory size={17} aria-hidden="true" /> {profileCopy.label}</span>
-        <h2 class="section-title">{profileCopy.networkTitle}</h2>
-        <p class="section-intro">{profileCopy.lead}</p>
-        <a class="btn primary" href={languagePath(lang, "/why-wego/")}>
-          {t(lang, "navWhyWego")} <ArrowRight size={17} aria-hidden="true" />
-        </a>
-      </div>
-    </section>
-
   </main>
 
-  <script>
-    document.querySelectorAll("[data-hero-slider]").forEach((slider) => {
-      const slidesDataNode = slider.querySelector("[data-hero-slides]");
-      const slidesData = slidesDataNode?.textContent ? JSON.parse(slidesDataNode.textContent) : [];
-      const slides = Array.from(slider.querySelectorAll("[data-slide]"));
-      const title = slider.querySelector("[data-hero-title]");
-      const body = slider.querySelector("[data-hero-body]");
-      let active = 0;
-      let timer = 0;
-
-      const setActive = (next: number) => {
-        active = (next + slides.length) % slides.length;
-        slides.forEach((slide, index) => slide.classList.toggle("is-active", index === active));
-        const slideData = slidesData[active];
-        if (!slideData) return;
-        if (title) title.textContent = slideData.title;
-        if (body) body.textContent = slideData.body;
-      };
-
-      const start = () => {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        window.clearInterval(timer);
-        timer = window.setInterval(() => setActive(active + 1), 5200);
-      };
-
-      start();
+  <script is:inline>
+    document.querySelectorAll("[data-home-hero]").forEach((hero) => {
+      const slides = Array.from(hero.querySelectorAll("[data-slide]"));
+      const dataNode = hero.querySelector("[data-home-hero-slides]");
+      const title = hero.querySelector("[data-hero-title]");
+      const body = hero.querySelector("[data-hero-body]");
+      if (!(dataNode instanceof HTMLScriptElement) || !title || !body || slides.length < 2) return;
+      const content = JSON.parse(dataNode.textContent || "[]");
+      let index = 0;
+      window.setInterval(() => {
+        index = (index + 1) % slides.length;
+        slides.forEach((slide, slideIndex) => slide.classList.toggle("is-active", slideIndex === index));
+        title.textContent = content[index]?.title || "";
+        body.textContent = content[index]?.body || "";
+      }, 4800);
     });
 
-    const mosaic = document.querySelector("[data-mosaic]");
-    if (mosaic && "IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) mosaic.classList.add("is-visible");
-        },
-        { threshold: 0.25 }
-      );
-      observer.observe(mosaic);
-    } else {
-      mosaic?.classList.add("is-visible");
+    const counterBand = document.querySelector("[data-counter-band]");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function buildRollingNumber(node) {
+      const target = node.getAttribute("data-count") || "0";
+      const suffix = node.getAttribute("data-suffix") || "";
+      if (reduceMotion) {
+        node.textContent = `${target}${suffix}`;
+        return;
+      }
+
+      node.textContent = "";
+      [...target].forEach((character, digitIndex) => {
+        const finalDigit = Number(character);
+        const digit = document.createElement("span");
+        digit.className = "counter-digit";
+        digit.setAttribute("aria-hidden", "true");
+        const track = document.createElement("span");
+        track.className = "counter-digit-track";
+        const sequence = [...Array(10).keys(), ...Array(10).keys(), ...Array(finalDigit + 1).keys()];
+        sequence.forEach((value) => {
+          const item = document.createElement("span");
+          item.textContent = String(value);
+          track.append(item);
+        });
+        track.style.setProperty("--counter-stop", String(sequence.length - 1));
+        track.style.setProperty("--counter-delay", `${digitIndex * 90}ms`);
+        digit.append(track);
+        node.append(digit);
+      });
+      if (suffix) {
+        const suffixNode = document.createElement("span");
+        suffixNode.className = "counter-suffix";
+        suffixNode.textContent = suffix;
+        node.append(suffixNode);
+      }
+      requestAnimationFrame(() => requestAnimationFrame(() => node.classList.add("is-rolling")));
+    }
+
+    if (counterBand) {
+      const startCounters = () => counterBand.querySelectorAll("[data-count]").forEach(buildRollingNumber);
+      if (reduceMotion || !("IntersectionObserver" in window)) {
+        startCounters();
+      } else {
+        const observer = new IntersectionObserver((entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          startCounters();
+          observer.disconnect();
+        }, { threshold: 0.35 });
+        observer.observe(counterBand);
+      }
     }
   </script>
 </Layout>

@@ -1,0 +1,56 @@
+---
+import { ArrowRight, CheckCircle2, ClipboardCheck, GraduationCap, Headphones, PackageSearch, RefreshCcw, Settings2, Wrench } from "lucide-astro";
+import Layout from "@layouts/Layout.astro";
+import LeadForm from "@components/LeadForm.astro";
+import { languages, type Lang } from "@data/languages";
+import { serviceBlocks } from "@data/marketing";
+import { serviceUi } from "@data/service-ui";
+import { siteConfig } from "@data/site";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const icons = [Settings2, Headphones, PackageSearch, GraduationCap, ClipboardCheck, Wrench, RefreshCcw];
+---
+
+<Layout lang={lang} title={`${serviceUi.title[lang]} | ${siteConfig.brand}`} description={serviceUi.intro[lang]} path="/service/">
+  <main class="service-page">
+    <header class="service-hero">
+      <div class="container service-hero-grid">
+        <div><span class="company-label">{serviceUi.label[lang]}</span><h1>{serviceUi.title[lang]}</h1><p>{serviceUi.intro[lang]}</p></div>
+        <div class="service-principles">{serviceUi.principles.map((item) => <span><CheckCircle2 size={19} aria-hidden="true" />{item[lang]}</span>)}</div>
+      </div>
+    </header>
+
+    <section class="service-content">
+      <div class="container service-long-list">
+        {serviceBlocks.map((block, index) => {
+          const Icon = icons[index] ?? Wrench;
+          return (
+            <article class="service-long-section">
+              <div class="service-number">{String(index + 1).padStart(2, "0")}</div>
+              <div class="service-icon"><Icon size={30} stroke-width={1.6} aria-hidden="true" /></div>
+              <div><h2>{block.title[lang]}</h2><p>{block.body[lang]}</p></div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="section soft service-process">
+      <div class="container">
+        <div class="solution-section-heading"><span>08</span><div><h2>{serviceUi.processTitle[lang]}</h2><p>{serviceUi.contactBody[lang]}</p></div></div>
+        <ol>{serviceUi.process.map((item, index) => <li><strong>{index + 1}</strong><span>{item[lang]}</span></li>)}</ol>
+      </div>
+    </section>
+
+    <section class="section service-contact">
+      <div class="container split">
+        <div><span class="company-label">{serviceUi.label[lang]}</span><h2>{serviceUi.contactTitle[lang]}</h2><p>{serviceUi.contactBody[lang]}</p><a class="text-link" href={`mailto:${siteConfig.email}`}>{siteConfig.email} <ArrowRight size={16} aria-hidden="true" /></a></div>
+        <LeadForm lang={lang} inquiryType="service-page" />
+      </div>
+    </section>
+  </main>
+</Layout>

@@ -1,37 +1,102 @@
 ---
+import { CalendarDays, Factory, Globe2, Handshake, MapPin } from "lucide-astro";
 import Layout from "@layouts/Layout.astro";
-import LeadForm from "@components/LeadForm.astro";
+import { companyProfile } from "@data/company";
 import { languages, type Lang } from "@data/languages";
 import { siteConfig } from "@data/site";
-import { t } from "@data/i18n";
 
 export function getStaticPaths() {
   return languages.map((language) => ({ params: { lang: language.code } }));
 }
 
 const lang = Astro.params.lang as Lang;
+const copy = companyProfile[lang] ?? companyProfile.en;
+const isRtl = lang === "ar";
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "WEGO Group",
+  brand: { "@type": "Brand", name: "WEGO" },
+  url: siteConfig.baseUrl,
+  logo: `${siteConfig.baseUrl}${siteConfig.logo}`,
+  image: `${siteConfig.baseUrl}/images/company/wego-main-gate.png`,
+  foundingDate: siteConfig.foundedYear,
+  email: siteConfig.email,
+  telephone: siteConfig.phone,
+  description: copy.metaDescription,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Industrial South Road",
+    addressLocality: "Jinan",
+    addressRegion: "Shandong",
+    addressCountry: "CN"
+  },
+  areaServed: "Worldwide"
+};
+
+const stats = [
+  { icon: CalendarDays, value: siteConfig.foundedYear, label: copy.founded },
+  { icon: Handshake, value: "50+", label: copy.partners },
+  { icon: Globe2, value: "120+", label: copy.markets },
+  { icon: MapPin, value: "Jinan, China", label: copy.headquarters }
+];
+
+const photos = [
+  { src: "/images/company/wego-main-gate.png", alt: copy.photoAlts[0] },
+  { src: "/images/company/wego-factory-exterior.png", alt: copy.photoAlts[1] },
+  { src: "/images/company/wego-production-line.png", alt: copy.photoAlts[2] }
+];
 ---
 
-<Layout lang={lang} title={`${t(lang, "navAbout")} | ${siteConfig.brand}`} description={t(lang, "aboutIntro")} path="/about/">
-  <main>
-    <header class="page-header">
-      <div class="container">
-        <span class="eyebrow">{t(lang, "navAbout")}</span>
-        <h1 class="section-title">{t(lang, "navAbout")}</h1>
-        <p class="lead">{t(lang, "aboutIntro")}</p>
+<Layout lang={lang} title={copy.metaTitle} description={copy.metaDescription} path="/about/" image="/images/company/global-market-network.jpg" schema={organizationSchema}>
+  <main class="company-page">
+    <header class="company-hero">
+      <div class="container" dir={isRtl ? "rtl" : "ltr"}>
+        <span class="company-label"><Factory size={17} aria-hidden="true" /> {copy.label}</span>
+        <h1>{copy.title}</h1>
+        <p>{copy.lead}</p>
       </div>
     </header>
-    <section class="section">
-      <div class="container split">
-        <article class="prose">
-          <h2>Factory profile</h2>
-          <p>Replace this section with production lines, inspection capability, export markets, and warehouse photos.</p>
-          <h2>Certifications</h2>
-          <p>Add CE, ISO, EPA, battery certificates, or local compliance documents that are actually available.</p>
-          <h2>Export proof</h2>
-          <p>Add customer countries, shipping cases, container loading photos, and warranty procedures.</p>
+
+    <section class="company-profile-section">
+      <div class="container company-profile-layout">
+        <article class="company-copy" dir={isRtl ? "rtl" : "ltr"}>
+          <h2>{copy.profileTitle}</h2>
+          {copy.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
         </article>
-        <LeadForm lang={lang} />
+        <aside class="company-stats" aria-label={copy.label}>
+          {stats.map(({ icon: Icon, value, label }) => (
+            <div class="company-stat" dir={isRtl ? "rtl" : "ltr"}>
+              <Icon size={22} stroke-width={1.8} aria-hidden="true" />
+              <span><strong dir="auto">{value}</strong><small>{label}</small></span>
+            </div>
+          ))}
+        </aside>
+      </div>
+    </section>
+
+    <section class="company-culture">
+      <div class="container company-culture-inner" dir={isRtl ? "rtl" : "ltr"}>
+        <span class="company-culture-mark" aria-hidden="true">“</span>
+        <div><h2>{copy.cultureTitle}</h2><p>{copy.cultureBody}</p></div>
+      </div>
+    </section>
+
+    <section class="company-network-section">
+      <div class="container" dir={isRtl ? "rtl" : "ltr"}>
+        <span class="company-label"><Globe2 size={17} aria-hidden="true" /> {copy.networkLabel}</span>
+        <div class="company-section-heading"><h2>{copy.networkTitle}</h2><p>{copy.networkBody}</p></div>
+        <figure class="company-network-visual"><img src="/images/company/global-market-network.jpg" alt={copy.networkTitle} width="1857" height="847" loading="lazy" /></figure>
+      </div>
+    </section>
+
+    <section class="company-gallery-section">
+      <div class="container" dir={isRtl ? "rtl" : "ltr"}>
+        <span class="company-label"><Factory size={17} aria-hidden="true" /> {copy.galleryLabel}</span>
+        <h2>{copy.galleryTitle}</h2>
+        <div class="company-gallery">{photos.map((photo) => <figure><img src={photo.src} alt={photo.alt} width="360" height="240" loading="lazy" /></figure>)}</div>
+        <p class="company-welcome">{copy.welcome}</p>
       </div>
     </section>
   </main>

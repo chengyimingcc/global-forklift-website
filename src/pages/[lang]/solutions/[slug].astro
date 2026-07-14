@@ -1,13 +1,12 @@
 ---
-import { CheckCircle2, ShieldCheck } from "lucide-astro";
+import { ArrowRight, Check, ClipboardList, Gauge, Layers3 } from "lucide-astro";
 import Layout from "@layouts/Layout.astro";
-import Breadcrumbs from "@components/Breadcrumbs.astro";
 import LeadForm from "@components/LeadForm.astro";
-import ProductCard from "@components/ProductCard.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { languages, type Lang } from "@data/languages";
-import { getSolution, solutions } from "@data/content";
-import { getCategory, getCategoryProducts } from "@data/products";
-import { t } from "@data/i18n";
+import { getSolutionDetail, solutions } from "@data/content";
+import { getCategoryProducts, getProductName } from "@data/products";
+import { solutionUi } from "@data/solutions-ui";
 import { languagePath } from "@lib/seo";
 import { breadcrumbSchema } from "@lib/schema";
 
@@ -16,59 +15,73 @@ export function getStaticPaths() {
 }
 
 const lang = Astro.params.lang as Lang;
-const solution = getSolution(Astro.params.slug ?? "");
-if (!solution) {
-  return Astro.redirect(languagePath(lang, "/solutions/"));
-}
-const pagePath = `/solutions/${solution.slug}/`;
-const recommendedProducts = solution.recommendedCategories.flatMap((categorySlug) => getCategoryProducts(categorySlug)).slice(0, 6);
-const recommendedCategories = solution.recommendedCategories.map(getCategory).filter(Boolean);
+const solution = getSolutionDetail(Astro.params.slug ?? "");
+if (!solution) return Astro.redirect(languagePath(lang, "/solutions/"));
+
+const seen = new Set<string>();
+const recommendedProducts = solution.recommendedCategories
+  .flatMap((slug) => getCategoryProducts(slug))
+  .filter((product) => !seen.has(product.slug) && seen.add(product.slug))
+  .slice(0, 9);
 const breadcrumbs = [
-  { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
-  { name: "Solutions", url: languagePath(lang, "/solutions/") },
-  { name: solution.title[lang], url: languagePath(lang, pagePath) }
+  { name: "Home", url: languagePath(lang, "/") },
+  { name: solutionUi.label[lang], url: languagePath(lang, "/solutions/") },
+  { name: solution.title[lang], url: languagePath(lang, `/solutions/${solution.slug}/`) }
 ];
 ---
 
-<Layout lang={lang} title={`${solution.title[lang]} Forklift Solution | WEGO Forklift`} description={solution.summary[lang]} path={pagePath} image={solution.image} schema={breadcrumbSchema(breadcrumbs)}>
-  <main>
-    <header class="page-header solution-header">
-      <div class="container">
-        <Breadcrumbs items={[
-          { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
-          { label: "Solutions", href: languagePath(lang, "/solutions/") },
-          { label: solution.title[lang] }
-        ]} />
-        <span class="section-label"><ShieldCheck size={17} aria-hidden="true" /> Application Solution</span>
-        <h1 class="section-title">{solution.title[lang]}</h1>
-        <p class="lead">{solution.summary[lang]}</p>
+<Layout lang={lang} title={`${solution.title[lang]} | WEGO Forklift Solutions`} description={solution.summary[lang]} path={`/solutions/${solution.slug}/`} image={solution.image} schema={breadcrumbSchema(breadcrumbs)}>
+  <main class="solution-detail-page">
+    <header class="solution-detail-hero">
+      <img src={solution.image} alt={solution.title[lang]} width="1600" height="900" />
+      <div class="solution-hero-shade"></div>
+      <div class="container solution-hero-copy">
+        <Breadcrumbs items={[{ label: "Home", href: languagePath(lang, "/") }, { label: solutionUi.label[lang], href: languagePath(lang, "/solutions/") }, { label: solution.title[lang] }]} />
+        <span>{solutionUi.label[lang]}</span>
+        <h1>{solution.title[lang]}</h1>
+        <p>{solution.summary[lang]}</p>
       </div>
     </header>
-    <section class="section">
-      <div class="container split">
-        <div>
-          <div class="product-media solution-image">
-            <img src={solution.image} alt={solution.title[lang]} width="1280" height="720" />
-          </div>
-          <h2>Buyer needs</h2>
-          <ul class="check-list">
-            {solution.needs.map((need) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{need}</span></li>)}
-          </ul>
-          <h2>Recommended product lines</h2>
-          <div class="meta-row">
-            {recommendedCategories.map((category) => category && <a class="pill" href={languagePath(lang, `/products/${category.slug}/`)}>{category.label[lang]}</a>)}
-          </div>
+
+    <section class="section solution-narrative">
+      <div class="container solution-story-grid">
+        <div class="solution-story-heading"><span>01</span><h2>{solutionUi.challenges[lang]}</h2></div>
+        <div class="solution-challenge-list">
+          {solution.challenges.map((item) => <article><Check size={20} aria-hidden="true" /><p>{item[lang]}</p></article>)}
         </div>
-        <LeadForm lang={lang} />
       </div>
     </section>
-    <section class="section soft">
+
+    <section class="section soft solution-approach">
+      <div class="container solution-two-column">
+        <div><span class="solution-index">02</span><h2>{solutionUi.approach[lang]}</h2><p>{solution.solutionBody[lang]}</p></div>
+        <aside><ClipboardList size={28} aria-hidden="true" /><h3>{solutionUi.outcome[lang]}</h3><p>{solution.recommendationBody[lang]}</p></aside>
+      </div>
+    </section>
+
+    <section class="section solution-process">
       <div class="container">
-        <h2 class="section-title">Recommended catalog models</h2>
-        <div class="grid three">
-          {recommendedProducts.map((product) => <ProductCard product={product} lang={lang} />)}
+        <div class="solution-section-heading"><span>03</span><div><h2>{solutionUi.processTitle[lang]}</h2><p>{solution.summary[lang]}</p></div></div>
+        <ol>{solutionUi.process.map((step, index) => <li><strong>{String(index + 1).padStart(2, "0")}</strong><span>{step[lang]}</span></li>)}</ol>
+      </div>
+    </section>
+
+    <section class="section soft solution-products">
+      <div class="container">
+        <div class="solution-section-heading"><span>04</span><div><h2>{solutionUi.products[lang]}</h2><p>{solutionUi.productIntro[lang]}</p></div></div>
+        <div class="solution-product-rail">
+          {recommendedProducts.map((product) => (
+            <article class="solution-product-card">
+              <a href={languagePath(lang, `/products/${product.slug}/`)}><img src={product.image} alt={getProductName(product, lang)} width="720" height="560" loading="lazy" /></a>
+              <div><h3><a href={languagePath(lang, `/products/${product.slug}/`)}>{getProductName(product, lang)}</a></h3><p>{product.translations[lang].shortDescription}</p><dl><div><Gauge size={17} aria-hidden="true" /><dt>{product.capacityTons}</dt></div><div><Layers3 size={17} aria-hidden="true" /><dt>{product.liftHeightM}</dt></div></dl><a class="text-link" href={languagePath(lang, `/products/${product.slug}/`)}>{solutionUi.explore[lang]} <ArrowRight size={16} aria-hidden="true" /></a></div>
+            </article>
+          ))}
         </div>
       </div>
+    </section>
+
+    <section class="section solution-inquiry">
+      <div class="container split"><div><span class="solution-index">05</span><h2>{solutionUi.contactTitle[lang]}</h2><p>{solutionUi.contactBody[lang]}</p></div><LeadForm lang={lang} inquiryType="solution-page" /></div>
     </section>
   </main>
 </Layout>

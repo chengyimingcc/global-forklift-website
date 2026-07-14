@@ -1,58 +1,12 @@
 ---
-import { CheckCircle2, Wrench } from "lucide-astro";
-import Layout from "@layouts/Layout.astro";
-import Breadcrumbs from "@components/Breadcrumbs.astro";
-import LeadForm from "@components/LeadForm.astro";
 import { languages, type Lang } from "@data/languages";
-import { getServicePage, servicePages } from "@data/content";
-import { t } from "@data/i18n";
+import { servicePages } from "@data/content";
 import { languagePath } from "@lib/seo";
-import { breadcrumbSchema } from "@lib/schema";
 
 export function getStaticPaths() {
   return languages.flatMap((language) => servicePages.map((page) => ({ params: { lang: language.code, slug: page.slug } })));
 }
 
 const lang = Astro.params.lang as Lang;
-const page = getServicePage(Astro.params.slug ?? "");
-if (!page) {
-  return Astro.redirect(languagePath(lang, "/parts-service/"));
-}
-const pagePath = `/parts-service/${page.slug}/`;
-const breadcrumbs = [
-  { name: t(lang, "breadcrumbHome"), url: languagePath(lang, "/") },
-  { name: "Parts & Service", url: languagePath(lang, "/parts-service/") },
-  { name: page.title[lang], url: languagePath(lang, pagePath) }
-];
+return Astro.redirect(languagePath(lang, "/service/"), 301);
 ---
-
-<Layout lang={lang} title={`${page.title[lang]} | WEGO Forklift Parts & Service`} description={page.summary[lang]} path={pagePath} image={page.image} schema={breadcrumbSchema(breadcrumbs)}>
-  <main>
-    <header class="page-header">
-      <div class="container">
-        <Breadcrumbs items={[
-          { label: t(lang, "breadcrumbHome"), href: languagePath(lang, "/") },
-          { label: "Parts & Service", href: languagePath(lang, "/parts-service/") },
-          { label: page.title[lang] }
-        ]} />
-        <span class="section-label"><Wrench size={17} aria-hidden="true" /> Parts & Service</span>
-        <h1 class="section-title">{page.title[lang]}</h1>
-        <p class="lead">{page.summary[lang]}</p>
-      </div>
-    </header>
-    <section class="section">
-      <div class="container split">
-        <article class="prose">
-          {page.image && <div class="product-media"><img src={page.image} alt={page.title[lang]} width="1280" height="720" /></div>}
-          <h2>Service scope</h2>
-          <ul class="check-list">
-            {page.bullets.map((item) => <li><CheckCircle2 size={18} aria-hidden="true" /> <span>{item}</span></li>)}
-          </ul>
-          <h2>Content to finalize</h2>
-          <p>Replace this reserved section with exact WEGO terms, documents, response times, spare parts list, and regional support details before indexing.</p>
-        </article>
-        <LeadForm lang={lang} />
-      </div>
-    </section>
-  </main>
-</Layout>
