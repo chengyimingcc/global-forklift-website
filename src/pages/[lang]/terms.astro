@@ -2,29 +2,51 @@
 import Layout from "@layouts/Layout.astro";
 import { languages, type Lang } from "@data/languages";
 import { siteConfig } from "@data/site";
-import { t } from "@data/i18n";
+import { legalContent } from "@data/legal";
 
 export function getStaticPaths() {
   return languages.map((language) => ({ params: { lang: language.code } }));
 }
 
 const lang = Astro.params.lang as Lang;
+const document = legalContent[lang].terms;
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: document.title,
+  description: document.description,
+  url: `${siteConfig.baseUrl}/${lang}/terms/`,
+  dateModified: "2026-07-16",
+  isPartOf: { "@type": "WebSite", name: siteConfig.brand, url: siteConfig.baseUrl }
+};
 ---
 
-<Layout lang={lang} title={`Terms | ${siteConfig.brand}`} description={t(lang, "termsIntro")} path="/terms/" noindex={true}>
+<Layout lang={lang} title={`${document.title} | ${siteConfig.brand}`} description={document.description} path="/terms/" schema={schema}>
   <main>
     <header class="page-header">
       <div class="container">
-        <h1 class="section-title">Terms</h1>
-        <p class="lead">{t(lang, "termsIntro")}</p>
+        <p class="eyebrow">{siteConfig.brand}</p>
+        <h1 class="section-title">{document.title}</h1>
+        <p class="lead">{document.intro}</p>
+        <p class="legal-updated">{document.updatedLabel}: <time datetime="2026-07-16">{document.updatedDate}</time></p>
       </div>
     </header>
-    <section class="section">
-      <div class="container prose">
-        <h2>Commercial terms</h2>
-        <p>Replace with payment, delivery, warranty, limitation, and dispute terms before launch.</p>
-        <h2>Product information</h2>
-        <p>Replace with accuracy, availability, model update, and specification disclaimer terms.</p>
+    <section class="section legal-section">
+      <div class="container legal-layout">
+        <nav class="legal-toc" aria-label={document.contentsLabel}>
+          <strong>{document.contentsLabel}</strong>
+          <ol>
+            {document.sections.map((section) => <li><a href={`#${section.id}`}>{section.title.replace(/^\d+\.\s*/, "")}</a></li>)}
+          </ol>
+        </nav>
+        <article class="prose legal-prose">
+          {document.sections.map((section) => (
+            <section id={section.id}>
+              <h2>{section.title}</h2>
+              <p>{section.body}</p>
+            </section>
+          ))}
+        </article>
       </div>
     </section>
   </main>

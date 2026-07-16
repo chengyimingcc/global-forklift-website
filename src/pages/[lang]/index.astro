@@ -1,14 +1,12 @@
 ---
 import { getCollection } from "astro:content";
-import { ArrowRight, Newspaper, ShieldCheck } from "lucide-astro";
+import { Newspaper } from "lucide-astro";
 import Layout from "@layouts/Layout.astro";
 import LeadForm from "@components/LeadForm.astro";
-import ProductCard from "@components/ProductCard.astro";
 import { languages, type Lang } from "@data/languages";
 import { heroSlides, homeCounters } from "@data/marketing";
-import { categories, products } from "@data/products";
+import { categories } from "@data/products";
 import { siteConfig } from "@data/site";
-import { solutions } from "@data/content";
 import { languagePath } from "@lib/seo";
 import { organizationSchema, websiteSchema } from "@lib/seo";
 
@@ -21,7 +19,6 @@ const latestNews = (await getCollection("news"))
   .sort((a, b) => new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime())
   .slice(0, 3);
 
-const featureProducts = products.slice(0, 6);
 const schema = [organizationSchema(), websiteSchema(lang)];
 ---
 
@@ -35,6 +32,7 @@ const schema = [organizationSchema(), websiteSchema(lang)];
 >
   <main>
     <section class="hero wego-home-hero" data-home-hero>
+      <h1 class="sr-only">{heroSlides[0].title[lang]}</h1>
       <div class="hero-slider" aria-hidden="true">
         {
           heroSlides.map((slide, index) => (
@@ -51,18 +49,6 @@ const schema = [organizationSchema(), websiteSchema(lang)];
           ))
         }
       </div>
-      <div class="container hero-content">
-        <div class="hero-copy">
-          <p class="eyebrow">{siteConfig.brand}</p>
-          <h1 class="headline" data-hero-title>{heroSlides[0].title[lang]}</h1>
-          <p class="lead" data-hero-body>{heroSlides[0].body[lang]}</p>
-          <div class="hero-actions">
-            <a class="btn primary" href={languagePath(lang, heroSlides[0].href)}>Explore products</a>
-            <a class="btn secondary" href={languagePath(lang, "/contact/")}>Send inquiry</a>
-          </div>
-        </div>
-      </div>
-      <script is:inline type="application/json" data-home-hero-slides set:html={JSON.stringify(heroSlides.map((slide) => ({ title: slide.title[lang], body: slide.body[lang] })))} />
     </section>
 
     <section class="section">
@@ -91,34 +77,6 @@ const schema = [organizationSchema(), websiteSchema(lang)];
     <section class="section soft">
       <div class="container">
         <div class="section-heading">
-          <span class="section-label"><ShieldCheck size={16} aria-hidden="true" /> Solutions</span>
-          <h2 class="section-title">Solutions by working scene</h2>
-          <p class="section-intro">Each route starts from the buyer's operating condition and ends with a narrower WEGO model recommendation.</p>
-        </div>
-        <div class="solution-grid">
-          {
-            solutions.map((solution) => (
-              <article class="card solution-card">
-                <a class="card-media" href={languagePath(lang, `/solutions/${solution.slug}/`)}>
-                  <img src={solution.image} alt={solution.title[lang]} width="1280" height="720" loading="lazy" />
-                </a>
-                <div class="card-body">
-                  <h3><a href={languagePath(lang, `/solutions/${solution.slug}/`)}>{solution.title[lang]}</a></h3>
-                  <p>{solution.summary[lang]}</p>
-                  <a class="inline-link" href={languagePath(lang, `/solutions/${solution.slug}/`)}>
-                    View solution <ArrowRight size={16} aria-hidden="true" />
-                  </a>
-                </div>
-              </article>
-            ))
-          }
-        </div>
-      </div>
-    </section>
-
-    <section class="section soft">
-      <div class="container">
-        <div class="section-heading">
           <span class="section-label"><Newspaper size={16} aria-hidden="true" /> News</span>
           <h2 class="section-title">Latest updates and technical articles</h2>
           <p class="section-intro">The news area is set up for ongoing article publishing through the admin workspace.</p>
@@ -138,19 +96,6 @@ const schema = [organizationSchema(), websiteSchema(lang)];
               </article>
             ))
           }
-        </div>
-      </div>
-    </section>
-
-    <section class="section soft">
-      <div class="container">
-        <div class="section-heading">
-          <span class="section-label">Featured models</span>
-          <h2 class="section-title">Current inquiry-ready models</h2>
-          <p class="section-intro">Pricing is not published. Each product page is structured for specification review and direct quotation requests.</p>
-        </div>
-        <div class="grid three">
-          {featureProducts.map((product) => <ProductCard product={product} lang={lang} />)}
         </div>
       </div>
     </section>
@@ -185,17 +130,11 @@ const schema = [organizationSchema(), websiteSchema(lang)];
   <script is:inline>
     document.querySelectorAll("[data-home-hero]").forEach((hero) => {
       const slides = Array.from(hero.querySelectorAll("[data-slide]"));
-      const dataNode = hero.querySelector("[data-home-hero-slides]");
-      const title = hero.querySelector("[data-hero-title]");
-      const body = hero.querySelector("[data-hero-body]");
-      if (!(dataNode instanceof HTMLScriptElement) || !title || !body || slides.length < 2) return;
-      const content = JSON.parse(dataNode.textContent || "[]");
+      if (slides.length < 2) return;
       let index = 0;
       window.setInterval(() => {
         index = (index + 1) % slides.length;
         slides.forEach((slide, slideIndex) => slide.classList.toggle("is-active", slideIndex === index));
-        title.textContent = content[index]?.title || "";
-        body.textContent = content[index]?.body || "";
       }, 4800);
     });
 

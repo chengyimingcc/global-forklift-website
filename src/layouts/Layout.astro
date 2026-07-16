@@ -21,7 +21,7 @@ interface Props {
 const { lang, title, description, image, type, schema, noindex } = Astro.props;
 const meta = languageMeta(lang);
 const currentPath = Astro.props.path ?? (Astro.url.pathname.replace(new RegExp(`^/${lang}`), "") || "/");
-const placeholderPrefixes = ["/privacy/", "/terms/", "/admin/"];
+const placeholderPrefixes = ["/admin/"];
 const routeNoindex = placeholderPrefixes.some((prefix) => currentPath.startsWith(prefix));
 const effectiveNoindex = noindex === true || routeNoindex ? true : undefined;
 ---
